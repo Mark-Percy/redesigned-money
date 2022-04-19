@@ -1,13 +1,16 @@
-main{
+section{
     height:100vh;
     width:100vw;
-    background-color: #792701;
     display: flex;
     justify-content: center;
     align-items: center;
+    color:white;
 }
 div.login-container {
-    border: solid black 4px;
+    max-width: 400px;
     width:90%;
     height:40%;
+}
+mat-form-field {
+    display: block;
 }

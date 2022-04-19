@@ -9,16 +9,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthorisationComponent } from './authorisation/authorisation.component';
 import { LoginComponent } from './authorisation/login/login.component';
 
+import { MaterialModule } from './module-libraries/material.module';
+
 @NgModule({
   declarations: [
     AppComponent,
     AuthorisationComponent,
-    LoginComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    MaterialModule 
   ],
   providers: [FirebaseSetupService],
   bootstrap: [AppComponent]

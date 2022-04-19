@@ -1,1 +1,6 @@
-<app-authorisation></app-authorisation>
+<main [classList]="!this.darkmode ? '' : 'darkmode'">
+    <mat-slide-toggle (change)="this.darkmode = !this.darkmode">
+        Dark Mode
+    </mat-slide-toggle>
+    <app-authorisation></app-authorisation>
+</main>
