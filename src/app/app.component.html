@@ -1,6 +1,4 @@
 <main [classList]="!this.darkmode ? '' : 'darkmode'" color="primary">
-    <mat-slide-toggle (change)="this.darkmode = !this.darkmode">
-        Dark Mode
-    </mat-slide-toggle>
-    <app-authorisation></app-authorisation>
+    <app-header (darkmodeEvent)="changeThemeMode()"></app-header>
+    <router-outlet></router-outlet>
 </main>

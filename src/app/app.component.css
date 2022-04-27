@@ -1,7 +1,10 @@
 main{
     background-color: #fda77f;
+    height: 100vh;
+    width: 100vw;
     
 }
 main.darkmode{
     background-color: #471802;
+    color:white;
 }
