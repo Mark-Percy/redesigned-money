@@ -44,3 +44,4 @@ testem.log
 .DS_Store
 Thumbs.db
 src/app/firebase.setup.service.ts
+src/app/authorisation/authorisation.service.ts

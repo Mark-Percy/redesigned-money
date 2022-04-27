@@ -10,12 +10,14 @@ import { AuthorisationComponent } from './authorisation/authorisation.component'
 import { LoginComponent } from './authorisation/login/login.component';
 
 import { MaterialModule } from './module-libraries/material.module';
+import { NewUserComponent } from './authorisation/new-user/new-user.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthorisationComponent,
-    LoginComponent
+    LoginComponent,
+    NewUserComponent
   ],
   imports: [
     BrowserModule,
