@@ -1,1 +1,14 @@
-<router-outlet></router-outlet>
+<section class="account-holder">
+    <div class="account-content">
+        <nav mat-tab-nav-bar color="accent" mat-align-tabs="center">
+            <a mat-tab-link *ngFor="let link of this.links"
+                [routerLink]="link.link" 
+                routerLinkActive #rla="routerLinkActive"
+                [active]="rla.isActive"
+            >
+                {{ link.label }}
+            </a>
+        </nav>
+        <router-outlet></router-outlet>
+    </div>
+</section>

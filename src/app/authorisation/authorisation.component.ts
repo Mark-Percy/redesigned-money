@@ -9,7 +9,11 @@ import { AutorisationService } from './authorisation.service';
   providers: [AutorisationService]
 })
 export class AuthorisationComponent implements OnInit {
+  links = [
+    {label: "Login", link: "/account/login"},
+    {label: "New Account", link: "/account/new-user"}
 
+  ];
   constructor(private authorisationService: AutorisationService) { 
       
   }

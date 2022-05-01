@@ -13,6 +13,8 @@ import { MaterialModule } from './module-libraries/material.module';
 import { NewUserComponent } from './authorisation/new-user/new-user.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { HeaderComponent } from './header/header.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialModule 
+    MaterialModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [FirebaseSetupService],
   bootstrap: [AppComponent]

@@ -1,0 +1,18 @@
+.account-holder{
+    height:calc(100vh - 48px);
+    width:100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color:white;
+}
+.account-type ul {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.account-content {
+    max-width: 400px;
+    width:90%;
+    height:40%;
+}

@@ -1,16 +1,3 @@
-section{
-    height:100vh;
-    width:100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color:white;
-}
-div.login-container {
-    max-width: 400px;
-    width:90%;
-    height:40%;
-}
 mat-form-field {
     display: block;
 }

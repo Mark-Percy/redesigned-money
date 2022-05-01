@@ -1,1 +1,26 @@
-<p>new-user works!</p>
+<mat-tab-group>
+    <mat-tab label="Account Details">
+        <form (ngSubmit)="updateUser()">
+            <mat-form-field>
+                <mat-label>Email</mat-label>
+                <input type="email" matInput [formControl]="email">
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input [type]="hide ? 'password' : 'text'" matInput [formControl]="password">
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Confirm Password</mat-label>
+                <input [type]="hideConfirm ? 'passwordConfirm' : 'text'" matInput>
+                <button mat-icon-button matSuffix (click)="hideConfirm = !hideConfirm" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hideConfirm">
+                    <mat-icon>{{hideConfirm ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+            <button mat-raised-button color="success" type="submit">Submit</button>
+        </form>
+    </mat-tab>
+</mat-tab-group>
+
