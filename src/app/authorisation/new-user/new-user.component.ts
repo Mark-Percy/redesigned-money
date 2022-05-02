@@ -1,33 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl } from '@angular/forms';
+import { MatTabGroup } from '@angular/material/tabs';
 import { AutorisationService } from '../authorisation.service';
 
 @Component({
-  selector: 'app-new-user',
-  templateUrl: './new-user.component.html',
-  styleUrls: ['./new-user.component.css']
+	selector: 'app-new-user',
+	templateUrl: './new-user.component.html',
+	styleUrls: ['./new-user.component.css']
 })
 export class NewUserComponent implements OnInit {
 
-  email = new FormControl('');
-  password = new FormControl('');
-  passwordConfirm = new FormControl('');
-  hide: boolean = true;
-  hideConfirm: boolean = true;
+	@ViewChild('accountTabs') accountTabs!: MatTabGroup;
 
-  user = {
-    email: '',
-    password: '',
-  }
+	hide: boolean = true;
+	hideConfirm: boolean = true;
 
-  constructor(private authService: AutorisationService) { }
+	newAccountForm = this.fb.group({
+		userDetails: this.fb.group({
+			firstName: [''],
+			surname: ['']
+		}),
+		accountDetails: this.fb.group({
+			email: [''],
+			password: [''],
+			confirmPassword: ['']
+		})
+	})
+
+  constructor(private authService: AutorisationService, private fb: FormBuilder) { }
 
   ngOnInit(): void {
   }
   updateUser() {
-    if (this.email.value != '' && this.password.value) {
-      this.authService.AddUser(this.email.value, this.password.value)
-
-    }
   }
 }
