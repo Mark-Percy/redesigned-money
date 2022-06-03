@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
 import { passwordMatch } from 'src/app/form-validation.dirtective';
-import { AutorisationService } from '../authorisation.service';
+import { AuthorisationService } from '../authorisation.service';
 
 
 @Component({
@@ -24,7 +24,7 @@ export class NewUserComponent implements OnInit {
 	newAccountForm!: FormGroup;
 	errorMessage: String = '';
 
-  	constructor(private authService: AutorisationService, private fb: FormBuilder) {
+  	constructor(private authService: AuthorisationService, private fb: FormBuilder) {
 
 	}
 
@@ -48,7 +48,7 @@ export class NewUserComponent implements OnInit {
 	}
   	updateUser() {
 		if(this.newAccountForm.valid) {
-			console.log('Form Submitted')
+			console.log('Form Submitted');
 
 		} else {
 			const accountSection = this.newAccountForm.get('accountDetails');

@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { FirebaseSetupService } from 'src/app/firebase.setup.service'
+import { FirebaseConfig } from 'src/app/firebase.config'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -33,7 +33,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule
   ],
-  providers: [FirebaseSetupService],
+  providers: [FirebaseConfig],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
