@@ -1,3 +1,18 @@
 mat-form-field {
     display: block;
 }
+form {
+    display: grid;
+    grid-template-columns: 2fr 3fr 2fr;
+}
+mat-tab-group {
+    grid-column: 1 / 4;    
+}
+button.right {
+    grid-row: 2;
+    grid-column:3;
+}
+button.left {
+    grid-row: 2;
+    grid-column: 1;
+}

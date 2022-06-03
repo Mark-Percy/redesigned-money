@@ -1,33 +1,68 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
-import { AutorisationService } from '../authorisation.service';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatTabGroup } from '@angular/material/tabs';
+import { passwordMatch } from 'src/app/form-validation.dirtective';
+import { AuthorisationService } from '../authorisation.service';
+
 
 @Component({
-  selector: 'app-new-user',
-  templateUrl: './new-user.component.html',
-  styleUrls: ['./new-user.component.css']
+	selector: 'app-new-user',
+	templateUrl: './new-user.component.html',
+	styleUrls: ['./new-user.component.css']
 })
+
+
 export class NewUserComponent implements OnInit {
 
-  email = new FormControl('');
-  password = new FormControl('');
-  passwordConfirm = new FormControl('');
-  hide: boolean = true;
-  hideConfirm: boolean = true;
+	@ViewChild('accountTabs') accountTabs!: MatTabGroup;
 
-  user = {
-    email: '',
-    password: '',
-  }
+	selectedTab = new FormControl();
 
-  constructor(private authService: AutorisationService) { }
+	hide: boolean = true;
+	hideConfirm: boolean = true;
 
-  ngOnInit(): void {
-  }
-  updateUser() {
-    if (this.email.value != '' && this.password.value) {
-      this.authService.AddUser(this.email.value, this.password.value)
+	newAccountForm!: FormGroup;
+	errorMessage: String = '';
 
-    }
-  }
+  	constructor(private authService: AuthorisationService, private fb: FormBuilder) {
+
+	}
+
+  	ngOnInit(): void {
+		this.newAccountForm = this.fb.group({
+			userDetails: this.fb.group({
+				firstName: ['', Validators.required],
+				surname: ['', Validators.required]
+			}),
+			accountDetails: this.fb.group({
+				email: ['', [Validators.required, Validators.email]],
+				password: ['', Validators.required],
+				confirmPassword: ['', Validators.required],
+				
+			},{
+				validators: [passwordMatch],
+				updateOn: 'submit'
+			})
+	
+		});
+	}
+  	updateUser() {
+		if(this.newAccountForm.valid) {
+			this.authService.addUser(this.newAccountForm.get('accountDetails')?.get('email')?.value, this.newAccountForm.get('accountDetails')?.get('password')?.value)
+
+		} else {
+			const accountSection = this.newAccountForm.get('accountDetails');
+			console.log('error')
+			console.log(this.newAccountForm.get('accountDetails')?.errors)
+			console.log(this.newAccountForm.get('accountDetails')?.get('email')?.errors)
+			
+		}
+	}
+
+  	moveTab(tabs: number): void {
+		this.newAccountForm.get('userDetails')?.markAllAsTouched()
+		if(this.newAccountForm.get('userDetails')?.valid) {
+			this.selectedTab.setValue(this.selectedTab.value + tabs);
+		}
+	}
 }
