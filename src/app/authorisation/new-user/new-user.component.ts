@@ -48,7 +48,7 @@ export class NewUserComponent implements OnInit {
 	}
   	updateUser() {
 		if(this.newAccountForm.valid) {
-			console.log('Form Submitted');
+			this.authService.addUser(this.newAccountForm.get('accountDetails')?.get('email')?.value, this.newAccountForm.get('accountDetails')?.get('password')?.value)
 
 		} else {
 			const accountSection = this.newAccountForm.get('accountDetails');
