@@ -22,8 +22,11 @@ export class NewUserComponent implements OnInit {
 	hideConfirm: boolean = true;
 
 	newAccountForm!: FormGroup;
+	errorMessage: String = '';
 
-  	constructor(private authService: AutorisationService, private fb: FormBuilder) { }
+  	constructor(private authService: AutorisationService, private fb: FormBuilder) {
+
+	}
 
   	ngOnInit(): void {
 		this.newAccountForm = this.fb.group({
@@ -32,7 +35,7 @@ export class NewUserComponent implements OnInit {
 				surname: ['', Validators.required]
 			}),
 			accountDetails: this.fb.group({
-				email: ['', Validators.required],
+				email: ['', [Validators.required, Validators.email]],
 				password: ['', Validators.required],
 				confirmPassword: ['', Validators.required],
 				
@@ -48,7 +51,11 @@ export class NewUserComponent implements OnInit {
 			console.log('Form Submitted')
 
 		} else {
+			const accountSection = this.newAccountForm.get('accountDetails');
 			console.log('error')
+			console.log(this.newAccountForm.get('accountDetails')?.errors)
+			console.log(this.newAccountForm.get('accountDetails')?.get('email')?.errors)
+			
 		}
 	}
 
