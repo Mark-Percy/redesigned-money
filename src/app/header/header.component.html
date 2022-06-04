@@ -1,6 +1,6 @@
 <nav>
     <div class="item-container">
-        <mat-slide-toggle (change)="changeThemeMode()">
+        <mat-slide-toggle (change)="changeThemeMode()" [checked]="isDark">
             Dark Mode
         </mat-slide-toggle>
         <ul class="item-list">
