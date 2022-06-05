@@ -14,6 +14,7 @@ import { NewUserComponent } from './authorisation/new-user/new-user.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { VerifyUserComponent } from './verify-user/verify-user.component';
 
 
 @NgModule({
@@ -23,7 +24,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     LoginComponent,
     NewUserComponent,
     HomeComponent,
-    HeaderComponent
+    HeaderComponent,
+    VerifyUserComponent
   ],
   imports: [
     BrowserModule,
