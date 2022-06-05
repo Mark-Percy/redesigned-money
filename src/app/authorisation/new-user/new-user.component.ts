@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { AuthorisationService } from 'src/app/authorisation.service';
@@ -17,12 +17,12 @@ export class NewUserComponent implements OnInit {
 
 	@ViewChild('accountTabs') accountTabs!: MatTabGroup;
 
-	selectedTab = new FormControl();
+	selectedTab = new UntypedFormControl();
 
 	hide: boolean = true;
 	hideConfirm: boolean = true;
 
-	newAccountForm!: FormGroup;
+	newAccountForm!: UntypedFormGroup;
 	errorMessage: String = '';
 
   	constructor(private authService: AuthorisationService, private fb: FormBuilder, private router:Router) {
