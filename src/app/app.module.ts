@@ -15,7 +15,10 @@ import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { VerifyUserComponent } from './verify-user/verify-user.component';
+import { AngularFireModule } from '@angular/fire/compat';
 
+import { environment } from 'src/environments/environment';
+import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 
 @NgModule({
   declarations: [
@@ -33,7 +36,9 @@ import { VerifyUserComponent } from './verify-user/verify-user.component';
     BrowserAnimationsModule,
     MaterialModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFireAuthModule
   ],
   providers: [FirebaseConfig],
   bootstrap: [AppComponent]

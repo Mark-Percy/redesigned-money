@@ -13,9 +13,6 @@ export class VerifyUserComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  checkLoggedIn() {
-    console.log(this.authService.isLoggedIn());
-  }
   signOut() {
     this.authService.signOut();
   }
