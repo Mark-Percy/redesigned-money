@@ -1,13 +1,13 @@
 <section>
-    <div class="login-container">
+    <form class="login-container" (ngSubmit)="signIn()" [formGroup]="signInForm">
         <mat-form-field>
             <mat-label>Username</mat-label>
-            <input matInput type="text">
+            <input matInput type="text" formControlName="email">
         </mat-form-field>
         <mat-form-field>
             <mat-label>Password</mat-label>
-            <input matInput type="password">
+            <input matInput type="password" formControlName="password">
         </mat-form-field>
-        <button mat-raised-button color="accent" (click)="signIn('email', 'pass')">Sign in</button>
-    </div>
+        <button mat-raised-button color="accent" (click)="signIn()">Sign in</button>
+    </form>
 </section>
