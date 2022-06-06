@@ -16,4 +16,8 @@ export class VerifyUserComponent implements OnInit {
   signOut() {
     this.authService.signOut();
   }
+  
+  sendEmailVerification() {
+    this.authService.sendEmailVerification();
+  }
 }
