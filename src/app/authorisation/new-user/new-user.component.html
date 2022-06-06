@@ -1,4 +1,4 @@
-<form (ngSubmit)="updateUser()" [formGroup]="newAccountForm" ng-submit="">
+<form (ngSubmit)="updateUser()" [formGroup]="newAccountForm">
     <mat-tab-group #accountTabs [selectedIndex]="selectedTab.value"
         (selectedIndexChange)="selectedTab.setValue($event)"
         mat-align-tabs="center"

@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
 import { MatTabGroup } from '@angular/material/tabs';
+import { Router } from '@angular/router';
+import { AuthorisationService } from 'src/app/authorisation.service';
 import { passwordMatch } from 'src/app/form-validation.dirtective';
-import { AuthorisationService } from '../authorisation.service';
 
 
 @Component({
@@ -24,7 +25,7 @@ export class NewUserComponent implements OnInit {
 	newAccountForm!: UntypedFormGroup;
 	errorMessage: String = '';
 
-  	constructor(private authService: AuthorisationService, private fb: UntypedFormBuilder) {
+  	constructor(private authService: AuthorisationService, private fb: FormBuilder, private router:Router) {
 
 	}
 
@@ -49,7 +50,6 @@ export class NewUserComponent implements OnInit {
   	updateUser() {
 		if(this.newAccountForm.valid) {
 			this.authService.addUser(this.newAccountForm.get('accountDetails')?.get('email')?.value, this.newAccountForm.get('accountDetails')?.get('password')?.value)
-
 		} else {
 			const accountSection = this.newAccountForm.get('accountDetails');
 			console.log('error')
@@ -64,5 +64,11 @@ export class NewUserComponent implements OnInit {
 		if(this.newAccountForm.get('userDetails')?.valid) {
 			this.selectedTab.setValue(this.selectedTab.value + tabs);
 		}
+		if(tabs == 1) {
+			this.signOut();
+		}
+	}
+	signOut(): void {
+		this.authService.signOut();
 	}
 }
