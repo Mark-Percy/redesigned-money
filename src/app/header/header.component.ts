@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { AuthorisationService } from '../authorisation.service';
 
 @Component({
   selector: 'app-header',
@@ -10,13 +11,17 @@ export class HeaderComponent implements OnInit {
   @Output() darkmodeEvent = new EventEmitter<boolean>(); 
 
   @Input() isDark: boolean = false;
-  constructor() { }
+  constructor(private authService: AuthorisationService) { }
 
   ngOnInit(): void {
   }
 
   changeThemeMode() {
     this.darkmodeEvent.emit()
+  }
+
+  isLoggedIn(){
+    return this.authService.getIsLoggedIn();
   }
 
 }

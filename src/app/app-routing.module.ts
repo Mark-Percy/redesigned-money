@@ -8,8 +8,8 @@ import { HomeComponent } from './home/home.component';
 import { AuthGuardService } from './auth-guard.service';
 import { UserComponent } from './user/user.component';
 import { DasboardComponent } from './user/dasboard/dasboard.component';
-import { verify } from 'crypto';
 // import { AuthGuard } from './_guards/'
+
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {

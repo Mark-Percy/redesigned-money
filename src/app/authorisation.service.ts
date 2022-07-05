@@ -1,19 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, User } from "firebase/auth";
 import { FirebaseConfig } from './firebase.config';
 
-@Injectable({
-	providedIn: 'root'
-})
+@Injectable()
+
 export class AuthorisationService {
 	fbAuth;
-	user:any;
+	isLoggedIn:boolean = false;
+	user: any;
 	constructor(
 		private firebaseConfig: FirebaseConfig,
-		private router:Router,
+		private router:Router
 	) {
-		this.fbAuth = getAuth(firebaseConfig.app)
+		this.fbAuth = getAuth(this.firebaseConfig.app)
 		onAuthStateChanged(this.fbAuth, (user) => {
 			if(user) {
 				this.user = user
@@ -26,13 +26,15 @@ export class AuthorisationService {
 
 	addUser(email: string, password: string) {
 		createUserWithEmailAndPassword(this.fbAuth, email, password).then((userCredential) => {
-			this.router.navigate(['verify-user']);
+			this.router.navigate(['user']);
+			this.isLoggedIn = true;
+			// localStorage.setItem('user', JSON.stringify(userCredential.user))
 			this.user = userCredential.user;
 		});
 	}
 
-	isLoggedIn(): boolean{
-		return (localStorage.getItem('loggedIn') == 'true' ? true : false)
+	getIsLoggedIn(): boolean{
+		return this.isLoggedIn;
 	}
 
 	signOut():void {
@@ -41,11 +43,12 @@ export class AuthorisationService {
 	signIn(email:string, password: string){
 		signInWithEmailAndPassword(this.fbAuth, email, password).then(userCredential => {
 			this.user = userCredential.user
-			if(userCredential.user.emailVerified){
-				console.log('userVerified')
-			} else {
-				this.router.navigate(['verify-user']);
-			}
+			this.isLoggedIn = true;
+			console.log(this.getIsLoggedIn())
+			localStorage.setItem('user', JSON.stringify(userCredential.user))
+			console.log("heelllo")
+		}).then(() => {
+			this.router.navigate(['user','dashboard']);
 		});
 	}
 
@@ -53,5 +56,9 @@ export class AuthorisationService {
 		sendEmailVerification(this.user).then( () => {
 			console.log('email success')
 		})
+	}
+
+	getIsVerified(): boolean{
+		return true;
 	}
 }

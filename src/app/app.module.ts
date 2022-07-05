@@ -21,6 +21,7 @@ import { environment } from 'src/environments/environment';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { UserComponent } from './user/user.component';
 import { DasboardComponent } from './user/dasboard/dasboard.component';
+import { AuthorisationService } from './authorisation.service';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,7 @@ import { DasboardComponent } from './user/dasboard/dasboard.component';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule
   ],
-  providers: [FirebaseConfig],
+  providers: [FirebaseConfig, AuthorisationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

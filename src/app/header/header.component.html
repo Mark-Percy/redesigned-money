@@ -4,7 +4,7 @@
             Dark Mode
         </mat-slide-toggle>
         <ul class="item-list">
-            <li><a routerLink="/account/login">Login</a></li>
+            <li *ngIf="isLoggedIn()"><a routerLink="/account/login">Login</a></li>
         </ul>
     </div>
 </nav>

@@ -22,6 +22,7 @@ export class LoginComponent implements OnInit {
   signIn(){
     if(this.signInForm.valid) {
       this.authService.signIn(this.signInForm.get('email')?.value, this.signInForm.get('password')?.value)
+      console.log(this.authService.getIsLoggedIn())
     }
   }
 }
