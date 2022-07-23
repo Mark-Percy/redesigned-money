@@ -18,6 +18,6 @@ export class VerifyUserComponent implements OnInit {
   }
   
   sendEmailVerification() {
-    this.authService.sendEmailVerification();
+    // this.authService.sendEmailVerification();
   }
 }

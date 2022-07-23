@@ -11,7 +11,7 @@ export class HeaderComponent implements OnInit {
   @Output() darkmodeEvent = new EventEmitter<boolean>(); 
 
   @Input() isDark: boolean = false;
-  constructor(private authService: AuthorisationService) { }
+  constructor(public authService: AuthorisationService) { }
 
   ngOnInit(): void {
   }
@@ -20,8 +20,8 @@ export class HeaderComponent implements OnInit {
     this.darkmodeEvent.emit()
   }
 
-  isLoggedIn(){
-    return this.authService.getIsLoggedIn();
+  logout(){
+    this.authService.signOut();
   }
 
 }

@@ -4,8 +4,15 @@
             Dark Mode
         </mat-slide-toggle>
         <ul class="item-list">
-            <li *ngIf="isLoggedIn()"><a routerLink="/account/login">Login</a></li>
+            <ng-container>
+                <li *ngIf="authService.currentUser$ | async as user; else loginButton">
+                    <button mat-raised-button color="primary" (click)="logout()">Logout</button>
+                </li>
+                
+            </ng-container>
+            <ng-template #loginButton>
+                <li><a routerLink="/account/login">Login</a></li>
+            </ng-template>
         </ul>
     </div>
 </nav>
-

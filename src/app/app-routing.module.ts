@@ -1,15 +1,17 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
 import { AuthorisationComponent } from './authorisation/authorisation.component';
 import { LoginComponent } from './authorisation/login/login.component';
 import { NewUserComponent } from './authorisation/new-user/new-user.component';
 import { VerifyUserComponent } from './user/verify-user/verify-user.component';
 import { HomeComponent } from './home/home.component';
-import { AuthGuardService } from './auth-guard.service';
 import { UserComponent } from './user/user.component';
 import { DasboardComponent } from './user/dasboard/dasboard.component';
-// import { AuthGuard } from './_guards/'
+import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
+import { map, switchMap } from 'rxjs/operators';
+import { of, pipe } from 'rxjs';
 
+const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['account','login']);
 const routes: Routes = [
   {path: '', component: HomeComponent},
   {
@@ -23,7 +25,8 @@ const routes: Routes = [
   {
     path:'user',
     component:UserComponent,
-    canActivate:[AuthGuardService],
+    canActivate:[AngularFireAuthGuard], 
+    data: {authGuardPipe: redirectUnauthorizedToLogin},
     children:[
       {path:'dashboard', component:DasboardComponent},
       {path:'verify', component:VerifyUserComponent}
