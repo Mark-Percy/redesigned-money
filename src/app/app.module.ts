@@ -14,7 +14,6 @@ import { NewUserComponent } from './authorisation/new-user/new-user.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { VerifyUserComponent } from './user/verify-user/verify-user.component';
 import { AngularFireModule } from '@angular/fire/compat';
 
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
@@ -24,6 +23,8 @@ import { AuthorisationService } from './authorisation.service';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
+import { PersonalInfoComponent } from './user/personal-info/personal-info.component';
+import { ProfileComponent } from './user/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -33,9 +34,10 @@ import { provideAuth,getAuth } from '@angular/fire/auth';
     NewUserComponent,
     HomeComponent,
     HeaderComponent,
-    VerifyUserComponent,
     UserComponent,
-    DasboardComponent
+    DasboardComponent,
+    PersonalInfoComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,

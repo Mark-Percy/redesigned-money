@@ -1,19 +1,24 @@
 import { Injectable } from '@angular/core';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
 import { Auth, authState, createUserWithEmailAndPassword } from "@angular/fire/auth"
-import { AngularFireAuthGuard } from '@angular/fire/compat/auth-guard';
 import { from } from 'rxjs';
-import { switchMap } from 'rxjs/operators'
-import { FirebaseConfig } from './firebase.config';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Injectable({
 	providedIn: 'root'
 })
 
 export class AuthorisationService {
-	currentUser$ = authState(this.auth)
-	user = this.auth.currentUser;
-	constructor(private firebaseConfig: FirebaseConfig, private auth: Auth) {
+	currentUser$ = authState(this.auth);
+	user: User | null = null;
+	constructor(private auth: Auth, private firebaseAuth: AngularFireAuth) {
+		this.auth.onAuthStateChanged(user => {
+			if(user) {
+				console.log("yes")
+				this.user = user;
+			}
+		});
+		console.log(this.user)
 	}
 
 	addUser(email: string, password: string) {
@@ -28,7 +33,10 @@ export class AuthorisationService {
 		return from(signInWithEmailAndPassword(this.auth, email, password));
 	}
 
+	sendEmailVerification() {
+		if(this.user){
+			sendEmailVerification(this.user);
+		}
+	}
 
 }
-
-
