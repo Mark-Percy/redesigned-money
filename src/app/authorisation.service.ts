@@ -1,57 +1,42 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
-import { FirebaseConfig } from './firebase.config';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
+import { Auth, authState, createUserWithEmailAndPassword } from "@angular/fire/auth"
+import { from } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Injectable({
 	providedIn: 'root'
 })
+
 export class AuthorisationService {
-	fbAuth;
-	user:any;
-	constructor(
-		private firebaseConfig: FirebaseConfig,
-		private router:Router,
-	) {
-		this.fbAuth = getAuth(firebaseConfig.app)
-		onAuthStateChanged(this.fbAuth, (user) => {
+	currentUser$ = authState(this.auth);
+	user: User | null = null;
+	constructor(private auth: Auth, private firebaseAuth: AngularFireAuth) {
+		this.auth.onAuthStateChanged(user => {
 			if(user) {
-				this.user = user
-				localStorage.setItem('loggedIn', 'true')
-			} else {
-				localStorage.setItem('loggedIn', 'false')
+				console.log("yes")
+				this.user = user;
 			}
-		})
+		});
+		console.log(this.user)
 	}
 
 	addUser(email: string, password: string) {
-		createUserWithEmailAndPassword(this.fbAuth, email, password).then((userCredential) => {
-			this.router.navigate(['verify-user']);
-			this.user = userCredential.user;
-		});
-	}
-
-	isLoggedIn(): boolean{
-		return (localStorage.getItem('loggedIn') == 'true' ? true : false)
+		return from(createUserWithEmailAndPassword(this.auth, email, password));
 	}
 
 	signOut():void {
-		this.fbAuth.signOut();
+		this.auth.signOut();
 	}
+
 	signIn(email:string, password: string){
-		signInWithEmailAndPassword(this.fbAuth, email, password).then(userCredential => {
-			this.user = userCredential.user
-			if(userCredential.user.emailVerified){
-				console.log('userVerified')
-			} else {
-				this.router.navigate(['verify-user']);
-			}
-		});
+		return from(signInWithEmailAndPassword(this.auth, email, password));
 	}
 
 	sendEmailVerification() {
-		sendEmailVerification(this.user).then( () => {
-			console.log('email success')
-		})
+		if(this.user){
+			sendEmailVerification(this.user);
+		}
 	}
+
 }

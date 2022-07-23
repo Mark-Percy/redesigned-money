@@ -14,11 +14,17 @@ import { NewUserComponent } from './authorisation/new-user/new-user.component';
 import { HomeComponent } from './home/home.component';
 import { HeaderComponent } from './header/header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { VerifyUserComponent } from './verify-user/verify-user.component';
 import { AngularFireModule } from '@angular/fire/compat';
 
-import { environment } from 'src/environments/environment';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { UserComponent } from './user/user.component';
+import { DasboardComponent } from './user/dasboard/dasboard.component';
+import { AuthorisationService } from './authorisation.service';
+import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
+import { environment } from '../environments/environment';
+import { provideAuth,getAuth } from '@angular/fire/auth';
+import { PersonalInfoComponent } from './user/personal-info/personal-info.component';
+import { ProfileComponent } from './user/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +34,10 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
     NewUserComponent,
     HomeComponent,
     HeaderComponent,
-    VerifyUserComponent
+    UserComponent,
+    DasboardComponent,
+    PersonalInfoComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -38,9 +47,11 @@ import { AngularFireAuthModule } from '@angular/fire/compat/auth';
     FormsModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    provideFirebaseApp(() => initializeApp(environment.firebase)),
+    provideAuth(() => getAuth())
   ],
-  providers: [FirebaseConfig],
+  providers: [FirebaseConfig, AuthorisationService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

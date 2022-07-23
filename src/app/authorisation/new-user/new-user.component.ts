@@ -48,13 +48,13 @@ export class NewUserComponent implements OnInit {
 		});
 	}
   	updateUser() {
-		if(this.newAccountForm.valid) {
-			this.authService.addUser(this.newAccountForm.get('accountDetails')?.get('email')?.value, this.newAccountForm.get('accountDetails')?.get('password')?.value)
-		} else {
+		if(!this.newAccountForm.valid) {
 			const accountSection = this.newAccountForm.get('accountDetails');
-			console.log('error')
-			console.log(this.newAccountForm.get('accountDetails')?.errors)
-			console.log(this.newAccountForm.get('accountDetails')?.get('email')?.errors)
+
+		} else {
+			this.authService.addUser(this.newAccountForm.get('accountDetails')?.get('email')?.value, this.newAccountForm.get('accountDetails')?.get('password')?.value).subscribe(() => {
+				this.router.navigate(['user','dashboard']);
+			})
 			
 		}
 	}
@@ -64,11 +64,5 @@ export class NewUserComponent implements OnInit {
 		if(this.newAccountForm.get('userDetails')?.valid) {
 			this.selectedTab.setValue(this.selectedTab.value + tabs);
 		}
-		if(tabs == 1) {
-			this.signOut();
-		}
-	}
-	signOut(): void {
-		this.authService.signOut();
 	}
 }

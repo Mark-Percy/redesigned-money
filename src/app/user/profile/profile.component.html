@@ -1,0 +1,6 @@
+<div>
+    <form>
+        <label for="email">Email</label>
+        <input type="text" disabled value="{{ email }}"><button *ngIf="ifEmailVerified()" mat-flat-button color="primary" (click)="verifyEmail()">Verify</button>
+    </form>
+</div>
