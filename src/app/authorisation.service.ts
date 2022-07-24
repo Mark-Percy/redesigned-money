@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
 import { Auth, authState, createUserWithEmailAndPassword } from "@angular/fire/auth"
-import { from } from 'rxjs';
+import { from, Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Injectable({
@@ -23,8 +23,8 @@ export class AuthorisationService {
 		return from(createUserWithEmailAndPassword(this.auth, email, password));
 	}
 
-	signOut():void {
-		this.auth.signOut();
+	signOut(): Observable<void> {
+		return from(this.auth.signOut());
 	}
 
 	signIn(email:string, password: string){

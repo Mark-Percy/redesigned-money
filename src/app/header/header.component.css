@@ -1,12 +1,6 @@
-
-nav {
-    margin: 0 50px;
-    /* padding: 10px 0; */
-
+.spacer{
+    flex:1 1 auto
 }
-.item-container {
-    display:grid;
-}
-.item-list {
-    grid-column: 2 / span 9;
+.active{
+    border-bottom: solid;
 }

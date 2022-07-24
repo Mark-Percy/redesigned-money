@@ -53,7 +53,7 @@ export class NewUserComponent implements OnInit {
 
 		} else {
 			this.authService.addUser(this.newAccountForm.get('accountDetails')?.get('email')?.value, this.newAccountForm.get('accountDetails')?.get('password')?.value).subscribe(() => {
-				this.router.navigate(['user','dashboard']);
+				this.router.navigate(['dashboard']);
 			})
 			
 		}

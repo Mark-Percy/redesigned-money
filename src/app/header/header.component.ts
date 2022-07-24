@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Router } from '@angular/router';
 import { AuthorisationService } from '../authorisation.service';
 
 @Component({
@@ -11,7 +12,7 @@ export class HeaderComponent implements OnInit {
   @Output() darkmodeEvent = new EventEmitter<boolean>(); 
 
   @Input() isDark: boolean = false;
-  constructor(public authService: AuthorisationService) { }
+  constructor(public authService: AuthorisationService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -21,7 +22,9 @@ export class HeaderComponent implements OnInit {
   }
 
   logout(){
-    this.authService.signOut();
+    this.authService.signOut().subscribe(() => {
+      this.router.navigate(['/']);
+    });
   }
 
 }

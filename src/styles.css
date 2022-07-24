@@ -105,3 +105,7 @@ main.darkmode{
 .mat-success, .darkmode .mat-success{
   background-color: green;
 }
+
+.mat-menu-panel {
+  background-color: #ffb300;
+}
