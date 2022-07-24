@@ -18,7 +18,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { UserComponent } from './user/user.component';
-import { DasboardComponent } from './user/dasboard/dasboard.component';
+import { DasboardComponent } from './dasboard/dasboard.component';
 import { AuthorisationService } from './authorisation.service';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
