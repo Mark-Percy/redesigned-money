@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
+import { signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
 import { Auth, authState, createUserWithEmailAndPassword } from "@angular/fire/auth"
 import { from } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -14,11 +14,9 @@ export class AuthorisationService {
 	constructor(private auth: Auth, private firebaseAuth: AngularFireAuth) {
 		this.auth.onAuthStateChanged(user => {
 			if(user) {
-				console.log("yes")
 				this.user = user;
 			}
 		});
-		console.log(this.user)
 	}
 
 	addUser(email: string, password: string) {
