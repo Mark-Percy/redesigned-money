@@ -6,14 +6,14 @@ import { NewUserComponent } from './authorisation/new-user/new-user.component';
 import { HomeComponent } from './home/home.component';
 import { UserComponent } from './user/user.component';
 import { DasboardComponent } from './user/dasboard/dasboard.component';
-import { AngularFireAuthGuard, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
-import { map, switchMap } from 'rxjs/operators';
-import { of, pipe } from 'rxjs';
+import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { ProfileComponent } from './user/profile/profile.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['account','login']);
+const redirectAuthorisedToDashboard = () => redirectLoggedInTo(['dashboard']);
+
 const routes: Routes = [
-  {path: '', component: HomeComponent},
+  {path: '', component: HomeComponent, canActivate:[AngularFireAuthGuard], data: {authGuardPipe: redirectAuthorisedToDashboard}},
   {
     path: 'account',
     component:AuthorisationComponent, 
@@ -28,10 +28,10 @@ const routes: Routes = [
     canActivate:[AngularFireAuthGuard], 
     data: {authGuardPipe: redirectUnauthorizedToLogin},
     children:[
-      {path:'dashboard', component:DasboardComponent},
       {path:'profile', component:ProfileComponent}
     ]
-  }
+  },
+  {path:'dashboard', component: DasboardComponent}
 
 ];
 
