@@ -1,19 +1,19 @@
 <mat-toolbar color="primary">
         <span routerLink="/" class="tite">Money Tracker</span>
-        <button mat-button routerLink="dashboard" routerLinkActive="active" color="secondary">Dashboard</button>
+        <button *ngIf="isLoggedIn()" mat-button routerLink="dashboard" routerLinkActive="active" color="secondary">Dashboard</button>
         <span class="spacer"></span>
-        <button *ngIf="authService.currentUser$ | async as user;" mat-button [mat-menu-trigger-for]="accountMenu"><mat-icon>settings</mat-icon></button>
-            <mat-menu #accountMenu="matMenu">
-                <button mat-menu-item routerLink="user/profile"><mat-icon>account_circle</mat-icon>Profile</button>
-                <button mat-menu-item disabled>
-                    <mat-icon>light_mode</mat-icon>
-                    <mat-slide-toggle (change)="changeThemeMode()" [checked]="isDark" (click)="$event.stopPropagation();"></mat-slide-toggle>
-                </button>
-            </mat-menu>
-        <ng-container>
-            <button mat-button (click)="logout()" *ngIf="authService.currentUser$ | async as user; else loginButton"><mat-icon>logout</mat-icon></button>
-        </ng-container>
+        <button *ngIf="isLoggedIn()" mat-button [mat-menu-trigger-for]="accountMenu"><mat-icon>settings</mat-icon></button>
+        <mat-menu #accountMenu="matMenu">
+            <button mat-menu-item routerLink="user/profile"><mat-icon>account_circle</mat-icon>Profile</button>
+            <button mat-menu-item disabled>
+                <mat-icon>light_mode</mat-icon>
+                <mat-slide-toggle (change)="changeThemeMode()" [checked]="isDark" (click)="$event.stopPropagation();"></mat-slide-toggle>
+            </button>
+        </mat-menu>
+
+        <button mat-button (click)="logout()" *ngIf="isLoggedIn(); else loginButton"><mat-icon>logout</mat-icon></button>
+
         <ng-template #loginButton>
-            <li><a routerLink="/account/login">Login</a></li>
+            <button mat-button routerLink="/account/login" routerLinkActive="active">Login</button>
         </ng-template>
 </mat-toolbar>
