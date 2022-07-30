@@ -31,7 +31,7 @@ const routes: Routes = [
       {path:'profile', component:ProfileComponent}
     ]
   },
-  {path:'dashboard', component: DashboardComponent}
+  {path:'dashboard', component: DasboardComponent, canActivate:[AngularFireAuthGuard], data: {authGuardPipe: redirectUnauthorizedToLogin}}
 
 ];
 
