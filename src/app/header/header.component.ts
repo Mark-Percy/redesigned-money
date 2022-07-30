@@ -21,7 +21,6 @@ export class HeaderComponent implements OnInit {
     this.darkmodeEvent.emit()
   }
   isLoggedIn() {
-    console.log(this.authService.user)
     return this.authService.user ? true : false;
   }
 
