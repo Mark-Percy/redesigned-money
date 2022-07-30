@@ -5,7 +5,7 @@ import { LoginComponent } from './authorisation/login/login.component';
 import { NewUserComponent } from './authorisation/new-user/new-user.component';
 import { HomeComponent } from './home/home.component';
 import { UserComponent } from './user/user.component';
-import { DasboardComponent } from './dasboard/dasboard.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { ProfileComponent } from './user/profile/profile.component';
 
@@ -31,7 +31,7 @@ const routes: Routes = [
       {path:'profile', component:ProfileComponent}
     ]
   },
-  {path:'dashboard', component: DasboardComponent}
+  {path:'dashboard', component: DashboardComponent}
 
 ];
 

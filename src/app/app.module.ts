@@ -18,7 +18,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { UserComponent } from './user/user.component';
-import { DasboardComponent } from './dasboard/dasboard.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 import { AuthorisationService } from './authorisation.service';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
@@ -35,7 +35,7 @@ import { ProfileComponent } from './user/profile/profile.component';
     HomeComponent,
     HeaderComponent,
     UserComponent,
-    DasboardComponent,
+    DashboardComponent,
     PersonalInfoComponent,
     ProfileComponent
   ],
