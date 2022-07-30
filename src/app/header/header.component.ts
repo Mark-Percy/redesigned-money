@@ -20,6 +20,10 @@ export class HeaderComponent implements OnInit {
   changeThemeMode() {
     this.darkmodeEvent.emit()
   }
+  isLoggedIn() {
+    console.log(this.authService.user)
+    return this.authService.user ? true : false;
+  }
 
   logout(){
     this.authService.signOut().subscribe(() => {

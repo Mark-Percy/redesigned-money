@@ -24,6 +24,7 @@ export class AuthorisationService {
 	}
 
 	signOut(): Observable<void> {
+		this.user = null;
 		return from(this.auth.signOut());
 	}
 
