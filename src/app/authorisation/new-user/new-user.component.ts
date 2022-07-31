@@ -52,9 +52,15 @@ export class NewUserComponent implements OnInit {
 			const accountSection = this.newAccountForm.get('accountDetails');
 
 		} else {
-			this.authService.addUser(this.newAccountForm.get('accountDetails')?.get('email')?.value, this.newAccountForm.get('accountDetails')?.get('password')?.value).subscribe(() => {
+			this.authService.addUser(this.newAccountForm.get('accountDetails')?.get('email')?.value, this.newAccountForm.get('accountDetails')?.get('password')?.value).subscribe((response) => {
+				let userDetails = {
+					...this.newAccountForm.value.userDetails,
+					email : this.newAccountForm.value.accountDetails.email,
+					id: response.user.uid
+				};
+				this.authService.addUserDetails(userDetails);
 				this.router.navigate(['dashboard']);
-			})
+			});
 			
 		}
 	}
