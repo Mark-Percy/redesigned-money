@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword, sendEmailVerification, User } from "firebas
 import { Auth, authState, createUserWithEmailAndPassword } from "@angular/fire/auth"
 import { from, Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
 
 @Injectable({
 	providedIn: 'root'
@@ -11,7 +12,9 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 export class AuthorisationService {
 	currentUser$ = authState(this.auth);
 	user: User | null = null;
-	constructor(private auth: Auth, private firebaseAuth: AngularFireAuth) {
+	userCollection: AngularFirestoreCollection | undefined;
+	
+	constructor(private auth: Auth, private firebaseAuth: AngularFireAuth, private AngularFireStore: AngularFirestore) {
 		this.auth.onAuthStateChanged(user => {
 			if(user) {
 				this.user = user;
@@ -38,4 +41,8 @@ export class AuthorisationService {
 		}
 	}
 
+	addUserDetails(userDetails: {firstname: string, surname: string, email: string, id: string}) {
+		this.userCollection = this.AngularFireStore.collection('users');
+		this.userCollection.add(userDetails);
+	}
 }
