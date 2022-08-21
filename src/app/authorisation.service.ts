@@ -3,7 +3,8 @@ import { signInWithEmailAndPassword, sendEmailVerification, User } from "firebas
 import { Auth, authState, createUserWithEmailAndPassword } from "@angular/fire/auth"
 import { from, Observable } from 'rxjs';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/compat/firestore';
+import { Firestore, addDoc, collection, CollectionReference, docData } from '@angular/fire/firestore';
+import { doc, setDoc } from 'firebase/firestore';
 
 @Injectable({
 	providedIn: 'root'
@@ -12,9 +13,10 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/comp
 export class AuthorisationService {
 	currentUser$ = authState(this.auth);
 	user: User | null = null;
-	userCollection: AngularFirestoreCollection | undefined;
+	userCollection: CollectionReference | undefined;
+	userDocId: string | null = null;
 	
-	constructor(private auth: Auth, private firebaseAuth: AngularFireAuth, private AngularFireStore: AngularFirestore) {
+	constructor(private auth: Auth, private firebaseAuth: AngularFireAuth, private fs: Firestore) {
 		this.auth.onAuthStateChanged(user => {
 			if(user) {
 				this.user = user;
@@ -22,8 +24,10 @@ export class AuthorisationService {
 		});
 	}
 
-	addUser(email: string, password: string) {
-		return from(createUserWithEmailAndPassword(this.auth, email, password));
+	addUser(userDetails: User, email: string, password: string) {
+		return createUserWithEmailAndPassword(this.auth, email, password).then(cred => {
+			return setDoc(doc(collection(this.fs, 'users') ,cred.user.uid), userDetails)
+		});
 	}
 
 	signOut(): Observable<void> {
@@ -40,9 +44,9 @@ export class AuthorisationService {
 			sendEmailVerification(this.user);
 		}
 	}
-
-	addUserDetails(userDetails: {firstname: string, surname: string, email: string, id: string}) {
-		this.userCollection = this.AngularFireStore.collection('users');
-		this.userCollection.add(userDetails);
+	getDetails(){
+		const docReference = doc(this.fs, `users/${this.user?.uid}`);
+		console.log(docReference)
+		return docData(docReference)
 	}
 }

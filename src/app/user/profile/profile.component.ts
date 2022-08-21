@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { AuthorisationService } from 'src/app/authorisation.service';
 
 @Component({
@@ -8,14 +9,22 @@ import { AuthorisationService } from 'src/app/authorisation.service';
 })
 export class ProfileComponent implements OnInit {
 
-  email = this.authService.user?.email;
+  userDetailsForm = this.fb.group({
+    email: [this.authService.user?.email],
+    firstName : [''],
+    surname : [''],
+  })
 
-  constructor(private authService: AuthorisationService) {
-
+  constructor(private authService: AuthorisationService, private fb: FormBuilder) {
+    this.authService.getDetails().subscribe(data => {
+      this.userDetailsForm.get('firstName')?.patchValue(data['firstName']);
+      this.userDetailsForm.get('surname')?.patchValue(data['surname']);
+    });
   }
 
   ngOnInit(): void {
   }
+
   verifyEmail() {
     this.authService.sendEmailVerification();
   }
@@ -23,5 +32,4 @@ export class ProfileComponent implements OnInit {
   ifEmailVerified() {
     return !this.authService.user?.emailVerified
   }
-
 }

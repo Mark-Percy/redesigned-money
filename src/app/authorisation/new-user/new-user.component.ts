@@ -39,12 +39,10 @@ export class NewUserComponent implements OnInit {
 				email: ['', [Validators.required, Validators.email]],
 				password: ['', Validators.required],
 				confirmPassword: ['', Validators.required],
-				
 			},{
 				validators: [passwordMatch],
 				updateOn: 'submit'
 			})
-	
 		});
 	}
   	updateUser() {
@@ -52,16 +50,12 @@ export class NewUserComponent implements OnInit {
 			const accountSection = this.newAccountForm.get('accountDetails');
 
 		} else {
-			this.authService.addUser(this.newAccountForm.get('accountDetails')?.get('email')?.value, this.newAccountForm.get('accountDetails')?.get('password')?.value).subscribe((response) => {
-				let userDetails = {
-					...this.newAccountForm.value.userDetails,
-					email : this.newAccountForm.value.accountDetails.email,
-					id: response.user.uid
-				};
-				this.authService.addUserDetails(userDetails);
-				this.router.navigate(['dashboard']);
-			});
-			
+			this.authService.addUser(this.newAccountForm.get('userDetails')?.value,
+									this.newAccountForm.get('accountDetails')?.get('email')?.value,
+									this.newAccountForm.get('accountDetails')?.get('password')?.value)
+			.then(()  => {
+				this.router.navigate(['dashboard'])
+			})
 		}
 	}
 

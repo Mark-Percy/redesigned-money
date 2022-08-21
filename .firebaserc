@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "money-manager-b4f2f": {
+      "hosting": {
+        "money-manager": [
+          "money-manager-b4f2f"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "money-manager-b4f2f"
+  }
+}
