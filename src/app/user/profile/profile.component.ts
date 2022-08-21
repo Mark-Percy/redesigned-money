@@ -29,7 +29,7 @@ export class ProfileComponent implements OnInit {
     this.authService.sendEmailVerification();
   }
 
-  ifEmailVerified() {
-    return !this.authService.user?.emailVerified
+  emailVerified() {
+    return this.authService.user?.emailVerified
   }
 }
