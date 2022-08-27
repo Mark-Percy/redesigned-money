@@ -1,0 +1,7 @@
+<mat-grid-list cols="4" rowHeight="2rem">
+    <mat-grid-tile colspan="2">{{ account?.name }}</mat-grid-tile> 
+    <mat-grid-tile>{{ account?.type }}</mat-grid-tile>
+    <mat-grid-tile>
+        <button (click)="deleteAccount()" mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
+    </mat-grid-tile>
+</mat-grid-list>
