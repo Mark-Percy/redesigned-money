@@ -10,7 +10,9 @@
                         <mat-label>Email</mat-label>
                         <input type="text" matInput formControlName="email">
                         <button *ngIf="!emailVerified()" mat-icon-button matSuffix (click)="verifyEmail()"><mat-icon>done</mat-icon></button>
-                    </mat-form-field>   
+                    </mat-form-field>
+                </mat-grid-tile> 
+                <mat-grid-tile>
                     <mat-form-field>
                         <mat-label>Display Name</mat-label>
                         <input type="text" matInput formControlName="displayName">
@@ -39,5 +41,6 @@
             <h3>Accounts</h3>
             <button mat-icon-button color="accent" (click)="openAddAccount()"><mat-icon>add</mat-icon></button>
         </header>
+        <app-account *ngFor="let account of accounts | async" [account]="account" (deleteTheAccount)="deleteAccount($event)"></app-account>
     </article>
 </section>

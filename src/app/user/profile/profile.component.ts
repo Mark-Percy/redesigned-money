@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { Form, FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Observable } from 'rxjs';
 import { AuthorisationService } from 'src/app/authorisation.service';
 import { TransAccountService } from 'src/app/trans-account.service';
+import { Account } from '../account/account.interface';
 
 @Component({
   selector: 'app-profile',
@@ -18,7 +20,9 @@ export class ProfileComponent implements OnInit {
     surname : [''],
   })
 
-  constructor(private authService: AuthorisationService, private fb: FormBuilder, private dialog: MatDialog) {
+  accounts: Observable<Account[]> = this.tras.getAccounts();
+
+  constructor(private authService: AuthorisationService, private fb: FormBuilder, private dialog: MatDialog, private tras: TransAccountService) {
     this.authService.getDetails().subscribe(data => {
       this.userDetailsForm.get('firstName')?.patchValue(data['firstName']);
       this.userDetailsForm.get('surname')?.patchValue(data['surname']);
@@ -44,6 +48,14 @@ export class ProfileComponent implements OnInit {
   }
   updateDisplayName() {
     this.authService.updateDisplayName(this.userDetailsForm.get('displayName')?.value);
+  }
+
+  getAccounts() {
+    this.tras.getAccounts();
+  }
+
+  deleteAccount(id: string) {
+    this.tras.delete(id)
   }
 }
 
