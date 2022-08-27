@@ -1,22 +1,15 @@
 import { Injectable } from '@angular/core';
-import { signInWithEmailAndPassword, sendEmailVerification, User } from "firebase/auth";
-import { Auth, authState, createUserWithEmailAndPassword } from "@angular/fire/auth"
+import { Auth, createUserWithEmailAndPassword, User, signInWithEmailAndPassword, sendEmailVerification } from "@angular/fire/auth"
 import { from, Observable } from 'rxjs';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { Firestore, addDoc, collection, CollectionReference, docData } from '@angular/fire/firestore';
-import { doc, setDoc } from 'firebase/firestore';
+import { Firestore, collection, docData, setDoc, doc} from '@angular/fire/firestore';
 
 @Injectable({
 	providedIn: 'root'
 })
 
 export class AuthorisationService {
-	currentUser$ = authState(this.auth);
-	user: User | null = null;
-	userCollection: CollectionReference | undefined;
-	userDocId: string | null = null;
-	
-	constructor(private auth: Auth, private firebaseAuth: AngularFireAuth, private fs: Firestore) {
+	user: User | null = null;	
+	constructor(private auth: Auth, private fA: Auth, private fs: Firestore) {
 		this.auth.onAuthStateChanged(user => {
 			if(user) {
 				this.user = user;
@@ -46,7 +39,6 @@ export class AuthorisationService {
 	}
 	getDetails(){
 		const docReference = doc(this.fs, `users/${this.user?.uid}`);
-		console.log(docReference)
 		return docData(docReference)
 	}
 }
