@@ -13,6 +13,7 @@ export class ProfileComponent implements OnInit {
 
   userDetailsForm = this.fb.group({
     email: [this.authService.user?.email],
+    displayName: [{value: this.authService.user ? this.authService.user.displayName : null , disabled: this.hasDisplayName()}],
     firstName : [''],
     surname : [''],
   })
@@ -30,13 +31,19 @@ export class ProfileComponent implements OnInit {
   verifyEmail() {
     this.authService.sendEmailVerification();
   }
-
+  hasDisplayName(){
+    return this.authService.hasDisplayName();
+  }
+  
   emailVerified() {
     return this.authService.user?.emailVerified
   }
 
   openAddAccount(){
     const addAccountDialog = this.dialog.open(AddAccountDialog)
+  }
+  updateDisplayName() {
+    this.authService.updateDisplayName(this.userDetailsForm.get('displayName')?.value);
   }
 }
 

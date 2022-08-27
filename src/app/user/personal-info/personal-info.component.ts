@@ -4,9 +4,9 @@ import { AuthorisationService } from 'src/app/authorisation.service';
 
 @Component({
   selector: 'app-personal-info',
-  template: 'Hello {{ name }} <button mat-button color="primary" routerLink="/user/profile">Go to Profile</button>'
+  template: 'Hello {{ name }} <button mat-button color="primary" routerLink="/user/profile" *ngIf="!hasDisplayName()">Go to Profile</button>'
 })
-export class PersonalInfoComponent implements OnInit {
+export class PersonalInfoComponent {
   name: string = 'Unknown';
   constructor(private authService: AuthorisationService) {
     if(this.authService.user?.displayName){
@@ -16,7 +16,8 @@ export class PersonalInfoComponent implements OnInit {
     }
   }
 
-  ngOnInit(): void {
+  hasDisplayName(){
+    return this.authService.hasDisplayName();
   }
 
 }
