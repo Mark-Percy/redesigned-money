@@ -25,6 +25,7 @@ import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { PersonalInfoComponent } from './user/personal-info/personal-info.component';
 import { ProfileComponent } from './user/profile/profile.component';
+import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { ProfileComponent } from './user/profile/profile.component';
     AngularFireModule.initializeApp(environment.firebase),
     AngularFireAuthModule,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
-    provideAuth(() => getAuth())
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore())
   ],
   providers: [FirebaseConfig, AuthorisationService],
   bootstrap: [AppComponent]

@@ -1,6 +1,30 @@
-<div>
-    <form>
-        <label for="email">Email</label>
-        <input type="text" disabled value="{{ email }}"><button *ngIf="ifEmailVerified()" mat-flat-button color="primary" (click)="verifyEmail()">Verify</button>
-    </form>
-</div>
+<section>
+    <article>
+        <header>
+            <h3>Your Details</h3>
+        </header>
+        <form [formGroup]="userDetailsForm">
+            <mat-grid-list cols="2" rowHeight="10vh" gutterSize="15px">
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Email</mat-label>
+                        <input type="text" matInput formControlName="email">
+                        <button *ngIf="!emailVerified()" mat-icon-button matSuffix (click)="verifyEmail()"><mat-icon>done</mat-icon></button>
+                    </mat-form-field>   
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>First Name</mat-label>
+                        <input type="text" matInput formControlName="firstName">
+                    </mat-form-field>   
+                </mat-grid-tile>
+                <mat-grid-tile>
+                    <mat-form-field>
+                        <mat-label>Surname</mat-label>
+                        <input type="text" matInput formControlName="surname">
+                    </mat-form-field>   
+                </mat-grid-tile>
+            </mat-grid-list>
+        </form>
+    </article>
+</section>
