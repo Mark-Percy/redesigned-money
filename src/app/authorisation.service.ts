@@ -49,4 +49,8 @@ export class AuthorisationService {
 		console.log(docReference)
 		return docData(docReference)
 	}
+	getUserId():string | null{
+		if(!this.user) return null;
+		return this.user.uid
+	}
 }
