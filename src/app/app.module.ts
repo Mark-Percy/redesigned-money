@@ -24,7 +24,7 @@ import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
 import { PersonalInfoComponent } from './user/personal-info/personal-info.component';
-import { ProfileComponent } from './user/profile/profile.component';
+import { AddAccountDialog, ProfileComponent } from './user/profile/profile.component';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 
 @NgModule({
@@ -38,7 +38,8 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
     UserComponent,
     DashboardComponent,
     PersonalInfoComponent,
-    ProfileComponent
+    ProfileComponent,
+    AddAccountDialog
   ],
   imports: [
     BrowserModule,
