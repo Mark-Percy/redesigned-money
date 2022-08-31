@@ -18,11 +18,9 @@ export class DashboardComponent implements OnInit {
 
     ]).subscribe((state: BreakpointState) => {
       if(state.breakpoints[Breakpoints.Small]){
-        console.log("matches s")
         this.dashboardCols = 1;
       }
       if(state.breakpoints[Breakpoints.Medium]){
-        console.log("matches m")
         this.dashboardCols = 2;
       }
     })

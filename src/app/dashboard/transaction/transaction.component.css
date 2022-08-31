@@ -1,0 +1,12 @@
+section header{
+    display:flex;
+    justify-content:space-between;
+    border-bottom: white solid 1px;
+}
+
+section {
+    width: 45vw;
+    border: white solid 1px;
+    border-radius: 10px;
+    padding: 2%;
+}
