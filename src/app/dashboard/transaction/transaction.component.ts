@@ -63,7 +63,7 @@ export class TransactionComponent implements OnInit {
             <mat-form-field>
               <mat-label>Account</mat-label>
               <mat-select formControlName="account">
-                <mat-option *ngFor="let account of accounts | async" value="{{ account.id }}">{{ account.name }}</mat-option>
+                <mat-option *ngFor="let account of accounts | async" value="{{ account.name }}">{{ account.name }}</mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field>
