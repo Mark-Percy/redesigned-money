@@ -2,4 +2,12 @@
     <header>
         <h3>Recent Transactions</h3><button mat-icon-button><mat-icon (click)="transactionDialog();">add</mat-icon></button>
     </header>
+
+    <div>
+        <div *ngFor="let transaction of transactions | async">
+            {{ transaction.transactionDate }}
+            {{ transaction.category }}
+            {{ transaction.account }}
+        </div>
+    </div>
 </section>

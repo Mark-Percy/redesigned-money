@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { DocumentData } from '@angular/fire/firestore';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs';
 import { TransAccountService } from 'src/app/trans-account.service';
 import { Account } from 'src/app/user/account/account.interface';
@@ -13,15 +15,35 @@ import { Account } from 'src/app/user/account/account.interface';
 })
 export class TransactionComponent implements OnInit {
 
-  constructor(private dialog: MatDialog) { }
+  dashboardOpen: boolean | null = null;
+  transactions: Observable<DocumentData[]> = this.tras.getRecentTransactions(10)
+  constructor(private dialog: MatDialog, private router:Router, private route: ActivatedRoute, private tras: TransAccountService) {
+  }
 
   ngOnInit(): void {
+    // this.route.queryParams.subscribe(params => {
+
+    // })
+    this.route.queryParams.subscribe(params => {
+      this.dashboardOpen = params['addNewTransaction'];
+      if(params['addNewTransaction'] == 1){
+        this.dialog.open(AddTranactionDialog, {
+          width: '500px'
+        })
+      }
+    })
   }
 
   transactionDialog() {
-    this.dialog.open(AddTranactionDialog, {
-      width: '500px'
+    this.router.navigate([], {
+      queryParams: {
+        addNewTransaction: 1
+      }
     })
+    // this.dialog.open(AddTranactionDialog, {
+    //   width: '500px'
+    // })
+    
   }
 }
 
@@ -59,7 +81,6 @@ export class TransactionComponent implements OnInit {
             <section formArrayName="items">
             <div *ngFor="let item of items.controls; let i=index">
               <div [formGroupName]="i">
-                <!-- The repeated alias template -->
                 <mat-form-field>
                   <mat-label>item</mat-label>
                   <input type="text" formControlName="item" matInput>
@@ -85,7 +106,8 @@ export class AddTranactionDialog {
   constructor(private fb: FormBuilder,
               private transactionDialog: MatDialogRef<AddTranactionDialog>,
               private _adapter: DateAdapter<any>,
-              private tras: TransAccountService
+              private tras: TransAccountService,
+              private router: Router
             
   ){
     this._adapter.setLocale('en-GB')
@@ -104,15 +126,32 @@ export class AddTranactionDialog {
     })
 
     this.items = this.getItems();
+
+    this.transactionDialog.afterClosed().subscribe(ref => {
+      this.router.navigate([], {
+        queryParams: {
+          addNewTransaction:null
+        }
+      })
+    })
   }
   addTransaction() {
-    console.log(this.transactionForm.value)
+    const transaction = {
+      transactionDate: this.transactionForm.value.transactionDate,
+      account: this.transactionForm.value.account,
+      category: this.transactionForm.value.category,
+    }
+    this.tras.addTransaction(transaction).then(transaction => {
+      this.tras.addItems(this.items, transaction.id);
+
+    });
+
+    
+
+    
   }
   addItem() {
-    
-    const items = (this.transactionForm.get('items') as FormArray)
-    items.push(this.fb.group({item:'', amount: ''}));
-    // (this.transactionForm.get('items') as FormArray).addControl('amount'+ this.numberOfItems, this.fb.control(''));
+    this.items.push(this.fb.group({item:'', amount: ''}));
   }
 
   getItems(){
