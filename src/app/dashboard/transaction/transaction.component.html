@@ -5,9 +5,10 @@
 
     <div>
         <div *ngFor="let transaction of transactions | async">
-            {{ transaction.transactionDate }}
+            {{ transaction.transactionDate.toDate().toLocaleDateString('en-UK') }}
             {{ transaction.category }}
             {{ transaction.account }}
+            {{ transaction.location }}
         </div>
     </div>
 </section>

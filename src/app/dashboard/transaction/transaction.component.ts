@@ -76,7 +76,7 @@ export class TransactionComponent implements OnInit {
             </mat-form-field>
             <mat-form-field>
               <mat-label>Location</mat-label>
-              <input type="text" matInput>
+              <input type="text" matInput formControlName="location">
             </mat-form-field>
             <section formArrayName="items">
             <div *ngFor="let item of items.controls; let i=index">
@@ -117,6 +117,7 @@ export class AddTranactionDialog {
       transactionDate: new Date(),
       account: '',
       category: '',
+      location: '',
       items: this.fb.array([
         this.fb.group({
           item: '',
@@ -140,6 +141,7 @@ export class AddTranactionDialog {
       transactionDate: this.transactionForm.value.transactionDate,
       account: this.transactionForm.value.account,
       category: this.transactionForm.value.category,
+      location: this.transactionForm.value.location
     }
     this.tras.addTransaction(transaction).then(transaction => {
       this.tras.addItems(this.items, transaction.id);
