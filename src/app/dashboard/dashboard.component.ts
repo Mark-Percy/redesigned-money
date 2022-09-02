@@ -10,18 +10,20 @@ import { Component, OnInit } from '@angular/core';
 export class DashboardComponent implements OnInit {
 
   dashboardCols: number = 2;
-  rowsHeight:string = "vh";
+  panelWidth: string = '45vw;'
   constructor(private responsive: BreakpointObserver) {
     this.responsive.observe([
-      Breakpoints.Small,
-      Breakpoints.Medium,
+      Breakpoints.Web,
+      Breakpoints.HandsetPortrait
 
     ]).subscribe((state: BreakpointState) => {
-      if(state.breakpoints[Breakpoints.Small]){
+      if(state.breakpoints[Breakpoints.HandsetPortrait]){
         this.dashboardCols = 1;
+        this.panelWidth = '95vw'
       }
-      if(state.breakpoints[Breakpoints.Medium]){
+      if(state.breakpoints[Breakpoints.Web]){
         this.dashboardCols = 2;
+        this.panelWidth = '45vw'
       }
     })
   }

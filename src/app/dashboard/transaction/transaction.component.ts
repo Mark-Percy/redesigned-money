@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DocumentData } from '@angular/fire/firestore';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
@@ -16,14 +16,15 @@ import { Account } from 'src/app/user/account/account.interface';
 export class TransactionComponent implements OnInit {
 
   dashboardOpen: boolean | null = null;
-  transactions: Observable<DocumentData[]> = this.tras.getRecentTransactions(10)
+  transactions: Observable<DocumentData[]> = this.tras.getRecentTransactions(10);
+  @Input() panelWidth = '45vw';
+  dataSource = this.transactions
+  displayedColumns: string[] = ['transactionDate', 'category', 'account', 'location'];
+
   constructor(private dialog: MatDialog, private router:Router, private route: ActivatedRoute, private tras: TransAccountService) {
   }
 
   ngOnInit(): void {
-    // this.route.queryParams.subscribe(params => {
-
-    // })
     this.route.queryParams.subscribe(params => {
       this.dashboardOpen = params['addNewTransaction'];
       if(params['addNewTransaction'] == 1){
@@ -32,6 +33,8 @@ export class TransactionComponent implements OnInit {
         })
       }
     })
+
+    
   }
 
   transactionDialog() {
