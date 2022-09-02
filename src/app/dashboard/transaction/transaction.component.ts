@@ -19,7 +19,7 @@ export class TransactionComponent implements OnInit {
   transactions: Observable<DocumentData[]> = this.tras.getTransactions(5);
   @Input() panelWidth = '45vw';
   dataSource = this.transactions
-  displayedColumns: string[] = ['transactionDate', 'category', 'account', 'location'];
+  displayedColumns: string[] = ['transactionDate','amount', 'category', 'location'];
 
   constructor(private dialog: MatDialog, private router:Router, private route: ActivatedRoute, private tras: TransAccountService) {
   }
@@ -84,7 +84,7 @@ export class TransactionComponent implements OnInit {
                 </mat-form-field>
                 <mat-form-field>
                   <mat-label>Amount</mat-label>
-                  <input type="text" formControlName="amount" matInput>
+                  <input type="number" formControlName="amount" matInput>
                 </mat-form-field>
               </div>
             </div>
@@ -115,10 +115,13 @@ export class AddTranactionDialog {
       account: '',
       category: '',
       location: '',
+      amount: '',
       items: this.fb.array([
         this.fb.group({
           item: '',
-          amount: '',
+          amount: ['',{
+            updateOn: 'blur',
+          }],
         })
       ])
     })
@@ -131,14 +134,23 @@ export class AddTranactionDialog {
           addNewTransaction:null
         }
       })
-    })
+    });
+
+    this.items.valueChanges.subscribe(items => {
+      let sum:number = 0;
+      for(let i in items) {
+        sum += items[i].amount
+      }
+      this.transactionForm.get('amount')?.patchValue(sum)
+    });
   }
   addTransaction() {
     const transaction = {
       transactionDate: this.transactionForm.value.transactionDate,
       account: this.transactionForm.value.account,
       category: this.transactionForm.value.category,
-      location: this.transactionForm.value.location
+      location: this.transactionForm.value.location,
+      amount: this.transactionForm.value.amount
     }
     this.tras.addTransaction(transaction).then(transaction => {
       this.tras.addItems(this.items, transaction.id);
@@ -150,7 +162,9 @@ export class AddTranactionDialog {
     
   }
   addItem() {
-    this.items.push(this.fb.group({item:'', amount: ''}));
+    this.items.push(this.fb.group({item:'', amount: ['', {
+      updateOn: 'blur'
+    }]}));
   }
 
   getItems(){
