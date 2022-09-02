@@ -33,8 +33,6 @@ export class TransAccountService {
   
   addItems(items: FormArray, transactionId: string) {
     const batch = writeBatch(this.fs);
-    // let ref = doc(this.fs, 'users/'+this.auth.getUserId()+'/items');
-
     const curritem = {
       transactionId: transactionId,
       item: null,
@@ -50,8 +48,8 @@ export class TransAccountService {
     batch.commit();
   }
 
-  getRecentTransactions(numberToLimit: number){
-    const q = query(this.transCol, orderBy('transactionDate'), limit(numberToLimit))
+  getTransactions(numberToLimit: number){
+    const q = query(this.transCol, orderBy('transactionDate', 'desc'), limit(numberToLimit))
     return collectionData(q, {idField: 'id'})
   }
 }

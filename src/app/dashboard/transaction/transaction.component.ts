@@ -16,7 +16,7 @@ import { Account } from 'src/app/user/account/account.interface';
 export class TransactionComponent implements OnInit {
 
   dashboardOpen: boolean | null = null;
-  transactions: Observable<DocumentData[]> = this.tras.getRecentTransactions(10);
+  transactions: Observable<DocumentData[]> = this.tras.getTransactions(5);
   @Input() panelWidth = '45vw';
   dataSource = this.transactions
   displayedColumns: string[] = ['transactionDate', 'category', 'account', 'location'];
@@ -30,11 +30,9 @@ export class TransactionComponent implements OnInit {
       if(params['addNewTransaction'] == 1){
         this.dialog.open(AddTranactionDialog, {
           width: '500px'
-        })
+        });
       }
-    })
-
-    
+    });
   }
 
   transactionDialog() {
@@ -42,11 +40,7 @@ export class TransactionComponent implements OnInit {
       queryParams: {
         addNewTransaction: 1
       }
-    })
-    // this.dialog.open(AddTranactionDialog, {
-    //   width: '500px'
-    // })
-    
+    });
   }
 }
 
