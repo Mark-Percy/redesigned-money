@@ -25,6 +25,7 @@ import { PersonalInfoComponent } from './user/personal-info/personal-info.compon
 import { AddAccountDialog, ProfileComponent } from './user/profile/profile.component';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { AccountComponent } from './user/account/account.component';
+import { AddTranactionDialog, TransactionComponent } from './dashboard/transaction/transaction.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,9 @@ import { AccountComponent } from './user/account/account.component';
     PersonalInfoComponent,
     ProfileComponent,
     AddAccountDialog,
-    AccountComponent
+    AccountComponent,
+    TransactionComponent,
+    AddTranactionDialog
   ],
   imports: [
     BrowserModule,
