@@ -1,0 +1,8 @@
+<h1>{{month}}</h1>
+<div *ngFor="let transaction of transactions | async">
+    {{transaction.transactionDate.toDate().toLocaleDateString('en-UK')}}
+    {{transaction.category}}
+    {{transaction.account}}
+    {{transaction.location}}
+    {{transaction.amount}}
+</div>

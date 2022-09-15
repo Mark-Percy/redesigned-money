@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
+import { Timestamp, where } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from './authorisation.service';
 import { Account } from './user/account/account.interface';
@@ -50,6 +51,13 @@ export class TransAccountService {
 
   getTransactions(numberToLimit: number){
     const q = query(this.transCol, orderBy('transactionDate', 'desc'), limit(numberToLimit))
+    return collectionData(q, {idField: 'id'})
+  }
+
+  getTransactionsForMonth(date: Date) {
+    const start = new Date(date.getFullYear(), date.getMonth(), 1)
+    const end = new Date(date.getFullYear(), date.getMonth()+1, 0)
+    const q = query(this.transCol, where('transactionDate', '>', start), where('transactionDate', '<', end))
     return collectionData(q, {idField: 'id'})
   }
 }
