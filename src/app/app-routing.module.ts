@@ -8,6 +8,7 @@ import { UserComponent } from './user/user.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { ProfileComponent } from './user/profile/profile.component';
+import { TransactionsViewComponent } from './transactions-view/transactions-view.component';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['account','login']);
 const redirectAuthorisedToDashboard = () => redirectLoggedInTo(['dashboard']);
@@ -31,8 +32,8 @@ const routes: Routes = [
       {path:'profile', component:ProfileComponent}
     ]
   },
-  {path:'dashboard', component: DashboardComponent, canActivate:[AngularFireAuthGuard], data: {authGuardPipe: redirectUnauthorizedToLogin}}
-
+  {path:'dashboard', component: DashboardComponent, canActivate:[AngularFireAuthGuard], data: {authGuardPipe: redirectUnauthorizedToLogin}},
+  {path:'transactions', component:TransactionsViewComponent, canActivate:[AngularFireAuthGuard], data: {authGuardPipe: redirectUnauthorizedToLogin}}
 ];
 
 @NgModule({
