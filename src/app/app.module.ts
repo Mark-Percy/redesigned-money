@@ -27,6 +27,7 @@ import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { AccountComponent } from './user/account/account.component';
 import { AddTranactionDialog, TransactionComponent } from './dashboard/transaction/transaction.component';
 import { TransactionsViewComponent } from './transactions-view/transactions-view.component';
+import { TransactionsTableComponent } from './transactions-table/transactions-table.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { TransactionsViewComponent } from './transactions-view/transactions-view
     AccountComponent,
     TransactionComponent,
     AddTranactionDialog,
-    TransactionsViewComponent
+    TransactionsViewComponent,
+    TransactionsTableComponent
   ],
   imports: [
     BrowserModule,

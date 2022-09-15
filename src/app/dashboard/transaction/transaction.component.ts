@@ -18,8 +18,6 @@ export class TransactionComponent implements OnInit {
   dashboardOpen: boolean | null = null;
   transactions: Observable<DocumentData[]> = this.tras.getTransactions(5);
   @Input() panelWidth = '45vw';
-  dataSource = this.transactions
-  displayedColumns: string[] = ['transactionDate','amount', 'category', 'location'];
 
   constructor(private dialog: MatDialog, private router:Router, private route: ActivatedRoute, private tras: TransAccountService) {
   }
