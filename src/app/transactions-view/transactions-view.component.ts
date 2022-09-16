@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
 import { TransAccountService } from '../trans-account.service';
 
 @Component({
@@ -13,11 +15,14 @@ export class TransactionsViewComponent implements OnInit {
 
   transactions = this.tras.getTransactionsForMonth(this.currDate);
 
-  constructor(private tras: TransAccountService) {
+  constructor(private tras: TransAccountService, private dialog: MatDialog) {
     this.month = this.currDate.toLocaleString('en-GB',{month:'long'});
   }
 
   ngOnInit(): void {
   }
 
+  addTransaction() {
+    this.dialog.open(AddTransactionComponent)
+  }
 }

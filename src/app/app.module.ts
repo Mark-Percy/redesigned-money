@@ -25,9 +25,10 @@ import { PersonalInfoComponent } from './user/personal-info/personal-info.compon
 import { AddAccountDialog, ProfileComponent } from './user/profile/profile.component';
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { AccountComponent } from './user/account/account.component';
-import { AddTranactionDialog, TransactionComponent } from './dashboard/transaction/transaction.component';
+import { TransactionComponent } from './dashboard/transaction/transaction.component';
 import { TransactionsViewComponent } from './transactions-view/transactions-view.component';
 import { TransactionsTableComponent } from './transactions-table/transactions-table.component';
+import { AddTransactionComponent } from './add-transaction/add-transaction.component';
 
 @NgModule({
   declarations: [
@@ -44,9 +45,9 @@ import { TransactionsTableComponent } from './transactions-table/transactions-ta
     AddAccountDialog,
     AccountComponent,
     TransactionComponent,
-    AddTranactionDialog,
     TransactionsViewComponent,
-    TransactionsTableComponent
+    TransactionsTableComponent,
+    AddTransactionComponent
   ],
   imports: [
     BrowserModule,

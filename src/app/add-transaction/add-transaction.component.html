@@ -1,0 +1,44 @@
+<h4>Add Transaction</h4>
+<form [formGroup]="transactionForm">
+  <mat-form-field>
+    <mat-label>Date</mat-label>
+    <input matInput [matDatepicker]="picker" formControlName="transactionDate">
+    <mat-hint>DD/MM/YYYY</mat-hint>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker #picker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Account</mat-label>
+    <mat-select formControlName="account">
+      <mat-option *ngFor="let account of accounts | async" value="{{ account.name }}">{{ account.name }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Category</mat-label>
+    <mat-select formControlName="category">
+      <mat-option value="Bills">Bills</mat-option>
+      <mat-option value="Spending">Spending</mat-option>
+      <mat-option value="Useless">Useless</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Location</mat-label>
+    <input type="text" matInput formControlName="location">
+  </mat-form-field>
+  <section formArrayName="items">
+  <div *ngFor="let item of items.controls; let i=index">
+    <div [formGroupName]="i">
+      <mat-form-field>
+        <mat-label>item</mat-label>
+        <input type="text" formControlName="item" matInput>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Amount</mat-label>
+        <input type="number" formControlName="amount" matInput>
+      </mat-form-field>
+    </div>
+  </div>
+  </section>
+  <button (click)="addItem()">Add Field</button>
+  <button (click)="addTransaction()">Submit</button>
+</form>
