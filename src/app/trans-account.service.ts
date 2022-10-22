@@ -20,10 +20,16 @@ export class TransAccountService {
     addDoc(this.collection, accountsForm);
   }
 
-  getAccounts(): Observable<Account[]> {
-    const q = query(this.collection, orderBy('name'))
+  getAccounts(accountType?: string): Observable<Account[]> {
+    let q;
+    if(!accountType) {
+      q = query(this.collection, orderBy('name'))
+    } else {
+      q = query(this.collection, orderBy('name'), where('type', '==', accountType))
+    }
     return collectionData(q, {idField: 'id'}) as  Observable<Account[]>
   }
+
   delete(id: string) {
     deleteDoc(doc(this.collection, id))
   }
