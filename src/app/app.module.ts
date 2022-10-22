@@ -29,6 +29,7 @@ import { TransactionComponent } from './dashboard/transaction/transaction.compon
 import { TransactionsViewComponent } from './transactions-view/transactions-view.component';
 import { TransactionsTableComponent } from './transactions-table/transactions-table.component';
 import { AddTransactionComponent } from './add-transaction/add-transaction.component';
+import { SavingsComponent } from './dashboard/savings/savings.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { AddTransactionComponent } from './add-transaction/add-transaction.compo
     TransactionComponent,
     TransactionsViewComponent,
     TransactionsTableComponent,
-    AddTransactionComponent
+    AddTransactionComponent,
+    SavingsComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,9 @@
+section {
+    width: 45vw;
+    border: white solid 1px;
+    border-radius: 10px;
+    padding: 2%;
+}
+table {
+    width: 100%;
+}

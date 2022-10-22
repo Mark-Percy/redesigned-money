@@ -82,7 +82,7 @@ export class ProfileComponent implements OnInit {
 })
 export class AddAccountDialog {
 
-  accountTypes:string[] = ['Credit', 'Debit'];
+  accountTypes:string[] = ['Credit', 'Debit', 'Savings'];
   accountForm: FormGroup;
 
   constructor(public dialogRef: MatDialogRef<AddAccountDialog>, private fb: FormBuilder, private tras: TransAccountService){
