@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { SavingsDialogComponent } from 'src/app/savings-dialog/savings-dialog.component';
+import { SavingsDialogComponent } from 'src/app/dashboard/savings/savings-dialog/savings-dialog.component';
 import { TransAccountService } from 'src/app/trans-account.service';
 import { Account } from 'src/app/user/account/account.interface';
 
@@ -21,7 +21,7 @@ export class SavingsComponent {
   }
 
   viewSavings(id:string) {
-    const dialogRef = this.dialog.open(SavingsDialogComponent, {data: id})
+    const dialogRef = this.dialog.open(SavingsDialogComponent, {data: id, width: '500px'})
 
   }
 

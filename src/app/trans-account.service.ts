@@ -4,6 +4,7 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { DocumentSnapshot, where } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from './authorisation.service';
+import { Pot } from './dashboard/savings/pots.interface';
 import { Account } from './user/account/account.interface';
 
 @Injectable({
@@ -26,11 +27,6 @@ export class TransAccountService {
     }
   }
 
-  addPot(potId: string, potForm: any) {
-    const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+potId+'/pots');
-    addDoc(potCollection, potForm)
-  }
-
   getAccounts(accountType?: string): Observable<Account[]> {
     let q;
     if(!accountType) {
@@ -43,8 +39,18 @@ export class TransAccountService {
 
   getAccount(id: string) : Promise<DocumentSnapshot<Account>>{
     return getDoc(doc(this.collection, id)) as Promise<DocumentSnapshot<Account>>
-  } 
+  }
 
+  addPot(potId: string, potForm: any) {
+    const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+potId+'/pots');
+    addDoc(potCollection, potForm)
+  }
+
+  getPots(potId: string) {
+    const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+potId+'/pots');
+    return collectionData(potCollection, {idField: 'id'}) as Observable<Pot[]>
+  }
+  
   delete(id: string) {
     deleteDoc(doc(this.collection, id))
   }

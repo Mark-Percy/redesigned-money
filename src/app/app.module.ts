@@ -30,7 +30,7 @@ import { TransactionsViewComponent } from './transactions-view/transactions-view
 import { TransactionsTableComponent } from './transactions-table/transactions-table.component';
 import { AddTransactionComponent } from './add-transaction/add-transaction.component';
 import { SavingsComponent } from './dashboard/savings/savings.component';
-import { SavingsDialogComponent } from './savings-dialog/savings-dialog.component';
+import { SavingsDialogComponent } from './dashboard/savings/savings-dialog/savings-dialog.component';
 
 @NgModule({
   declarations: [

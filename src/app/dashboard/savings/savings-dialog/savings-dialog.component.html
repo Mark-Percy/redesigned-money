@@ -1,0 +1,31 @@
+<h1>{{account.name}}</h1>
+<div>
+    <button mat-button (click)="showAddPot = true">Add Pot</button>
+    <div>Amount</div><div>{{account.amount ? account.amount : 0}}</div>
+    <section *ngIf="showAddPot">
+        <form [formGroup]="addPotsForm" (ngSubmit)="addPot()">
+            <mat-form-field>
+            <label for="name"></label>
+            <input matInput formControlName="name">
+            </mat-form-field>
+            <button>Add Pot</button>
+        </form>
+    </section>
+    <section>
+        <h3>Pots</h3>
+        <table mat-table [dataSource]="pots">
+            <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let pot">{{pot.name}}</td>
+            </ng-container>
+            <ng-container matColumnDef="amount">
+                <th mat-header-cell *matHeaderCellDef>Amount</th>
+                <td mat-cell *matCellDef="let pot">{{pot.amount ? pot.amount : 0}}</td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="columns"></tr>
+            <tr mat-row
+                *matRowDef="let row; columns: columns;"
+            ></tr>
+        </table>
+    </section>
+</div>
