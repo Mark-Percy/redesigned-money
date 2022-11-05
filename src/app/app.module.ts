@@ -30,6 +30,7 @@ import { TransactionsViewComponent } from './transactions-view/transactions-view
 import { TransactionsTableComponent } from './transactions-table/transactions-table.component';
 import { AddTransactionComponent } from './add-transaction/add-transaction.component';
 import { SavingsComponent } from './dashboard/savings/savings.component';
+import { SavingsDialogComponent } from './savings-dialog/savings-dialog.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { SavingsComponent } from './dashboard/savings/savings.component';
     TransactionsViewComponent,
     TransactionsTableComponent,
     AddTransactionComponent,
-    SavingsComponent
+    SavingsComponent,
+    SavingsDialogComponent
   ],
   imports: [
     BrowserModule,

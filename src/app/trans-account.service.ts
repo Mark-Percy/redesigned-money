@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference } from '@angular/fire/firestore';
-import { FormArray } from '@angular/forms';
-import { Timestamp, where } from 'firebase/firestore';
+import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc } from '@angular/fire/firestore';
+import { FormArray, FormGroup } from '@angular/forms';
+import { DocumentSnapshot, where } from 'firebase/firestore';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from './authorisation.service';
 import { Account } from './user/account/account.interface';
@@ -17,7 +17,18 @@ export class TransAccountService {
   constructor(private fs: Firestore, private auth: AuthorisationService) { }
 
   addAccount(accountsForm: any) {
-    addDoc(this.collection, accountsForm);
+    let newDoc = addDoc(this.collection, accountsForm);
+    if(accountsForm.type == 'Savings'){
+      newDoc.then((response) => {
+        const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+response.id+'/pots')
+        addDoc(potCollection, {name: 'Main', amount: 0})
+      })
+    }
+  }
+
+  addPot(potId: string, potForm: any) {
+    const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+potId+'/pots');
+    addDoc(potCollection, potForm)
   }
 
   getAccounts(accountType?: string): Observable<Account[]> {
@@ -29,6 +40,10 @@ export class TransAccountService {
     }
     return collectionData(q, {idField: 'id'}) as  Observable<Account[]>
   }
+
+  getAccount(id: string) : Promise<DocumentSnapshot<Account>>{
+    return getDoc(doc(this.collection, id)) as Promise<DocumentSnapshot<Account>>
+  } 
 
   delete(id: string) {
     deleteDoc(doc(this.collection, id))
