@@ -1,4 +1,12 @@
-<h1>{{month}}</h1>
+<header>
+    <section id="month">
+        <button mat-icon-button (click)="changeDate(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
+        <h1>{{month}}</h1>
+        <button mat-icon-button (click)="changeDate(1)"><mat-icon>arrow_forward_ios</mat-icon></button>
+    </section>
+    <section id="year">
+        <h2>{{year}}</h2>
+    </section>
+</header>
 <div><button mat-button (click)="addTransaction()">Add Transaction</button></div>
 <app-transactions-table [dataSource]="transactions"></app-transactions-table>
-
