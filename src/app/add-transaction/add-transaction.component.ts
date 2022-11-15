@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, INJECTOR, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { TransAccountService } from '../trans-account.service';
@@ -22,18 +22,21 @@ export class AddTransactionComponent implements OnInit {
   accounts: Observable<Account[]>
   numberOfItems: number = 1;
   items: FormArray;
+  datePickerStart = new Date();
   constructor(private fb: FormBuilder,
               private transactionDialog: MatDialogRef<AddTransactionComponent>,
               private _adapter: DateAdapter<any>,
               private tras: TransAccountService,
-              private router: Router
+              private router: Router,
+              @Inject(MAT_DIALOG_DATA) public data: {date: Date}
             
   ){
+    this.datePickerStart = this.data ? this.data.date : this.datePickerStart 
     this._adapter.setLocale('en-GB')
 
     this.accounts = this.tras.getAccounts();
     this.transactionForm = this.fb.group({
-      transactionDate: new Date(),
+      transactionDate: this.datePickerStart,
       account: '',
       category: '',
       location: '',
@@ -78,6 +81,7 @@ export class AddTransactionComponent implements OnInit {
       this.tras.addItems(this.items, transaction.id);
 
     });
+    this.transactionDialog.close();
 
     
 

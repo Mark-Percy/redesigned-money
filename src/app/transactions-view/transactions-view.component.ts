@@ -23,7 +23,7 @@ export class TransactionsViewComponent{
   }
 
   addTransaction() {
-    this.dialog.open(AddTransactionComponent)
+    this.dialog.open(AddTransactionComponent, {data: {date:this.currDate}})
   }
 
   changeDate(numOfMonths: number) {
