@@ -34,6 +34,9 @@ export class TransactionsViewComponent{
 
   addTransaction() {
     this.dialog.open(AddTransactionComponent, {data: {date:this.currDate}})
+    this.tras.getAmountForMonth(this.month, this.year).then((data) => {
+      this.monthlyAmount = data
+    })
   }
 
   changeDate(numOfMonths: number) {
