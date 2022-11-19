@@ -70,6 +70,7 @@ export class AddTransactionComponent implements OnInit {
     });
   }
   addTransaction() {
+    this.transactionDialog.close();
     const transaction = {
       transactionDate: this.transactionForm.value.transactionDate,
       account: this.transactionForm.value.account,
@@ -81,7 +82,6 @@ export class AddTransactionComponent implements OnInit {
       this.tras.addItems(this.items, transaction.id);
 
     });
-    this.transactionDialog.close();
 
     
 

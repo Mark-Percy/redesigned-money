@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc } from '@angular/fire/firestore';
-import { FormArray, FormGroup } from '@angular/forms';
-import { DocumentSnapshot, where } from 'firebase/firestore';
+import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot } from '@angular/fire/firestore';
+import { FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from './authorisation.service';
 import { Pot } from './dashboard/savings/pots.interface';
@@ -55,7 +54,29 @@ export class TransAccountService {
     deleteDoc(doc(this.collection, id))
   }
 
-  addTransaction(transactionForm: any): Promise<DocumentReference> {
+  async addTransaction(transactionForm: any): Promise<DocumentReference> {
+    const date = transactionForm.transactionDate;
+    const year = date.getFullYear();
+    const month = date.toLocaleString('default', { month: 'long' })
+    const monthDocRef= doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
+    const category = transactionForm.category
+    const account = transactionForm.account
+    try {
+      await runTransaction(this.fs, async(transaction) => {
+        const monthDoc = await transaction.get(monthDocRef);
+        if (!monthDoc.exists()) {
+          transaction.set(monthDocRef,{amount:transactionForm.amount, [category]: transactionForm.amount, [account]: transactionForm.amount})
+        } else {
+          const newAmount = monthDoc.data().amount + transactionForm.amount
+          const categoryAmount = monthDoc.get(category) ? monthDoc.get(category) +  transactionForm.amount : transactionForm.amount
+          const accountAmount = monthDoc.get(account) ? monthDoc.get(account) +  transactionForm.amount : transactionForm.amount
+          
+          transaction.update(monthDocRef, {amount: newAmount, [category]: categoryAmount, [account]: accountAmount})
+        }
+      });
+    } catch {
+      console.log('Transaction failed')
+    }
     return addDoc(this.transCol, transactionForm)
   }
   

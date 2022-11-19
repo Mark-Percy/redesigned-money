@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
 import { TransAccountService } from '../trans-account.service';
 
@@ -16,7 +17,10 @@ export class TransactionsViewComponent{
 
   transactions = this.tras.getTransactionsForMonth(this.currDate);
 
-  constructor(private tras: TransAccountService, private dialog: MatDialog) {
+  constructor(private tras: TransAccountService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router) {
+    this.route.queryParams.subscribe(params => {
+      this.currDate.setMonth(params['month'])
+    });
     this.month = this.currDate.toLocaleString('en-GB',{month:'long'});
     this.year = this.currDate.getFullYear();
     this.currDate.setDate(1)
@@ -31,5 +35,8 @@ export class TransactionsViewComponent{
     this.month = this.currDate.toLocaleString('en-GB',{month:'long'});
     this.transactions = this.tras.getTransactionsForMonth(this.currDate);
     this.year = this.currDate.getFullYear();
+    this.router.navigate([], {
+      queryParams: {month: this.currDate.getMonth()}
+    })
   }
 }

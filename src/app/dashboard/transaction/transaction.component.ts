@@ -17,6 +17,8 @@ import { Account } from 'src/app/user/account/account.interface';
 export class TransactionComponent implements OnInit {
 
   dashboardOpen: boolean | null = null;
+  currDate: Date = new Date();
+  month = this.currDate.getMonth();
   transactions: Observable<DocumentData[]> = this.tras.getTransactions(5);
   @Input() panelWidth = '45vw';
 

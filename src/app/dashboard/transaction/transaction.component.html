@@ -1,7 +1,7 @@
 <section [ngStyle]="{width: panelWidth}">
     <header>
         <h3>Recent Transactions</h3>
-        <a mat-button routerLink="/transactions">Transactions</a>
+        <a mat-button [routerLink]="['/transactions']" [queryParams]="{month: month}">Transactions</a>
         <button mat-icon-button><mat-icon (click)="transactionDialog();">add</mat-icon></button>
     </header>
     <app-transactions-table [dataSource]="transactions"></app-transactions-table>
