@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { DEFAULT_CURRENCY_CODE, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -66,7 +66,7 @@ import { SavingsDialogComponent } from './dashboard/savings/savings-dialog/savin
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())
   ],
-  providers: [],
+  providers: [{provide:DEFAULT_CURRENCY_CODE, useValue: 'GBP'}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
