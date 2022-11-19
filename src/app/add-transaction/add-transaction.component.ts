@@ -57,7 +57,8 @@ export class AddTransactionComponent implements OnInit {
       this.router.navigate([], {
         queryParams: {
           addNewTransaction:null
-        }
+        },
+        queryParamsHandling: 'merge'
       })
     });
 
@@ -82,10 +83,6 @@ export class AddTransactionComponent implements OnInit {
       this.tras.addItems(this.items, transaction.id);
 
     });
-
-    
-
-    
   }
   addItem() {
     this.items.push(this.fb.group({item:'', amount: ['', {
