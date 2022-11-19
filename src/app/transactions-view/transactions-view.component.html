@@ -8,5 +8,8 @@
         <h2>{{year}}</h2>
     </section>
 </header>
-<div><button mat-button (click)="addTransaction()">Add Transaction</button></div>
+<section class="table-head">
+    <button mat-button (click)="addTransaction()">Add Transaction</button>
+    <h4>{{monthlyAmount | currency}}</h4>
+</section>
 <app-transactions-table [dataSource]="transactions"></app-transactions-table>

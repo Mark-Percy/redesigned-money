@@ -108,4 +108,13 @@ export class TransAccountService {
     const q = query(this.transCol, where('transactionDate', '>', start), where('transactionDate', '<', end))
     return collectionData(q, {idField: 'id'})
   }
+
+  async getAmountForMonth(month: string, year: number): Promise<number> {
+    const monthRef = doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
+    const monthSnap = await getDoc(monthRef)
+    if (monthSnap.exists()) {
+      return monthSnap.data().amount;
+    }
+    return 0;
+  }
 }

@@ -14,6 +14,7 @@ export class TransactionsViewComponent{
   currDate = new Date();
   month;
   year;
+  monthlyAmount: number = 0;
 
   transactions = this.tras.getTransactionsForMonth(this.currDate);
 
@@ -23,6 +24,9 @@ export class TransactionsViewComponent{
     });
     this.month = this.currDate.toLocaleString('en-GB',{month:'long'});
     this.year = this.currDate.getFullYear();
+    this.tras.getAmountForMonth(this.month, this.year).then((data) => {
+      this.monthlyAmount = data
+    })
     this.currDate.setDate(1)
     this.transactions = this.tras.getTransactionsForMonth(this.currDate);
 

@@ -17,3 +17,6 @@ header #year {
 h1,h2{
     margin-bottom: 0;
 }
+.table-head {
+    display: flex;
+}
