@@ -24,6 +24,8 @@ export class TransactionsViewComponent{
     this.month = this.currDate.toLocaleString('en-GB',{month:'long'});
     this.year = this.currDate.getFullYear();
     this.currDate.setDate(1)
+    this.transactions = this.tras.getTransactionsForMonth(this.currDate);
+
   }
 
   addTransaction() {
