@@ -7,6 +7,16 @@ import { Observable } from 'rxjs';
 import { TransAccountService } from '../trans-account.service';
 import { Account } from '../user/account/account.interface';
 
+export interface FormPrefill {
+  id: string;
+  transactionDate: Date;
+  date: Date;
+  account: string;
+  category: string;
+  location: string;
+  amount: number | null;
+}
+
 @Component({
   selector: 'app-add-transaction',
   templateUrl: './add-transaction.component.html',
@@ -22,25 +32,40 @@ export class AddTransactionComponent implements OnInit {
   accounts: Observable<Account[]>
   numberOfItems: number = 1;
   items: FormArray;
-  datePickerStart = new Date();
+  formPrefill: FormPrefill = {
+    transactionDate: new Date(),
+    id: '',
+    date: new Date(),
+    account: '',
+    category: '',
+    location: '',
+    amount: null
+  }
+  
   constructor(private fb: FormBuilder,
               private transactionDialog: MatDialogRef<AddTransactionComponent>,
               private _adapter: DateAdapter<any>,
               private tras: TransAccountService,
               private router: Router,
-              @Inject(MAT_DIALOG_DATA) public data: {date: Date}
-            
+              @Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:FormPrefill | null}  
   ){
-    this.datePickerStart = this.data ? this.data.date : this.datePickerStart 
+    if(this.data && this.data.row) {
+      console.log('here')
+      this.formPrefill = this.data.row
+      console.log(this.formPrefill.transactionDate)
+
+    }
+    this.formPrefill.date = this.data && this.data.date ? this.data.date : this.formPrefill.date 
+
     this._adapter.setLocale('en-GB')
 
     this.accounts = this.tras.getAccounts();
     this.transactionForm = this.fb.group({
-      transactionDate: this.datePickerStart,
-      account: '',
-      category: '',
-      location: '',
-      amount: '',
+      transactionDate: this.formPrefill.date,
+      account: this.formPrefill.account,
+      category: this.formPrefill.category,
+      location: this.formPrefill.location,
+      amount: this.formPrefill.amount,
       items: this.fb.array([
         this.fb.group({
           item: '',
