@@ -25,7 +25,7 @@
     <mat-label>Location</mat-label>
     <input type="text" matInput formControlName="location">
   </mat-form-field>
-  <section formArrayName="items">
+  <section formArrayName="items" *ngIf="!update">
   <div *ngFor="let item of items.controls; let i=index">
     <div [formGroupName]="i">
       <mat-form-field>
@@ -39,8 +39,11 @@
     </div>
   </div>
   </section>
-  <section>
-    <button mat-flat-button (click)="addItem()">Add Field</button>
-    <button mat-flat-button color="primary" (click)="addTransaction()">Submit</button>
+  <section class="buttons">
+    <button mat-flat-button color="primary" (click)="addTransaction()" *ngIf="!update; else updateButton">Submit</button>
+    <ng-template #updateButton>
+      <button mat-flat-button color="primary" (click)="updateTransaction(formPrefill.id)">Update</button>
+    </ng-template>
+    <button mat-flat-button (click)="addItem()" *ngIf="!update">Add Field</button>
   </section>
 </form>

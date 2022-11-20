@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from './authorisation.service';
@@ -116,5 +116,9 @@ export class TransAccountService {
       return monthSnap.data().amount;
     }
     return 0;
+  }
+  async updateTransaction(id: string, transaction: any) {
+    const transactionRef = doc(this.transCol, id)
+    await updateDoc(transactionRef, transaction)
   }
 }

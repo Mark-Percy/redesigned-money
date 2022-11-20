@@ -41,6 +41,7 @@ export class AddTransactionComponent implements OnInit {
     location: '',
     amount: null
   }
+  update: boolean = false;
   
   constructor(private fb: FormBuilder,
               private transactionDialog: MatDialogRef<AddTransactionComponent>,
@@ -50,10 +51,8 @@ export class AddTransactionComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:FormPrefill | null}  
   ){
     if(this.data && this.data.row) {
-      console.log('here')
       this.formPrefill = this.data.row
-      console.log(this.formPrefill.transactionDate)
-
+      this.update = true;
     }
     this.formPrefill.date = this.data && this.data.date ? this.data.date : this.formPrefill.date 
 
@@ -109,6 +108,19 @@ export class AddTransactionComponent implements OnInit {
 
     });
   }
+  updateTransaction(id:string) {
+    this.tras.updateTransaction(id, 
+      {
+        transactionDate: this.transactionForm.value.transactionDate,
+        account: this.transactionForm.value.account,
+        category: this.transactionForm.value.category,
+        location: this.transactionForm.value.location,
+        amount: this.transactionForm.value.amount
+      }
+    );
+    this.transactionDialog.close()
+  }
+
   addItem() {
     this.items.push(this.fb.group({item:'', amount: ['', {
       updateOn: 'blur'
