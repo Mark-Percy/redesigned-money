@@ -1,11 +1,19 @@
 <header>
+    <section>
+        <mat-form-field style="display:none">
+            <input #dateInput matInput [formControl]="date" [matDatepicker]="monthYearPicker">
+            <mat-datepicker #monthYearPicker touchUi [startView]="'year'" (monthSelected)="setMonthYear($event, monthYearPicker)"></mat-datepicker>
+        </mat-form-field>
+        <button mat-icon-button (click)="date.setValue(today)"><mat-icon>calendar_today</mat-icon></button>
+        <button (click)="monthYearPicker.open()" mat-icon-button><mat-icon>date_range</mat-icon></button>
+    </section>
     <section id="month">
         <button mat-icon-button (click)="changeDate(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
-        <h1>{{month}}</h1>
+        <h1>{{date.value.toLocaleString('en-GB',{month:'long'})}}</h1>
         <button mat-icon-button (click)="changeDate(1)"><mat-icon>arrow_forward_ios</mat-icon></button>
     </section>
     <section id="year">
-        <h2>{{year}}</h2>
+        <h2>{{date.value.getFullYear()}}</h2>
     </section>
 </header>
 <section class="table-head">

@@ -95,7 +95,6 @@ export class AddTransactionComponent implements OnInit {
     });
   }
   addTransaction() {
-    this.transactionDialog.close();
     const transaction = {
       transactionDate: this.transactionForm.value.transactionDate,
       account: this.transactionForm.value.account,
@@ -104,8 +103,9 @@ export class AddTransactionComponent implements OnInit {
       amount: this.transactionForm.value.amount
     }
     this.tras.addTransaction(transaction).then(transaction => {
-      this.tras.addItems(this.items, transaction.id);
-
+      this.transactionDialog.close();
+      this.tras.addItems(this.items, transaction.id).then(() => {
+      });
     });
   }
   updateTransaction(id:string) {

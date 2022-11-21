@@ -23,18 +23,18 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Location</mat-label>
-    <input type="text" matInput formControlName="location">
+    <input type="text" matInput formControlName="location" name="location">
   </mat-form-field>
   <section formArrayName="items" *ngIf="!update">
   <div *ngFor="let item of items.controls; let i=index">
     <div [formGroupName]="i">
       <mat-form-field>
         <mat-label>item</mat-label>
-        <input type="text" formControlName="item" matInput>
+        <input type="text" formControlName="item" matInput name="item">
       </mat-form-field>
       <mat-form-field>
         <mat-label>Amount</mat-label>
-        <input type="number" formControlName="amount" matInput>
+        <input type="number" formControlName="amount" matInput name="amount">
       </mat-form-field>
     </div>
   </div>

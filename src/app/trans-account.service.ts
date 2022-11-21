@@ -94,7 +94,7 @@ export class TransAccountService {
 
     })
 
-    batch.commit();
+    return batch.commit();
   }
 
   getTransactions(numberToLimit: number){
@@ -109,7 +109,9 @@ export class TransAccountService {
     return collectionData(q, {idField: 'id'})
   }
 
-  async getAmountForMonth(month: string, year: number): Promise<number> {
+  async getAmountForMonth(date: Date): Promise<number> {
+    const month = date.toLocaleString('en-GB',{month:'long'})
+    const year = date.getFullYear()
     const monthRef = doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
     const monthSnap = await getDoc(monthRef)
     if (monthSnap.exists()) {
