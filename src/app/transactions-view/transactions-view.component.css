@@ -2,11 +2,6 @@ header {
     display: grid;
     grid-template-columns: repeat(5,1fr);
 }
-header section {
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
 header #month {
     grid-column: 3;
 }
@@ -14,9 +9,24 @@ header #year {
     grid-column: 5;
     padding-right: 10px;
 }
-h1,h2{
+
+section {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+h1,h2,h4{
     margin-bottom: 0;
 }
+
 .table-head {
     display: flex;
+}
+
+app-transactions-table {
+    display: flex;
+    flex-direction: column-reverse;
+    max-height: 82vh;
+    overflow-y: auto;
 }
