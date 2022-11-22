@@ -23,24 +23,27 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Location</mat-label>
-    <input type="text" matInput formControlName="location">
+    <input type="text" matInput formControlName="location" name="location">
   </mat-form-field>
-  <section formArrayName="items">
+  <section formArrayName="items" *ngIf="!update">
   <div *ngFor="let item of items.controls; let i=index">
     <div [formGroupName]="i">
       <mat-form-field>
         <mat-label>item</mat-label>
-        <input type="text" formControlName="item" matInput>
+        <input type="text" formControlName="item" matInput name="item">
       </mat-form-field>
       <mat-form-field>
         <mat-label>Amount</mat-label>
-        <input type="number" formControlName="amount" matInput>
+        <input type="number" formControlName="amount" matInput name="amount">
       </mat-form-field>
     </div>
   </div>
   </section>
-  <section>
-    <button mat-flat-button (click)="addItem()">Add Field</button>
-    <button mat-flat-button color="primary" (click)="addTransaction()">Submit</button>
+  <section class="buttons">
+    <button mat-flat-button color="primary" (click)="addTransaction()" *ngIf="!update; else updateButton">Submit</button>
+    <ng-template #updateButton>
+      <button mat-flat-button color="primary" (click)="updateTransaction(formPrefill.id)">Update</button>
+    </ng-template>
+    <button mat-flat-button (click)="addItem()" *ngIf="!update">Add Field</button>
   </section>
 </form>

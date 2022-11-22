@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from './authorisation.service';
@@ -94,7 +94,7 @@ export class TransAccountService {
 
     })
 
-    batch.commit();
+    return batch.commit();
   }
 
   getTransactions(numberToLimit: number){
@@ -109,12 +109,18 @@ export class TransAccountService {
     return collectionData(q, {idField: 'id'})
   }
 
-  async getAmountForMonth(month: string, year: number): Promise<number> {
+  async getAmountForMonth(date: Date): Promise<number> {
+    const month = date.toLocaleString('en-GB',{month:'long'})
+    const year = date.getFullYear()
     const monthRef = doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
     const monthSnap = await getDoc(monthRef)
     if (monthSnap.exists()) {
       return monthSnap.data().amount;
     }
     return 0;
+  }
+  async updateTransaction(id: string, transaction: any) {
+    const transactionRef = doc(this.transCol, id)
+    await updateDoc(transactionRef, transaction)
   }
 }
