@@ -16,7 +16,7 @@ section {
     align-items: center;
 }
 
-h1,h2,h4{
+h1,h2,h4,h5{
     margin-bottom: 0;
 }
 
@@ -24,9 +24,17 @@ h1,h2,h4{
     display: flex;
 }
 
-app-transactions-table {
-    display: flex;
-    flex-direction: column-reverse;
+.transactions-table-container {
+    display: block;
     max-height: 82vh;
     overflow-y: auto;
+}
+.table-column-names {
+    display: flex;
+    width:100vw;
+    justify-content: space-around;
+    background-color: #424242;
+    position: absolute;
+    top:15vh;
+    z-index: 100;
 }

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, Renderer2, ViewChild } from '@angular/core';
 import { DocumentData } from '@angular/fire/firestore';
 import { FormControl } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,14 +12,18 @@ import { TransAccountService } from '../trans-account.service';
   templateUrl: './transactions-view.component.html',
   styleUrls: ['./transactions-view.component.css']
 })
-export class TransactionsViewComponent{
+export class TransactionsViewComponent implements OnInit, AfterViewInit {
   today: Date = new Date();
   date: FormControl = new FormControl(new Date())
   monthlyAmount: number = 0;
 
   transactions: Observable<DocumentData[]>;
 
-  constructor(private tras: TransAccountService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router) {
+  listener!:any;
+  @ViewChild('transTable',{static:false}) scrollTableRef!: ElementRef;
+  showHead: boolean = false;
+
+  constructor(private tras: TransAccountService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router, private renderer2: Renderer2) {
     this.route.queryParams.subscribe(params => {
       this.date.value.setMonth(params['month'])
     });
@@ -36,6 +40,15 @@ export class TransactionsViewComponent{
         this.monthlyAmount = data
       })
     })
+  }
+  ngAfterViewInit(): void {
+    console.log(this.scrollTableRef.nativeElement)
+    this.listener = this.renderer2.listen(this.scrollTableRef.nativeElement, 'scroll', (e) => {
+      this.showHead = this.scrollTableRef.nativeElement.scrollTop > 6;
+    })
+  }
+  ngOnInit(): void {
+    console.log(this.scrollTableRef)
   }
 
   addTransaction() {
