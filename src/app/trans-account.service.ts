@@ -67,9 +67,9 @@ export class TransAccountService {
         if (!monthDoc.exists()) {
           transaction.set(monthDocRef,{amount:transactionForm.amount, [category]: transactionForm.amount, [account]: transactionForm.amount})
         } else {
-          const newAmount = monthDoc.data().amount + transactionForm.amount
-          const categoryAmount = monthDoc.get(category) ? monthDoc.get(category) +  transactionForm.amount : transactionForm.amount
-          const accountAmount = monthDoc.get(account) ? monthDoc.get(account) +  transactionForm.amount : transactionForm.amount
+          const newAmount = Number((monthDoc.data().amount + transactionForm.amount).toFixed(2))
+          const categoryAmount = Number(monthDoc.get(category) ? (monthDoc.get(category) +  transactionForm.amount).toFixed(2) : transactionForm.amount)
+          const accountAmount = Number(monthDoc.get(account) ? (monthDoc.get(account) +  transactionForm.amount).toFixed(2) : transactionForm.amount)
           
           transaction.update(monthDocRef, {amount: newAmount, [category]: categoryAmount, [account]: accountAmount})
         }
@@ -105,7 +105,7 @@ export class TransAccountService {
   getTransactionsForMonth(date: Date) {
     const start = new Date(date.getFullYear(), date.getMonth(), 1)
     const end = new Date(date.getFullYear(), date.getMonth()+1, 0)
-    const q = query(this.transCol, where('transactionDate', '>', start), where('transactionDate', '<', end))
+    const q = query(this.transCol, where('transactionDate', '>=', start), where('transactionDate', '<=', end))
     return collectionData(q, {idField: 'id'})
   }
 

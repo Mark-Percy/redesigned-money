@@ -42,13 +42,11 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
     })
   }
   ngAfterViewInit(): void {
-    console.log(this.scrollTableRef.nativeElement)
     this.listener = this.renderer2.listen(this.scrollTableRef.nativeElement, 'scroll', (e) => {
       this.showHead = this.scrollTableRef.nativeElement.scrollTop > 6;
     })
   }
   ngOnInit(): void {
-    console.log(this.scrollTableRef)
   }
 
   addTransaction() {
