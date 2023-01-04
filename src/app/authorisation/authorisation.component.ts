@@ -9,12 +9,14 @@ import { AuthorisationService } from '../authorisation.service';
 })
 export class AuthorisationComponent implements OnInit {
   links = [
-    {label: "Login", link: "/account/login"},
-    {label: "New Account", link: "/account/new-user"}
-
+    {label: "Login", link: "/account/login"}
   ];
   constructor(private authService: AuthorisationService) { 
-      
+      authService.getAccountCreationEnabled().then((val) => {
+        if(val){
+          this.links.push({label: "New Account", link: "/account/new-user"})
+        }
+      })
   }
 
   ngOnInit(): void {

@@ -9,6 +9,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AngularFireAuthGuard, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/compat/auth-guard';
 import { ProfileComponent } from './user/profile/profile.component';
 import { TransactionsViewComponent } from './transactions-view/transactions-view.component';
+import { accountCreationGuard } from './authorisation.service';
 
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['account','login']);
 const redirectAuthorisedToDashboard = () => redirectLoggedInTo(['dashboard']);
@@ -20,7 +21,7 @@ const routes: Routes = [
     component:AuthorisationComponent, 
     children:[
       {path:'login',component:LoginComponent},
-      {path:'new-user',component:NewUserComponent}
+      {path:'new-user',component:NewUserComponent, canActivate:[accountCreationGuard]}
     ]
   },
   {
