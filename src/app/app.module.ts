@@ -17,7 +17,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { UserComponent } from './user/user.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { AuthorisationService } from './authorisation.service';
+import { accountCreationGuard, AuthorisationService } from './authorisation.service';
 import { initializeApp,provideFirebaseApp } from '@angular/fire/app';
 import { environment } from '../environments/environment';
 import { provideAuth,getAuth } from '@angular/fire/auth';
@@ -66,7 +66,7 @@ import { SavingsDialogComponent } from './dashboard/savings/savings-dialog/savin
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())
   ],
-  providers: [{provide:DEFAULT_CURRENCY_CODE, useValue: 'GBP'}],
+  providers: [{provide:DEFAULT_CURRENCY_CODE, useValue: 'GBP'}, accountCreationGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
