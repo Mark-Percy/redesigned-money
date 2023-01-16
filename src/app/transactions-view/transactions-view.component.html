@@ -24,7 +24,7 @@
 </header>
 <section class="table-head">
     <button mat-button (click)="addTransaction()">Add Transaction</button>
-    <h4>{{monthlyAmount | currency}}</h4>
+    <app-spending-amounts *ngIf="date" [date]="date.value"></app-spending-amounts>
 </section>
 <div #transTable class="transactions-table-container">
     <app-transactions-table [dataSource]="transactions"></app-transactions-table>

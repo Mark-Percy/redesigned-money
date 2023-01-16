@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc, DocumentData } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from './authorisation.service';
 import { Pot } from './dashboard/savings/pots.interface';
+import { AmountsData } from './transactions-view/spending-amounts/spending-amounts.component';
 import { Account } from './user/account/account.interface';
 
 @Injectable({
@@ -109,16 +110,17 @@ export class TransAccountService {
     return collectionData(q, {idField: 'id'})
   }
 
-  async getAmountForMonth(date: Date): Promise<number> {
+  async getAmountForMonth(date: Date): Promise<AmountsData> {
     const month = date.toLocaleString('en-GB',{month:'long'})
     const year = date.getFullYear()
     const monthRef = doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
     const monthSnap = await getDoc(monthRef)
-    if (monthSnap.exists()) {
-      return monthSnap.data().amount;
+    if(monthSnap.exists()){
+      return monthSnap.data() as AmountsData
     }
-    return 0;
+    return {amount: 0, spending: 0, useless: 0, bills: {monthly: 0, annual: 0}};
   }
+
   async updateTransaction(id: string, transaction: any) {
     const transactionRef = doc(this.transCol, id)
     await updateDoc(transactionRef, transaction)

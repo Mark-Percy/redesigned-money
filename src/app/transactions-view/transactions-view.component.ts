@@ -28,17 +28,14 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
       this.date.value.setMonth(params['month'])
     });
     this.transactions = this.tras.getTransactionsForMonth(this.date.value)
-    this.tras.getAmountForMonth(this.date.value).then((data) => {
-      this.monthlyAmount = data
-    })
     this.date.valueChanges.subscribe(value =>{
       this.router.navigate([], {
         queryParams: {month: value.getMonth()}
       })
       this.transactions = this.tras.getTransactionsForMonth(value);
-      this.tras.getAmountForMonth(this.date.value).then((data) => {
-        this.monthlyAmount = data
-      })
+      // this.tras.getAmountForMonth(this.date.value).then((data) => {
+      //   this.monthlyAmount = data
+      // })
     })
   }
   ngAfterViewInit(): void {
@@ -51,10 +48,10 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
 
   addTransaction() {
     const addTransactionDialog = this.dialog.open(AddTransactionComponent, {data: {date:this.date.value}})
-     addTransactionDialog.afterClosed().subscribe(() => {
-      this.tras.getAmountForMonth(this.date.value).then((data) => {
-        this.monthlyAmount = data
-      })
+    addTransactionDialog.afterClosed().subscribe(() => {
+      // this.tras.getAmountForMonth(this.date.value).then((data) => {
+      //   this.monthlyAmount = data
+      // })
     })
   }
 
