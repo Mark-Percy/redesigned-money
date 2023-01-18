@@ -26,12 +26,11 @@ import { AddAccountDialog, ProfileComponent } from './user/profile/profile.compo
 import { provideFirestore,getFirestore } from '@angular/fire/firestore';
 import { AccountComponent } from './user/account/account.component';
 import { TransactionComponent } from './dashboard/transaction/transaction.component';
-import { TransactionsViewComponent } from './transactions-view/transactions-view.component';
+import { TransactionsViewComponent, AmountsBottomSheet } from './transactions-view/transactions-view.component';
 import { TransactionsTableComponent } from './transactions-table/transactions-table.component';
 import { AddTransactionComponent } from './add-transaction/add-transaction.component';
 import { SavingsComponent } from './dashboard/savings/savings.component';
 import { SavingsDialogComponent } from './dashboard/savings/savings-dialog/savings-dialog.component';
-import { SpendingAmountsComponent } from './transactions-view/spending-amounts/spending-amounts.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +52,7 @@ import { SpendingAmountsComponent } from './transactions-view/spending-amounts/s
     AddTransactionComponent,
     SavingsComponent,
     SavingsDialogComponent,
-    SpendingAmountsComponent
+    AmountsBottomSheet
   ],
   imports: [
     BrowserModule,

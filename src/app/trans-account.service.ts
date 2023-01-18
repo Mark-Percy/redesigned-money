@@ -4,7 +4,6 @@ import { FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from './authorisation.service';
 import { Pot } from './dashboard/savings/pots.interface';
-import { AmountsData } from './transactions-view/spending-amounts/spending-amounts.component';
 import { Account } from './user/account/account.interface';
 
 @Injectable({
@@ -110,13 +109,13 @@ export class TransAccountService {
     return collectionData(q, {idField: 'id'})
   }
 
-  async getAmountForMonth(date: Date): Promise<AmountsData> {
+  async getAmountForMonth(date: Date): Promise<DocumentData> {
     const month = date.toLocaleString('en-GB',{month:'long'})
     const year = date.getFullYear()
     const monthRef = doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
     const monthSnap = await getDoc(monthRef)
     if(monthSnap.exists()){
-      return monthSnap.data() as AmountsData
+      return [monthSnap.data() as DocumentData]
     }
     return {amount: 0, spending: 0, useless: 0, bills: {monthly: 0, annual: 0}};
   }

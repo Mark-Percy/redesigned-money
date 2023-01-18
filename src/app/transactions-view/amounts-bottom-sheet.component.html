@@ -1,0 +1,15 @@
+<ul>
+  <li>
+    <div>
+      <span>Bills</span>
+      <span class="bills">
+        <div *ngFor="let time of bills">{{time | currency}}</div>
+      </span>
+    </div>
+  </li>
+  <li *ngFor="let amount of amounts | keyvalue">
+    <div *ngIf="amount.key != 'Bills'">
+      <span>{{amount.key}}</span><span>{{amount.value | currency}}</span>
+    </div>
+  </li>
+</ul>
