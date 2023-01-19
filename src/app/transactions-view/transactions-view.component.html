@@ -24,7 +24,7 @@
 </header>
 <section class="table-head">
     <button mat-button (click)="addTransaction()">Add Transaction</button>
-    <h4>{{monthlyAmount | currency}}</h4>
+    <button mat-flat-button (click)="openBottom()">{{totalAmount | currency}}</button>
 </section>
 <div #transTable class="transactions-table-container">
     <app-transactions-table [dataSource]="transactions"></app-transactions-table>

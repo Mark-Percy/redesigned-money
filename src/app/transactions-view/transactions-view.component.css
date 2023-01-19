@@ -35,6 +35,6 @@ h1,h2,h4,h5{
     justify-content: space-around;
     background-color: #424242;
     position: absolute;
-    top:15vh;
+    top:18vh;
     z-index: 100;
 }

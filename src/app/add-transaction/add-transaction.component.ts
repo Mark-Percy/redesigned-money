@@ -27,7 +27,7 @@ export class AddTransactionComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  showFreq:boolean = false;
   transactionForm: FormGroup;
   accounts: Observable<Account[]>
   numberOfItems: number = 1;
@@ -63,6 +63,7 @@ export class AddTransactionComponent implements OnInit {
       transactionDate: this.formPrefill.date,
       account: this.formPrefill.account,
       category: this.formPrefill.category,
+      frequency: '',
       location: this.formPrefill.location,
       amount: this.formPrefill.amount,
       items: this.fb.array([
@@ -73,6 +74,10 @@ export class AddTransactionComponent implements OnInit {
           }],
         })
       ])
+    })
+
+    this.transactionForm.get('category')?.valueChanges.subscribe((val) => {
+      this.showFreq = val == 'bills'
     })
 
     this.items = this.getItems();
@@ -94,13 +99,15 @@ export class AddTransactionComponent implements OnInit {
       this.transactionForm.get('amount')?.patchValue(sum)
     });
   }
+
   addTransaction() {
     const transaction = {
       transactionDate: this.transactionForm.value.transactionDate,
       account: this.transactionForm.value.account,
       category: this.transactionForm.value.category,
       location: this.transactionForm.value.location,
-      amount: this.transactionForm.value.amount
+      amount: this.transactionForm.value.amount,
+      frequency: this.transactionForm.value.frequency
     }
     this.tras.addTransaction(transaction).then(transaction => {
       this.transactionDialog.close();
@@ -108,6 +115,7 @@ export class AddTransactionComponent implements OnInit {
       });
     });
   }
+
   updateTransaction(id:string) {
     this.tras.updateTransaction(id, 
       {

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc, DocumentData } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from './authorisation.service';
@@ -65,10 +65,24 @@ export class TransAccountService {
       await runTransaction(this.fs, async(transaction) => {
         const monthDoc = await transaction.get(monthDocRef);
         if (!monthDoc.exists()) {
-          transaction.set(monthDocRef,{amount:transactionForm.amount, [category]: transactionForm.amount, [account]: transactionForm.amount})
+          let monthData = {}
+          let nonAddedFreq = transactionForm.frequency == 'Monthly' ? 'Annually' : 'Monthly'
+          if(category == 'bills'){
+            monthData = {amount:transactionForm.amount, [category]: {[transactionForm.frequency]: transactionForm.amount, [nonAddedFreq]: 0}, [account]: transactionForm.amount}
+          } else {
+            monthData = {amount:transactionForm.amount, [category]: transactionForm.amount, [account]: transactionForm.amount, bills: {Monthly: 0, Annually: 0}}
+          }
+          transaction.set(monthDocRef,monthData)
         } else {
           const newAmount = Number((monthDoc.data().amount + transactionForm.amount).toFixed(2))
-          const categoryAmount = Number(monthDoc.get(category) ? (monthDoc.get(category) +  transactionForm.amount).toFixed(2) : transactionForm.amount)
+          let categoryAmount = 0
+          if(category == 'bills'){
+            let bills = monthDoc.get(category)
+            bills[transactionForm.frequency] = Number((bills[transactionForm.frequency] + transactionForm.amount).toFixed(2))
+            categoryAmount = bills
+          } else {
+            categoryAmount = Number(monthDoc.get(category) ? (monthDoc.get(category) +  transactionForm.amount).toFixed(2) : transactionForm.amount)
+          }
           const accountAmount = Number(monthDoc.get(account) ? (monthDoc.get(account) +  transactionForm.amount).toFixed(2) : transactionForm.amount)
           
           transaction.update(monthDocRef, {amount: newAmount, [category]: categoryAmount, [account]: accountAmount})
@@ -109,16 +123,17 @@ export class TransAccountService {
     return collectionData(q, {idField: 'id'})
   }
 
-  async getAmountForMonth(date: Date): Promise<number> {
+  async getAmountForMonth(date: Date): Promise<DocumentData> {
     const month = date.toLocaleString('en-GB',{month:'long'})
     const year = date.getFullYear()
     const monthRef = doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
     const monthSnap = await getDoc(monthRef)
-    if (monthSnap.exists()) {
-      return monthSnap.data().amount;
+    if(monthSnap.exists()){
+      return [monthSnap.data() as DocumentData]
     }
-    return 0;
+    return {amount: 0, spending: 0, useless: 0, bills: {monthly: 0, annual: 0}};
   }
+
   async updateTransaction(id: string, transaction: any) {
     const transactionRef = doc(this.transCol, id)
     await updateDoc(transactionRef, transaction)
