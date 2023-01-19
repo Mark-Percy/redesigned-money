@@ -98,7 +98,8 @@ export class AmountsBottomSheet {
   amounts = {}
   bills: number[] = []
   constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private _bottomSheetRef: MatBottomSheetRef<AmountsBottomSheet>) {
+    this.bills = [data.bills.Annually, data.bills.Monthly]
+    delete data.bills
     this.amounts = data
-    this.bills = [data.Bills.Anually, data.Bills.Monthly]
   }
 }

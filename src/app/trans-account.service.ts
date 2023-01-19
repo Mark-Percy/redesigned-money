@@ -65,10 +65,24 @@ export class TransAccountService {
       await runTransaction(this.fs, async(transaction) => {
         const monthDoc = await transaction.get(monthDocRef);
         if (!monthDoc.exists()) {
-          transaction.set(monthDocRef,{amount:transactionForm.amount, [category]: transactionForm.amount, [account]: transactionForm.amount})
+          let monthData = {}
+          let nonAddedFreq = transactionForm.frequency == 'Monthly' ? 'Annually' : 'Monthly'
+          if(category == 'bills'){
+            monthData = {amount:transactionForm.amount, [category]: {[transactionForm.frequency]: transactionForm.amount, [nonAddedFreq]: 0}, [account]: transactionForm.amount}
+          } else {
+            monthData = {amount:transactionForm.amount, [category]: transactionForm.amount, [account]: transactionForm.amount, bills: {Monthly: 0, Annually: 0}}
+          }
+          transaction.set(monthDocRef,monthData)
         } else {
           const newAmount = Number((monthDoc.data().amount + transactionForm.amount).toFixed(2))
-          const categoryAmount = Number(monthDoc.get(category) ? (monthDoc.get(category) +  transactionForm.amount).toFixed(2) : transactionForm.amount)
+          let categoryAmount = 0
+          if(category == 'bills'){
+            let bills = monthDoc.get(category)
+            bills[transactionForm.frequency] = Number((bills[transactionForm.frequency] + transactionForm.amount).toFixed(2))
+            categoryAmount = bills
+          } else {
+            categoryAmount = Number(monthDoc.get(category) ? (monthDoc.get(category) +  transactionForm.amount).toFixed(2) : transactionForm.amount)
+          }
           const accountAmount = Number(monthDoc.get(account) ? (monthDoc.get(account) +  transactionForm.amount).toFixed(2) : transactionForm.amount)
           
           transaction.update(monthDocRef, {amount: newAmount, [category]: categoryAmount, [account]: accountAmount})

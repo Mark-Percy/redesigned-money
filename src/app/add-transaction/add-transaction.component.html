@@ -21,6 +21,13 @@
       <mat-option value="useless">Useless</mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field *ngIf="showFreq">
+    <mat-label>Frequency</mat-label>
+    <mat-select formControlName="frequency">
+      <mat-option value="Annually">Annually</mat-option>
+      <mat-option value="Monthly">Monthly</mat-option>
+    </mat-select>
+  </mat-form-field>
   <mat-form-field>
     <mat-label>Location</mat-label>
     <input type="text" matInput formControlName="location" name="location">
