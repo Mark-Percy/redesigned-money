@@ -8,7 +8,7 @@
     </div>
   </li>
   <li *ngFor="let amount of amounts | keyvalue">
-    <div *ngIf="amount.key != 'Bills'">
+    <div *ngIf="amount.key != 'bills'">
       <span>{{amount.key}}</span><span>{{amount.value | currency}}</span>
     </div>
   </li>

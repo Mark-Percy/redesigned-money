@@ -98,8 +98,12 @@ export class AmountsBottomSheet {
   amounts = {}
   bills: number[] = []
   constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private _bottomSheetRef: MatBottomSheetRef<AmountsBottomSheet>) {
-    this.bills = [data.bills.Annually, data.bills.Monthly]
-    delete data.bills
+    try {
+      this.bills = [data.bills.Annually, data.bills.Monthly]
+    } catch {
+      alert('Unable to open: perhaps the data is old format, If not raise with Redesigned money')
+      this._bottomSheetRef.dismiss()
+    }
     this.amounts = data
   }
 }
