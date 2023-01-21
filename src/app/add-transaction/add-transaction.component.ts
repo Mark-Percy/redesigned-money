@@ -15,6 +15,7 @@ export interface FormPrefill {
   category: string;
   location: string;
   amount: number | null;
+  frequency: string;
 }
 
 @Component({
@@ -27,7 +28,6 @@ export class AddTransactionComponent implements OnInit {
 
   ngOnInit(): void {
   }
-  showFreq:boolean = false;
   transactionForm: FormGroup;
   accounts: Observable<Account[]>
   numberOfItems: number = 1;
@@ -39,8 +39,10 @@ export class AddTransactionComponent implements OnInit {
     account: '',
     category: '',
     location: '',
-    amount: null
+    amount: null,
+    frequency: '',
   }
+  showFreq:boolean = false;
   update: boolean = false;
   
   constructor(private fb: FormBuilder,
@@ -52,10 +54,11 @@ export class AddTransactionComponent implements OnInit {
   ){
     if(this.data && this.data.row) {
       this.formPrefill = this.data.row
+      this.showFreq = this.formPrefill.category == 'bills'
+      console.log(this.formPrefill)
       this.update = true;
     }
     this.formPrefill.date = this.data && this.data.date ? this.data.date : this.formPrefill.date 
-
     this._adapter.setLocale('en-GB')
 
     this.accounts = this.tras.getAccounts();
@@ -63,7 +66,7 @@ export class AddTransactionComponent implements OnInit {
       transactionDate: this.formPrefill.date,
       account: this.formPrefill.account,
       category: this.formPrefill.category,
-      frequency: '',
+      frequency: this.formPrefill.frequency,
       location: this.formPrefill.location,
       amount: this.formPrefill.amount,
       items: this.fb.array([
@@ -135,7 +138,12 @@ export class AddTransactionComponent implements OnInit {
     }]}));
   }
 
-  getItems(){
+  getItems() {
     return this.transactionForm.get('items') as FormArray;
+  }
+
+  deleteTransaction() {
+    const transForm = this.transactionForm.value
+    this.tras.deleteTransaction(this.formPrefill.id, transForm.amount, transForm.account, transForm.category, transForm.date, transForm.frequency)
   }
 }

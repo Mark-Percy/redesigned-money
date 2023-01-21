@@ -51,6 +51,7 @@
     <button mat-flat-button color="primary" (click)="addTransaction()" *ngIf="!update; else updateButton">Submit</button>
     <ng-template #updateButton>
       <button mat-flat-button color="primary" (click)="updateTransaction(formPrefill.id)">Update</button>
+      <button mat-flat-button color="warn" (click)="deleteTransaction()"><mat-icon>delete</mat-icon></button>
     </ng-template>
     <button mat-flat-button (click)="addItem()" *ngIf="!update">Add Field</button>
   </section>
