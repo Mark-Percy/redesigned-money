@@ -51,15 +51,6 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
   }
 
-  addTransaction() {
-    const addTransactionDialog = this.dialog.open(AddTransactionComponent, {data: {date:this.date.value}})
-    addTransactionDialog.afterClosed().subscribe(() => {
-      this.tras.getAmountForMonth(this.date.value).then((data) => {
-        this.setUpAmounts(data[0])
-      })
-    })
-  }
-
   changeDate(numOfMonths: number) {
     const holderDate: Date = this.date.value
     holderDate.setMonth(this.date.value.getMonth() + numOfMonths);
@@ -81,7 +72,14 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
   openBottom() {
     this._bottomSheet.open(AmountsBottomSheet, {data: this.amounts})
   }
-  
+  openTransactionsDialog(row: any) {
+    const addTransactionDialog = this.dialog.open(AddTransactionComponent, {data: row})
+    addTransactionDialog.afterClosed().subscribe(() => {
+      this.tras.getAmountForMonth(this.date.value).then((data) => {
+        this.setUpAmounts(data[0])
+      })
+    })
+  }
 }
 
 export interface Bills {

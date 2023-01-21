@@ -88,8 +88,8 @@ export class TransAccountService {
           transaction.update(monthDocRef, {amount: newAmount, [category]: categoryAmount, [account]: accountAmount})
         }
       });
-    } catch {
-      console.log('Transaction failed')
+    } catch (e:any) {
+      console.error(e.message)
     }
     return addDoc(this.transCol, transactionForm)
   }
@@ -137,5 +137,42 @@ export class TransAccountService {
   async updateTransaction(id: string, transaction: any) {
     const transactionRef = doc(this.transCol, id)
     await updateDoc(transactionRef, transaction)
+  }
+
+  async deleteTransaction(transactionId: string, amount: number, account: string, category: string, date: Date, frequency? : string) {
+    const items = this.getItems(transactionId);
+    const year = '2023';
+    const month = 'March';
+    const monthDocRef= doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`);
+
+    items.forEach((data) => {
+      if(data[0]) {
+        deleteDoc(doc(this.itemsCol,data[0].id))
+      }
+    })
+    try {
+      await runTransaction(this.fs, async(transaction) => {
+        const monthDoc = await transaction.get(monthDocRef);
+        const newAmount = Number((monthDoc.get('amount') - amount).toFixed(2))
+        const accountAmount = Number((monthDoc.get(account) - amount).toFixed(2))
+        let categoryAmount;
+
+        if(category == 'bills' && frequency) {
+          categoryAmount = monthDoc.get('bills')
+          categoryAmount[frequency] = Number((categoryAmount[frequency] - amount).toFixed(2))
+        } else {
+          categoryAmount = Number((monthDoc.get(category) - amount).toFixed(2))
+        }
+        transaction.update(monthDocRef, {amount: newAmount, [category]: categoryAmount, [account]: accountAmount})
+      })
+    } catch (e: any) {
+      console.error(e.message)
+    }
+    return deleteDoc(doc(this.transCol, transactionId))
+  }
+
+  getItems(transactionId:string) {
+    const q = query(this.itemsCol, where('transactionId', '==', transactionId))
+    return collectionData(q, {idField: 'id'})
   }
 }

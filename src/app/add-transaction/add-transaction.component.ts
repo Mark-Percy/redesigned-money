@@ -55,7 +55,6 @@ export class AddTransactionComponent implements OnInit {
     if(this.data && this.data.row) {
       this.formPrefill = this.data.row
       this.showFreq = this.formPrefill.category == 'bills'
-      console.log(this.formPrefill)
       this.update = true;
     }
     this.formPrefill.date = this.data && this.data.date ? this.data.date : this.formPrefill.date 
@@ -144,6 +143,8 @@ export class AddTransactionComponent implements OnInit {
 
   deleteTransaction() {
     const transForm = this.transactionForm.value
-    this.tras.deleteTransaction(this.formPrefill.id, transForm.amount, transForm.account, transForm.category, transForm.date, transForm.frequency)
+    this.tras.deleteTransaction(this.formPrefill.id, transForm.amount, transForm.account, transForm.category, transForm.date, transForm.frequency).then(() => {
+      this.transactionDialog.close();
+    })
   }
 }

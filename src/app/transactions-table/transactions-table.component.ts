@@ -1,7 +1,5 @@
 import { CdkTableDataSourceInput } from '@angular/cdk/table';
-import { Component, Input } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { AddTransactionComponent, FormPrefill } from '../add-transaction/add-transaction.component';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-transactions-table',
@@ -11,14 +9,15 @@ import { AddTransactionComponent, FormPrefill } from '../add-transaction/add-tra
 export class TransactionsTableComponent {
 
   @Input() dataSource!: CdkTableDataSourceInput<any>;
+  @Output('openDialog') close: EventEmitter<any> = new EventEmitter<any>();
 
   displayedColumns: string[] = ['transactionDate','amount', 'category', 'location'];
 
-  constructor(private dialog: MatDialog) { }
+  constructor() { }
 
   openEditDialog(row: any) {
     row.date = row.transactionDate.toDate();
-    this.dialog.open(AddTransactionComponent, {data: {row: row}})
+    this.close.emit({row:row})
   }
 
 }
