@@ -143,7 +143,7 @@ export class AddTransactionComponent implements OnInit {
 
   deleteTransaction() {
     const transForm = this.transactionForm.value
-    this.tras.deleteTransaction(this.formPrefill.id, transForm.amount, transForm.account, transForm.category, transForm.date, transForm.frequency).then(() => {
+    this.tras.deleteTransaction(this.formPrefill.id, transForm.amount, transForm.account, transForm.category, transForm.transactionDate, transForm.frequency).then(() => {
       this.transactionDialog.close();
     })
   }

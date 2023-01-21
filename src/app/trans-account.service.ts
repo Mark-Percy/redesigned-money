@@ -141,8 +141,8 @@ export class TransAccountService {
 
   async deleteTransaction(transactionId: string, amount: number, account: string, category: string, date: Date, frequency? : string) {
     const items = this.getItems(transactionId);
-    const year = '2023';
-    const month = 'March';
+    const year = date.getFullYear();
+    const month = date.toLocaleString('en-GB', {month: 'long'});
     const monthDocRef= doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`);
 
     items.forEach((data) => {
