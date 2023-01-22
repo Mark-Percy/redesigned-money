@@ -2,7 +2,8 @@ import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { SavingsDialogComponent } from 'src/app/dashboard/savings/savings-dialog/savings-dialog.component';
-import { TransAccountService } from 'src/app/trans-account.service';
+import { AccountsService } from 'src/app/shared/accounts.service';
+import { TransactionsService } from 'src/app/shared/transactions.service';
 import { Account } from 'src/app/user/account/account.interface';
 
 @Component({
@@ -13,10 +14,10 @@ import { Account } from 'src/app/user/account/account.interface';
 export class SavingsComponent {
 
   columns = ['name', 'amount']
-  accounts : Observable<Account[]> = this.tras.getAccounts('Savings');
+  accounts : Observable<Account[]> = this.accountService.getAccounts('Savings');
   @Input() panelWidth = '45vw';
 
-  constructor(private tras: TransAccountService, public dialog: MatDialog) {
+  constructor(private accountService: AccountsService, public dialog: MatDialog) {
 
   }
 

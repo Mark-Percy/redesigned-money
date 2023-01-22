@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from 'src/app/authorisation.service';
-import { TransAccountService } from 'src/app/trans-account.service';
+import { AccountsService } from 'src/app/shared/accounts.service';
 import { Account } from '../account/account.interface';
 
 @Component({
@@ -20,9 +20,9 @@ export class ProfileComponent implements OnInit {
     surname : [''],
   })
 
-  accounts: Observable<Account[]> = this.tras.getAccounts();
+  accounts: Observable<Account[]> = this.accountsService.getAccounts();
 
-  constructor(private authService: AuthorisationService, private fb: FormBuilder, private dialog: MatDialog, private tras: TransAccountService) {
+  constructor(private authService: AuthorisationService, private fb: FormBuilder, private dialog: MatDialog, private accountsService: AccountsService) {
     this.authService.getDetails().subscribe(data => {
       this.userDetailsForm.get('firstName')?.patchValue(data['firstName']);
       this.userDetailsForm.get('surname')?.patchValue(data['surname']);
@@ -51,11 +51,11 @@ export class ProfileComponent implements OnInit {
   }
 
   getAccounts() {
-    this.tras.getAccounts();
+    this.accountsService.getAccounts();
   }
 
   deleteAccount(id: string) {
-    this.tras.delete(id)
+    this.accountsService.delete(id)
   }
 }
 
@@ -85,7 +85,7 @@ export class AddAccountDialog {
   accountTypes:string[] = ['Credit', 'Debit', 'Savings'];
   accountForm: FormGroup;
 
-  constructor(public dialogRef: MatDialogRef<AddAccountDialog>, private fb: FormBuilder, private tras: TransAccountService){
+  constructor(public dialogRef: MatDialogRef<AddAccountDialog>, private fb: FormBuilder, private accountsService: AccountsService){
     this.accountForm = this.fb.group({
       name: [''],
       type: ['']
@@ -94,7 +94,7 @@ export class AddAccountDialog {
   
   submitAccount(){
     this.dialogRef.close();
-    this.tras.addAccount(this.accountForm.value);
+    this.accountsService.addAccount(this.accountForm.value);
   }
 
 }

@@ -4,7 +4,8 @@ import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { TransAccountService } from '../trans-account.service';
+import { AccountsService } from '../shared/accounts.service';
+import { TransactionsService } from '../shared/transactions.service';
 import { Account } from '../user/account/account.interface';
 
 export interface FormPrefill {
@@ -48,7 +49,8 @@ export class AddTransactionComponent implements OnInit {
   constructor(private fb: FormBuilder,
               private transactionDialog: MatDialogRef<AddTransactionComponent>,
               private _adapter: DateAdapter<any>,
-              private tras: TransAccountService,
+              private transactionsService: TransactionsService,
+              private accountsService: AccountsService,
               private router: Router,
               @Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:FormPrefill | null}  
   ){
@@ -60,7 +62,7 @@ export class AddTransactionComponent implements OnInit {
     this.formPrefill.date = this.data && this.data.date ? this.data.date : this.formPrefill.date 
     this._adapter.setLocale('en-GB')
 
-    this.accounts = this.tras.getAccounts();
+    this.accounts = this.accountsService.getAccounts();
     this.transactionForm = this.fb.group({
       transactionDate: this.formPrefill.date,
       account: this.formPrefill.account,
@@ -111,15 +113,15 @@ export class AddTransactionComponent implements OnInit {
       amount: this.transactionForm.value.amount,
       frequency: this.transactionForm.value.frequency
     }
-    this.tras.addTransaction(transaction).then(transaction => {
+    this.transactionsService.addTransaction(transaction).then(transaction => {
       this.transactionDialog.close();
-      this.tras.addItems(this.items, transaction.id).then(() => {
+      this.transactionsService.addItems(this.items, transaction.id).then(() => {
       });
     });
   }
 
   updateTransaction(id:string) {
-    this.tras.updateTransaction(id, 
+    this.transactionsService.updateTransaction(id, 
       {
         transactionDate: this.transactionForm.value.transactionDate,
         account: this.transactionForm.value.account,
@@ -143,7 +145,7 @@ export class AddTransactionComponent implements OnInit {
 
   deleteTransaction() {
     const transForm = this.transactionForm.value
-    this.tras.deleteTransaction(this.formPrefill.id, transForm.amount, transForm.account, transForm.category, transForm.transactionDate, transForm.frequency).then(() => {
+    this.transactionsService.deleteTransaction(this.formPrefill.id, transForm.amount, transForm.account, transForm.category, transForm.transactionDate, transForm.frequency).then(() => {
       this.transactionDialog.close();
     })
   }

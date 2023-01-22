@@ -4,8 +4,9 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Pot } from '../pots.interface';
-import { TransAccountService } from '../../../trans-account.service';
 import { Account } from '../../../user/account/account.interface';
+import { AccountsService } from 'src/app/shared/accounts.service';
+import { SavingsService } from 'src/app/shared/savings.service';
 
 @Component({
   selector: 'app-savings-dialog',
@@ -27,20 +28,21 @@ export class SavingsDialogComponent {
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public id: string,
-    public tras: TransAccountService,
+    private accountsService: AccountsService,
+    private savingsService: SavingsService,
     public fb: FormBuilder
   ) {
     this.account.id = id;
-    this.accountData = this.tras.getAccount(id)
+    this.accountData = this.accountsService.getAccount(id)
     this.accountData.then((response) => {
       this.account.name = response.get('name');
       this.account.type = response.get('type');
     })
 
-    this.pots = this.tras.getPots(this.account.id);
+    this.pots = this.savingsService.getPots(this.account.id);
   }
 
   addPot() {
-    if(this.account.id) this.tras.addPot(this.account.id, this.addPotsForm.value);
+    if(this.account.id) this.savingsService.addPot(this.account.id, this.addPotsForm.value);
   }
 }
