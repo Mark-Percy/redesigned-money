@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
-import { TransAccountService } from '../trans-account.service';
+import { TransactionsService } from '../shared/transactions.service';
 
 @Component({
   selector: 'app-transactions-view',
@@ -25,21 +25,21 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
   @ViewChild('transTable',{static:false}) scrollTableRef!: ElementRef;
   showHead: boolean = false;
 
-  constructor(private tras: TransAccountService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router, private renderer2: Renderer2, private _bottomSheet: MatBottomSheet) {
+  constructor(private transactionService: TransactionsService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router, private renderer2: Renderer2, private _bottomSheet: MatBottomSheet) {
     this.route.queryParams.subscribe(params => {
       this.date.value.setMonth(params['month'])
     });
-    this.tras.getAmountForMonth(this.date.value).then((data) => {
-      this.setUpAmounts(data[0])  
+    this.transactionService.getAmountForMonth(this.date.value).then((data) => {
+      if(data) this.setUpAmounts(data[0]);
     })
-    this.transactions = this.tras.getTransactionsForMonth(this.date.value)
+    this.transactions = this.transactionService.getTransactionsForMonth(this.date.value)
     this.date.valueChanges.subscribe(value =>{
       this.router.navigate([], {
         queryParams: {month: value.getMonth()}
       })
-      this.transactions = this.tras.getTransactionsForMonth(value);
-      this.tras.getAmountForMonth(this.date.value).then((data) => {
-        this.setUpAmounts(data[0])
+      this.transactions = this.transactionService.getTransactionsForMonth(value);
+      this.transactionService.getAmountForMonth(this.date.value).then((data) => {
+        if(data) this.setUpAmounts(data[0]);
       })
     })
   }
@@ -75,8 +75,8 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
   openTransactionsDialog(row: any) {
     const addTransactionDialog = this.dialog.open(AddTransactionComponent, {data: row})
     addTransactionDialog.afterClosed().subscribe(() => {
-      this.tras.getAmountForMonth(this.date.value).then((data) => {
-        this.setUpAmounts(data[0])
+      this.transactionService.getAmountForMonth(this.date.value).then((data) => {
+        if(data) this.setUpAmounts(data[0]);
       })
     })
   }

@@ -1,58 +1,16 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc, DocumentData } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { AuthorisationService } from './authorisation.service';
-import { Pot } from './dashboard/savings/pots.interface';
-import { Account } from './user/account/account.interface';
+import { AuthorisationService } from './../authorisation.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TransAccountService {
+export class TransactionsService {
   
   transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
   itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
-  collection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts');
   constructor(private fs: Firestore, private auth: AuthorisationService) { }
-
-  addAccount(accountsForm: any) {
-    let newDoc = addDoc(this.collection, accountsForm);
-    if(accountsForm.type == 'Savings'){
-      newDoc.then((response) => {
-        const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+response.id+'/pots')
-        addDoc(potCollection, {name: 'Main', amount: 0})
-      })
-    }
-  }
-
-  getAccounts(accountType?: string): Observable<Account[]> {
-    let q;
-    if(!accountType) {
-      q = query(this.collection, orderBy('name'))
-    } else {
-      q = query(this.collection, orderBy('name'), where('type', '==', accountType))
-    }
-    return collectionData(q, {idField: 'id'}) as  Observable<Account[]>
-  }
-
-  getAccount(id: string) : Promise<DocumentSnapshot<Account>>{
-    return getDoc(doc(this.collection, id)) as Promise<DocumentSnapshot<Account>>
-  }
-
-  addPot(potId: string, potForm: any) {
-    const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+potId+'/pots');
-    addDoc(potCollection, potForm)
-  }
-
-  getPots(potId: string) {
-    const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+potId+'/pots');
-    return collectionData(potCollection, {idField: 'id'}) as Observable<Pot[]>
-  }
-  
-  delete(id: string) {
-    deleteDoc(doc(this.collection, id))
-  }
 
   async addTransaction(transactionForm: any): Promise<DocumentReference> {
     const date = transactionForm.transactionDate;
@@ -123,7 +81,7 @@ export class TransAccountService {
     return collectionData(q, {idField: 'id'})
   }
 
-  async getAmountForMonth(date: Date): Promise<DocumentData> {
+  async getAmountForMonth(date: Date): Promise<DocumentData | null> {
     const month = date.toLocaleString('en-GB',{month:'long'})
     const year = date.getFullYear()
     const monthRef = doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
@@ -131,7 +89,7 @@ export class TransAccountService {
     if(monthSnap.exists()){
       return [monthSnap.data() as DocumentData]
     }
-    return {amount: 0, spending: 0, useless: 0, bills: {monthly: 0, annual: 0}};
+    return null;
   }
 
   async updateTransaction(id: string, transaction: any) {
