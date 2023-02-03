@@ -113,10 +113,8 @@ export class AddTransactionComponent implements OnInit {
       amount: this.transactionForm.value.amount,
       frequency: this.transactionForm.value.frequency
     }
-    this.transactionsService.addTransaction(transaction).then(transaction => {
+    this.transactionsService.addTransaction(transaction, this.items).then(() => {
       this.transactionDialog.close();
-      this.transactionsService.addItems(this.items, transaction.id).then(() => {
-      });
     });
   }
 
