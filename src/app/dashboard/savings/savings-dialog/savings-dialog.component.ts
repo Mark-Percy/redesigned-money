@@ -32,13 +32,11 @@ export class SavingsDialogComponent {
     private savingsService: SavingsService,
     public fb: FormBuilder
   ) {
-    this.account.id = id;
     this.accountData = this.accountsService.getAccount(id)
     this.accountData.then((response) => {
-      this.account.name = response.get('name');
-      this.account.type = response.get('type');
+      this.account = response.data() as Account
     })
-
+    this.account.id = id;
     this.pots = this.savingsService.getPots(this.account.id);
   }
 
