@@ -5,18 +5,31 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AccountsService } from '../shared/accounts.service';
+import { SavingsService } from '../shared/savings.service';
 import { TransactionsService } from '../shared/transactions.service';
 import { Account } from '../user/account/account.interface';
 
-export interface FormPrefill {
+export interface TransactionInter {
   id: string;
   transactionDate: Date;
   date: Date;
   account: string;
+  toAccount: string;
   category: string;
   location: string;
   amount: number | null;
   frequency: string;
+  items: [];
+}
+export class Savings {
+  name: string;
+  id: string;
+  amount: number | null;
+  constructor (account: Account, savingsService: SavingsService){
+    this.name = account.name;
+    this.id = account.id ? account.id : 'empty';
+    this.amount = account.amount ? account.amount : 0;
+  }
 }
 
 @Component({
@@ -33,30 +46,36 @@ export class AddTransactionComponent implements OnInit {
   accounts: Observable<Account[]>
   numberOfItems: number = 1;
   items: FormArray;
-  formPrefill: FormPrefill = {
+  formPrefill: TransactionInter = {
     transactionDate: new Date(),
     id: '',
     date: new Date(),
     account: '',
+    toAccount: '',
     category: '',
     location: '',
     amount: null,
     frequency: '',
+    items: []
   }
   showFreq:boolean = false;
   update: boolean = false;
+  savings: boolean = false;
+
   
   constructor(private fb: FormBuilder,
               private transactionDialog: MatDialogRef<AddTransactionComponent>,
               private _adapter: DateAdapter<any>,
               private transactionsService: TransactionsService,
               private accountsService: AccountsService,
+              private savingsService: SavingsService,
               private router: Router,
-              @Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:FormPrefill | null}  
+              @Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:TransactionInter | null}  
   ){
     if(this.data && this.data.row) {
       this.formPrefill = this.data.row
       this.showFreq = this.formPrefill.category == 'bills'
+      this.savings = this.formPrefill.category == 'savings'
       this.update = true;
     }
     this.formPrefill.date = this.data && this.data.date ? this.data.date : this.formPrefill.date 
@@ -66,6 +85,7 @@ export class AddTransactionComponent implements OnInit {
     this.transactionForm = this.fb.group({
       transactionDate: this.formPrefill.date,
       account: this.formPrefill.account,
+      toAccount: this.formPrefill.toAccount,
       category: this.formPrefill.category,
       frequency: this.formPrefill.frequency,
       location: this.formPrefill.location,
@@ -82,6 +102,7 @@ export class AddTransactionComponent implements OnInit {
 
     this.transactionForm.get('category')?.valueChanges.subscribe((val) => {
       this.showFreq = val == 'bills'
+      this.savings = val == 'savings'
     })
 
     this.items = this.getItems();
@@ -105,29 +126,13 @@ export class AddTransactionComponent implements OnInit {
   }
 
   addTransaction() {
-    const transaction = {
-      transactionDate: this.transactionForm.value.transactionDate,
-      account: this.transactionForm.value.account,
-      category: this.transactionForm.value.category,
-      location: this.transactionForm.value.location,
-      amount: this.transactionForm.value.amount,
-      frequency: this.transactionForm.value.frequency
-    }
-    this.transactionsService.addTransaction(transaction, this.items).then(() => {
+    this.transactionsService.addTransaction(this.transactionForm.value, this.items).then(() => {
       this.transactionDialog.close();
     });
   }
 
   updateTransaction(id:string) {
-    this.transactionsService.updateTransaction(id, 
-      {
-        transactionDate: this.transactionForm.value.transactionDate,
-        account: this.transactionForm.value.account,
-        category: this.transactionForm.value.category,
-        location: this.transactionForm.value.location,
-        amount: this.transactionForm.value.amount
-      }
-    );
+    this.transactionsService.updateTransaction(id, this.transactionForm.value);
     this.transactionDialog.close()
   }
 
