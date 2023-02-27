@@ -15,6 +15,7 @@ import { SavingsService } from 'src/app/shared/savings.service';
 })
 export class SavingsDialogComponent {
 
+  accountId: String;
   accountData:Promise<DocumentSnapshot<Account>>
   account: Account = {name: '', type: ''}
   showAddPot: boolean = false;
@@ -32,15 +33,16 @@ export class SavingsDialogComponent {
     private savingsService: SavingsService,
     public fb: FormBuilder
   ) {
+    this.accountId = id
     this.accountData = this.accountsService.getAccount(id)
     this.accountData.then((response) => {
       this.account = response.data() as Account
     })
-    this.account.id = id;
-    this.pots = this.savingsService.getPots(this.account.id);
+    this.pots = this.savingsService.getPots(this.accountId);
   }
 
   addPot() {
-    if(this.account.id) this.savingsService.addPot(this.account.id, this.addPotsForm.value);
+    if(this.accountId) this.savingsService.addPot(this.accountId, this.addPotsForm.value);
+    this.showAddPot = false
   }
 }

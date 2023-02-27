@@ -12,12 +12,12 @@ export class SavingsService {
 
   constructor(private fs: Firestore ,private auth: AuthorisationService) { }
 
-  addPot(potId: string, potForm: any) {
-    const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+potId+'/pots');
+  addPot(accountId: String, potForm: any) {
+    const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+accountId+'/pots');
     addDoc(potCollection, potForm)
   }
 
-  getPots(accountId: string): Observable<Pot[]> {
+  getPots(accountId: String): Observable<Pot[]> {
     const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+accountId+'/pots');
     return collectionData(potCollection, {idField: 'id'}) as Observable<Pot[]>
   }
