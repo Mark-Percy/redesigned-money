@@ -4,6 +4,7 @@ import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
+import { Pot } from '../dashboard/savings/pots.interface';
 import { AccountsService } from '../shared/accounts.service';
 import { SavingsService } from '../shared/savings.service';
 import { TransactionsService } from '../shared/transactions.service';
@@ -15,6 +16,7 @@ export interface TransactionInter {
   date: Date;
   account: string;
   toAccount: string;
+  pot: string;
   category: string;
   location: string;
   amount: number | null;
@@ -44,6 +46,7 @@ export class AddTransactionComponent implements OnInit {
   }
   transactionForm: FormGroup;
   accounts: Observable<Account[]>
+  pots: Observable<Pot[]>
   numberOfItems: number = 1;
   items: FormArray;
   formPrefill: TransactionInter = {
@@ -52,6 +55,7 @@ export class AddTransactionComponent implements OnInit {
     date: new Date(),
     account: '',
     toAccount: '',
+    pot: '',
     category: '',
     location: '',
     amount: null,
@@ -86,6 +90,7 @@ export class AddTransactionComponent implements OnInit {
       transactionDate: this.formPrefill.date,
       account: this.formPrefill.account,
       toAccount: this.formPrefill.toAccount,
+      pot: this.formPrefill.pot,
       category: this.formPrefill.category,
       frequency: this.formPrefill.frequency,
       location: this.formPrefill.location,
@@ -103,6 +108,9 @@ export class AddTransactionComponent implements OnInit {
     this.transactionForm.get('category')?.valueChanges.subscribe((val) => {
       this.showFreq = val == 'bills'
       this.savings = val == 'savings'
+    })
+    this.transactionForm.get('toAccount')?.valueChanges.subscribe((val) => {
+      this.pots = this.savingsService.getPots(val)
     })
 
     this.items = this.getItems();
