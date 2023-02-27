@@ -75,6 +75,10 @@ export class ProfileComponent implements OnInit {
           <mat-option *ngFor="let option of accountTypes" [value]="option">{{ option }}</mat-option>
         </mat-select>
       </mat-form-field>
+      <mat-form-field *ngIf="showNum">
+        <mat-label>Account Name</mat-label>
+        <input type="number" matInput formControlName="amount">
+      </mat-form-field>
       <button mat-raised-button>Submit</button>
     </form>
   </div>
@@ -84,11 +88,16 @@ export class AddAccountDialog {
 
   accountTypes:string[] = ['Credit', 'Debit', 'Savings'];
   accountForm: FormGroup;
+  showNum: boolean = false;
 
   constructor(public dialogRef: MatDialogRef<AddAccountDialog>, private fb: FormBuilder, private accountsService: AccountsService){
     this.accountForm = this.fb.group({
       name: [''],
-      type: ['']
+      type: [''],
+      amount: ['0']
+    })
+    this.accountForm.get('type')?.valueChanges.subscribe((val) => {
+      this.showNum = val == 'Savings'
     })
   }
   

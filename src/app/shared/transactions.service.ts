@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc, DocumentData } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
+import { TransactionInter } from '../add-transaction/add-transaction.component';
 import { AuthorisationService } from './../authorisation.service';
+import { SavingsService } from './savings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,18 +12,26 @@ export class TransactionsService {
   
   transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
   itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
-  constructor(private fs: Firestore, private auth: AuthorisationService) { }
+  constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService) { }
 
-  async addTransaction(transactionForm: any, items:any): Promise<any> {
-    return this.updateMonth(transactionForm.transactionDate, transactionForm.category, transactionForm.frequency, transactionForm.account, transactionForm.amount).then((res) => {
-      if(res.code == 1) {
-        return addDoc(this.transCol, transactionForm).then(transaction => {
+  async addTransaction(transactionForm: TransactionInter, items:any): Promise<any> {
+    let resCode = 0
+    const savings = transactionForm.category == 'savings'
+    if(!savings && transactionForm.amount){
+      resCode = await this.updateMonth(transactionForm.transactionDate, transactionForm.category, transactionForm.frequency, transactionForm.account, transactionForm.amount).then((res) => {
+        return res.code
+      });
+    }
+    if(resCode == 1 || savings) {
+      return addDoc(this.transCol, transactionForm).then(transaction => {
+        if(!savings) {
           return this.addItems(items, transaction.id)
-        });
-      }
-      console.error(res.message)
-      return null
-    });
+        } else {
+          if(transactionForm.amount) this.savingsService.updatePot(transactionForm.pot, transactionForm.toAccount, transactionForm.amount);
+          return 1
+        } 
+      });
+    }
   }
   
   addItems(items: FormArray, transactionId: string) {
@@ -76,16 +86,15 @@ export class TransactionsService {
 
   async deleteTransaction(transactionId: string, amount: number, account: string, category: string, date: Date, frequency : string) {
     const items = this.getItems(transactionId);
-    const year = date.getFullYear();
-    const month = date.toLocaleString('en-GB', {month: 'long'});
 
     items.forEach((data) => {
       if(data[0]) {
         deleteDoc(doc(this.itemsCol,data[0].id))
       }
     });
-    
-    this.updateMonth(date, category, frequency, account, 0 - amount)
+    if(!(category == 'savings')) {
+      this.updateMonth(date, category, frequency, account, 0 - amount)
+    }
     return deleteDoc(doc(this.transCol, transactionId))
   }
 

@@ -13,12 +13,12 @@ export class AccountsService {
 
   constructor(private fs: Firestore, private auth: AuthorisationService) { }
 
-  addAccount(accountsForm: any) {
+  addAccount(accountsForm: Account) {
     let newDoc = addDoc(this.collection, accountsForm);
     if(accountsForm.type == 'Savings'){
       newDoc.then((response) => {
         const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+response.id+'/pots')
-        addDoc(potCollection, {name: 'Main', amount: 0})
+        addDoc(potCollection, {name: 'Main', amount: accountsForm.amount})
       })
     }
   }
