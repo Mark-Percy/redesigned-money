@@ -14,11 +14,11 @@ export class TransactionsService {
   itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
   constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService) { }
 
-  async addTransaction(transactionForm: TransactionInter, items:any): Promise<any> {
+  async addTransaction(transactionForm: TransactionInter, items:any, accountName: string): Promise<any> {
     let resCode = 0
     const savings = transactionForm.category == 'savings'
     if(!savings && transactionForm.amount){
-      resCode = await this.updateMonth(transactionForm.transactionDate, transactionForm.category, transactionForm.frequency, transactionForm.account, transactionForm.amount).then((res) => {
+      resCode = await this.updateMonth(transactionForm.transactionDate, transactionForm.category, transactionForm.frequency, accountName, transactionForm.amount).then((res) => {
         return res.code
       });
     }
@@ -98,7 +98,7 @@ export class TransactionsService {
     return deleteDoc(doc(this.transCol, transactionId))
   }
 
-  getItems(transactionId:string) {
+  getItems(transactionId: string) {
     const q = query(this.itemsCol, where('transactionId', '==', transactionId))
     return collectionData(q, {idField: 'id'})
   }

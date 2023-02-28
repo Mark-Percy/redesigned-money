@@ -46,6 +46,7 @@ export class AddTransactionComponent implements OnInit {
   }
   transactionForm: FormGroup;
   accounts: Observable<Account[]>
+  accountsArr:Account[] = [];
   pots: Observable<Pot[]>
   numberOfItems: number = 1;
   items: FormArray;
@@ -62,7 +63,7 @@ export class AddTransactionComponent implements OnInit {
     frequency: '',
     items: []
   }
-  showFreq:boolean = false;
+  showFreq: boolean = false;
   update: boolean = false;
   savings: boolean = false;
 
@@ -131,17 +132,36 @@ export class AddTransactionComponent implements OnInit {
       }
       this.transactionForm.get('amount')?.patchValue(sum)
     });
+
+    this.accounts.subscribe((ret) => {
+      this.accountsArr = ret
+      this.updateTheAccount(ret)
+    })
+  }
+  // function called to check the value of the accounts select is correct
+  // If old saved pre March 2023, will automatically update account value to 
+  updateTheAccount(accounts: any[]) {
+    const currentAccount = accounts.find(item => item.name == this.transactionForm.value.account)
+    if(currentAccount) {
+      this.transactionForm.get('account')?.patchValue(currentAccount.id)
+      this.updateTransaction(this.formPrefill.id, true)
+    }
   }
 
   addTransaction() {
-    this.transactionsService.addTransaction(this.transactionForm.value, this.items).then(() => {
-      this.transactionDialog.close();
-    });
+    const name = this.accountsArr.find(item => item.id == this.transactionForm.value.account)?.name
+    //if an account is selected
+    if(name) {
+      this.transactionsService.addTransaction(this.transactionForm.value, this.items, name).then(() => {
+        this.transactionDialog.close();
+      });
+    }
   }
-
-  updateTransaction(id:string) {
+  // dont close is for when the user opens a transaction that was added before march 2023, 
+  //Function called automtically for accounts stored as account name and not id, to update the stored value to id
+  updateTransaction(id:string, dontClose?: Boolean) {
     this.transactionsService.updateTransaction(id, this.transactionForm.value);
-    this.transactionDialog.close()
+    if(!dontClose) this.transactionDialog.close()
   }
 
   addItem() {
