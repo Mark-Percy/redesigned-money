@@ -7,15 +7,12 @@ import { AuthorisationService } from '../authorisation.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
 
   @Output() darkmodeEvent = new EventEmitter<boolean>(); 
 
   @Input() isDark: boolean = false;
   constructor(public authService: AuthorisationService, private router: Router) { }
-
-  ngOnInit(): void {
-  }
 
   changeThemeMode() {
     this.darkmodeEvent.emit()
@@ -24,7 +21,7 @@ export class HeaderComponent implements OnInit {
     return this.authService.user ? true : false;
   }
 
-  logout(){
+  logout(): void{
     this.authService.signOut().subscribe(() => {
       this.router.navigate(['/']);
     });
