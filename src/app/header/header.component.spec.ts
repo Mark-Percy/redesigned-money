@@ -5,9 +5,38 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { AuthorisationService } from '../authorisation.service';
 import { AppModule } from '../app.module';
 
-class MockAuthorisationService {
+class MockUnAuthService {
   user = null;
 }
+class MockAuthService {
+  user = {name:'test User'};
+}
+
+describe('When user is logged in', () => {
+  let component: HeaderComponent;
+  let fixture: ComponentFixture<HeaderComponent>;
+  let loader: HarnessLoader;
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [ HeaderComponent ],
+      imports:[AppModule],
+      providers: [
+        HeaderComponent, {provide: AuthorisationService, useClass: MockAuthService}
+      ]
+    })
+    .compileComponents();
+  })
+  beforeEach(() => {
+    fixture = TestBed.createComponent(HeaderComponent);
+    component = fixture.componentInstance;
+    loader = TestbedHarnessEnvironment.loader(fixture);
+    fixture.detectChanges();
+  });
+
+  it('should be logged in', () => {
+    expect(component.isLoggedIn()).toBe(true) 
+  })
+})
 
 describe('When Header Component not logged in', () => {
   let component: HeaderComponent;
@@ -19,9 +48,8 @@ describe('When Header Component not logged in', () => {
       declarations: [ HeaderComponent ],
       imports:[AppModule],
       providers: [
-        HeaderComponent, {provide: AuthorisationService, useClass: MockAuthorisationService}
+        HeaderComponent, {provide: AuthorisationService, useClass: MockUnAuthService}
       ]
-      
     })
     .compileComponents();
   });
@@ -38,5 +66,7 @@ describe('When Header Component not logged in', () => {
     expect(component).toBeTruthy();
   });
 
-
+  it('should not be logged in', () => {
+    expect(component.isLoggedIn()).toBe(false) 
+  })
 });
