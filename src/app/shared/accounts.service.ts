@@ -9,12 +9,10 @@ import { Account } from '../user/account/account.interface';
 })
 export class AccountsService {
 
-  collection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts');
-
-  constructor(private fs: Firestore, private auth: AuthorisationService) { }
-
+  constructor(private fs: Firestore, private auth: AuthorisationService) {}
   addAccount(accountsForm: Account) {
-    let newDoc = addDoc(this.collection, accountsForm);
+    const accountsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts');
+    let newDoc = addDoc(accountsCol, accountsForm);
     if(accountsForm.type == 'Savings'){
       newDoc.then((response) => {
         const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+response.id+'/pots')
@@ -24,20 +22,23 @@ export class AccountsService {
   }
 
   getAccounts(accountType?: string): Observable<Account[]> {
+    const accountsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts');
     let q;
     if(!accountType) {
-      q = query(this.collection, orderBy('name'))
+      q = query(accountsCol, orderBy('name'))
     } else {
-      q = query(this.collection, orderBy('name'), where('type', '==', accountType))
+      q = query(accountsCol, orderBy('name'), where('type', '==', accountType))
     }
     return collectionData(q, {idField: 'id'}) as  Observable<Account[]>
   }
 
   getAccount(id: string) : Promise<DocumentSnapshot<Account>>{
-    return getDoc(doc(this.collection, id)) as Promise<DocumentSnapshot<Account>>
+    const accountsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts');
+    return getDoc(doc(accountsCol, id)) as Promise<DocumentSnapshot<Account>>
   }
 
   delete(id: string) {
-    deleteDoc(doc(this.collection, id))
+    const accountsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts');
+    deleteDoc(doc(accountsCol, id))
   }
 }
