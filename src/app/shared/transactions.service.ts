@@ -10,9 +10,7 @@ import { SavingsService } from './savings.service';
 })
 export class TransactionsService {
   
-  transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
-  itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
-  constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService) { }
+  constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService) {}
 
   async addTransaction(transactionForm: TransactionInter, items:any, accountName: string): Promise<any> {
     let resCode = 0
@@ -23,7 +21,8 @@ export class TransactionsService {
       });
     }
     if(resCode == 1 || savings) {
-      return addDoc(this.transCol, transactionForm).then(transaction => {
+      const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+      return addDoc(transCol, transactionForm).then(transaction => {
         if(!savings) {
           return this.addItems(items, transaction.id)
         } else {
@@ -35,6 +34,7 @@ export class TransactionsService {
   }
   
   addItems(items: FormArray, transactionId: string) {
+    const itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
     const batch = writeBatch(this.fs);
     const curritem = {
       transactionId: transactionId,
@@ -44,7 +44,7 @@ export class TransactionsService {
     items.controls.forEach(item => {
       curritem.item = item.value.item;
       curritem.amount = item.value.amount;
-      batch.set(doc(this.itemsCol), curritem);
+      batch.set(doc(itemsCol), curritem);
     })
     const res = {code: 0, message: 'Failed'}
     batch.commit().then(() => {
@@ -57,14 +57,16 @@ export class TransactionsService {
   }
 
   getTransactions(numberToLimit: number){
-    const q = query(this.transCol, orderBy('transactionDate', 'desc'), limit(numberToLimit))
+    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const q = query(transCol, orderBy('transactionDate', 'desc'), limit(numberToLimit))
     return collectionData(q, {idField: 'id'})
   }
 
   getTransactionsForMonth(date: Date){
+    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const start = new Date(date.getFullYear(), date.getMonth(), 1)
     const end = new Date(date.getFullYear(), date.getMonth()+1, 0)
-    const q = query(this.transCol, where('transactionDate', '>=', start), where('transactionDate', '<=', end))
+    const q = query(transCol, where('transactionDate', '>=', start), where('transactionDate', '<=', end))
     return collectionData(q, {idField: 'id'})
   }
 
@@ -80,26 +82,31 @@ export class TransactionsService {
   }
 
   async updateTransaction(id: string, transaction: any) {
-    const transactionRef = doc(this.transCol, id)
+    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const transactionRef = doc(transCol, id)
     await updateDoc(transactionRef, transaction)
   }
 
   async deleteTransaction(transactionId: string, amount: number, account: string, category: string, date: Date, frequency : string) {
+    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
     const items = this.getItems(transactionId);
 
     items.forEach((data) => {
       if(data[0]) {
-        deleteDoc(doc(this.itemsCol,data[0].id))
+        deleteDoc(doc(itemsCol,data[0].id))
       }
     });
     if(!(category == 'savings')) {
       this.updateMonth(date, category, frequency, account, 0 - amount)
     }
-    return deleteDoc(doc(this.transCol, transactionId))
+    return deleteDoc(doc(transCol, transactionId))
   }
 
   getItems(transactionId: string) {
-    const q = query(this.itemsCol, where('transactionId', '==', transactionId))
+    const itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
+
+    const q = query(itemsCol, where('transactionId', '==', transactionId))
     return collectionData(q, {idField: 'id'})
   }
 
