@@ -9,7 +9,7 @@ article {
     display: grid;
     width:85vw;
     padding: 0;
-    box-shadow: 1px 0px 14px 15px #764128;
+    border: white solid 1px;
     border-radius: 10px;
 }
 form {

@@ -1,6 +1,6 @@
 <section class="account-holder">
     <div class="account-content">
-        <nav mat-tab-nav-bar color="accent" mat-align-tabs="center">
+        <nav mat-tab-nav-bar color="primary" mat-align-tabs="center" [tabPanel]="authPanel">
             <a mat-tab-link *ngFor="let link of this.links"
                 [routerLink]="link.link" 
                 routerLinkActive #rla="routerLinkActive"
@@ -9,6 +9,8 @@
                 {{ link.label }}
             </a>
         </nav>
-        <router-outlet></router-outlet>
+        <mat-tab-nav-panel #authPanel>
+            <router-outlet></router-outlet>
+        </mat-tab-nav-panel>
     </div>
 </section>

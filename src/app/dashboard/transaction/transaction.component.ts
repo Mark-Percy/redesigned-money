@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { DocumentData } from '@angular/fire/firestore';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ActivatedRoute, Router, ParamMap } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AddTransactionComponent } from 'src/app/add-transaction/add-transaction.component';
 import { TransactionsService } from 'src/app/shared/transactions.service';
