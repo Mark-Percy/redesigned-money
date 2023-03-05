@@ -1,12 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-:root{
-    --text-color-theme: black;
-}
-.darkmode {
-    --text-color-theme:white;
-}
+
 /* Reset */
 
 /* Box sizing rules */
@@ -86,26 +81,7 @@ select {
 
 /* Menus */
 main{
-    background-color: #fda77f;
     height: 100vh;
     width: 100vw;
-    color:black;
     
-}
-main.darkmode{
-    background-color: #471802;
-    color:white;
-}
-
-.menu-item a {
-    color: var(--text-color-theme);
-    text-decoration: none;
-}
-
-.mat-success, .darkmode .mat-success{
-  background-color: green;
-}
-
-.mat-menu-panel {
-  background-color: #ffb300;
 }

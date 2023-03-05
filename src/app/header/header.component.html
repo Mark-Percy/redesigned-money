@@ -3,11 +3,10 @@
         <button *ngIf="isLoggedIn()" mat-button routerLink="dashboard" routerLinkActive="active" color="secondary">Dashboard</button>
         <span class="spacer"></span>
         <button *ngIf="isLoggedIn()" mat-button [mat-menu-trigger-for]="accountMenu"><mat-icon>settings</mat-icon></button>
-        <mat-menu #accountMenu="matMenu">
+        <mat-menu #accountMenu="matMenu" color="primary">
             <button mat-menu-item routerLink="user/profile"><mat-icon>account_circle</mat-icon>Profile</button>
-            <button mat-menu-item disabled>
-                <mat-icon>light_mode</mat-icon>
-                <mat-slide-toggle (change)="changeThemeMode()" [checked]="isDark" (click)="$event.stopPropagation();"></mat-slide-toggle>
+            <button mat-menu-item>
+                <mat-slide-toggle (change)="changeThemeMode()" [checked]="isDark" (click)="$event.stopPropagation()"><mat-icon>light_mode</mat-icon></mat-slide-toggle>
             </button>
         </mat-menu>
 

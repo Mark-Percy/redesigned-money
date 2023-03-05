@@ -1,4 +1,4 @@
-<main [classList]="!this.darkmode ? '' : 'darkmode'" color="primary">
+<main class="mat-typography mat-app-background" [classList]="!this.darkmode ? 'mat-typography mat-app-background' : 'darkmode mat-typography mat-app-background'">
     <app-header (darkmodeEvent)="changeThemeMode()" [isDark]="darkmode"></app-header>
     <router-outlet></router-outlet>
 </main>
