@@ -11,11 +11,11 @@
             <mat-datepicker #monthYearPicker touchUi [startView]="'year'" (monthSelected)="setMonthYear($event, monthYearPicker)"></mat-datepicker>
         </mat-form-field>
         <button mat-icon-button (click)="date.setValue(today)"><mat-icon>calendar_today</mat-icon></button>
-        <button (click)="monthYearPicker.open()" mat-icon-button><mat-icon>date_range</mat-icon></button>
+        <!-- <button (click)="monthYearPicker.open()" mat-icon-button><mat-icon>date_range</mat-icon></button> -->
     </section>
     <section id="month">
         <button mat-icon-button (click)="changeDate(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
-        <h1>{{date.value.toLocaleString('en-GB',{month:'long'})}}</h1>
+        <button mat-button (click)="monthYearPicker.open()"><h1>{{date.value.toLocaleString('en-GB',{month:'long'})}}</h1></button>
         <button mat-icon-button (click)="changeDate(1)"><mat-icon>arrow_forward_ios</mat-icon></button>
     </section>
     <section id="year">
