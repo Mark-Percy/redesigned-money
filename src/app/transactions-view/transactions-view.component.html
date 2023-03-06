@@ -11,7 +11,7 @@
             <mat-datepicker #monthYearPicker touchUi [startView]="'year'" (monthSelected)="setMonthYear($event, monthYearPicker)"></mat-datepicker>
         </mat-form-field>
         <button mat-icon-button (click)="date.setValue(today)"><mat-icon>calendar_today</mat-icon></button>
-        <div>{{ (isHandset | async)?.matches ? 'DA: ' : 'Daily Average: ' }}{{ (totalAmount / this.getMonthDays()).toFixed(2) }}</div>
+        <div>{{ (isHandset | async)?.matches ? 'DA: ' : 'Daily Average: ' }}{{ (totalAmount / this.getMonthDays()).toFixed(2) | currency }}</div>
     </section>
     <section id="month">
         <button mat-icon-button (click)="changeDate(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
