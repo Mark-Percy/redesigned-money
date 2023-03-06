@@ -6,7 +6,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
+import { AccountsService } from '../shared/accounts.service';
 import { TransactionsService } from '../shared/transactions.service';
+import { Amount } from '../shared/amount';
 
 @Component({
   selector: 'app-transactions-view',
@@ -16,7 +18,7 @@ import { TransactionsService } from '../shared/transactions.service';
 export class TransactionsViewComponent implements OnInit, AfterViewInit {
   today: Date = new Date();
   date: FormControl = new FormControl(new Date())
-  amounts = {};
+  amounts:Amount[] = [];
   totalAmount: number = 0;
 
   transactions: Observable<DocumentData[]>;
@@ -25,7 +27,13 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
   @ViewChild('transTable',{static:false}) scrollTableRef!: ElementRef;
   showHead: boolean = false;
 
-  constructor(private transactionService: TransactionsService, private dialog: MatDialog, private route: ActivatedRoute, private router: Router, private renderer2: Renderer2, private _bottomSheet: MatBottomSheet) {
+  constructor(
+      private transactionService: TransactionsService,
+      private accountsService: AccountsService,
+      private dialog: MatDialog, private route: ActivatedRoute,
+      private router: Router, private renderer2: Renderer2,
+      private _bottomSheet: MatBottomSheet
+  ) {
     this.route.queryParams.subscribe(params => {
       this.date.value.setMonth(params['month'])
     });
@@ -63,9 +71,9 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
     widget.close()
   }
 
-  setUpAmounts(data: DocumentData) {
-    this.totalAmount = data.amount
-    delete data.amount
+  setUpAmounts(data: Amount[]) {
+    const amount = data.find(item => item.name == 'amount')?.amount
+    this.totalAmount = amount ? amount: 0
     this.amounts = data
   }
 
@@ -90,18 +98,20 @@ export interface Bills {
 @Component({
   selector: 'bottom-sheet-overview-example-sheet',
   templateUrl: './amounts-bottom-sheet.component.html',
-  styles: ['div {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}']
+  styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}']
 })
 export class AmountsBottomSheet {
-  amounts = {}
+  accountAm:Amount[] = [] 
+  accountsArr: string[] = [];
+  categoriesAm: Amount[] = [];
   bills: number[] = []
-  constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private _bottomSheetRef: MatBottomSheetRef<AmountsBottomSheet>) {
-    try {
-      this.bills = [data.bills.Annually, data.bills.Monthly]
-    } catch {
-      alert('Unable to open: perhaps the data is old format, If not raise with Redesigned money')
-      this._bottomSheetRef.dismiss()
-    }
-    this.amounts = data
+  constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: Amount[], 
+    private accountsService: AccountsService,
+  ) {
+    this.accountsService.getAccounts().subscribe(res => {
+      this.accountsArr = res.map(item => item.name)
+      this.categoriesAm = data.filter(item => !this.accountsArr.includes(item.name) && item.name != 'amount')
+      this.accountAm = data.filter(item => this.accountsArr.includes(item.name))
+    })
   }
 }

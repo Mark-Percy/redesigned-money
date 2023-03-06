@@ -1,15 +1,17 @@
-<ul>
-  <li>
-    <div>
-      <span>Bills</span>
-      <span class="bills">
-        <div *ngFor="let time of bills">{{time | currency}}</div>
-      </span>
-    </div>
-  </li>
-  <li *ngFor="let amount of amounts | keyvalue">
-    <div *ngIf="amount.key != 'bills'">
-      <span>{{amount.key}}</span><span>{{amount.value | currency}}</span>
-    </div>
-  </li>
-</ul>
+<mat-tab-group>
+  <mat-tab label="Accounts">
+    <ul>
+      <li *ngFor="let account of accountAm">
+        <span>{{account.name | titlecase}}</span><span>{{account.amount | currency}}</span>
+      </li>
+    </ul>
+  </mat-tab>
+  <mat-tab label="Categories">
+    <ul>
+      <li *ngFor="let category of categoriesAm">
+        <span>{{category.name | titlecase}}</span>
+        <span>{{category.amount | currency}}</span>
+      </li>
+    </ul>
+  </mat-tab>
+</mat-tab-group>

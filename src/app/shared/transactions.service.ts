@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc, DocumentData } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
 import { TransactionInter } from '../add-transaction/add-transaction.component';
+import { Amount } from "./amount";
 import { AuthorisationService } from './../authorisation.service';
 import { SavingsService } from './savings.service';
 
@@ -76,7 +77,17 @@ export class TransactionsService {
     const monthRef = doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
     const monthSnap = await getDoc(monthRef)
     if(monthSnap.exists()){
-      return [monthSnap.data() as DocumentData]
+      const data: any = monthSnap.data()
+      const amounts: Amount[] = []
+      for(const key in data) {
+        if(key != 'bills') {
+          amounts.push({name: key, amount: data[key]})
+        } else {
+          amounts.push({name:'monthly', amount: data[key].Monthly})
+          amounts.push({name:'annaully', amount: data[key].Annually})
+        }
+      }
+      return [amounts]
     }
     return null;
   }
