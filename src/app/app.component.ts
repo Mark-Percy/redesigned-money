@@ -12,7 +12,7 @@ export class AppComponent {
 
   constructor(private overlayContainer: OverlayContainer){
     this.darkmode = localStorage.getItem('dark') == "true" ? true : false;
-    this.overlayContainer.getContainerElement().classList.add(this.darkmode ? 'darkmode': '')
+    if(this.darkmode) this.overlayContainer.getContainerElement().classList.add('darkmode')
   }
 
   changeThemeMode() {
