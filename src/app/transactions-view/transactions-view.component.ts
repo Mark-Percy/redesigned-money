@@ -9,30 +9,32 @@ import { AddTransactionComponent } from '../add-transaction/add-transaction.comp
 import { AccountsService } from '../shared/accounts.service';
 import { TransactionsService } from '../shared/transactions.service';
 import { Amount } from '../shared/amount';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 @Component({
   selector: 'app-transactions-view',
   templateUrl: './transactions-view.component.html',
   styleUrls: ['./transactions-view.component.css']
 })
-export class TransactionsViewComponent implements OnInit, AfterViewInit {
+export class TransactionsViewComponent implements AfterViewInit {
+  @ViewChild('transTable',{static:false}) scrollTableRef!: ElementRef;
+
   today: Date = new Date();
   date: FormControl = new FormControl(new Date())
   amounts:Amount[] = [];
   totalAmount: number = 0;
-
   transactions: Observable<DocumentData[]>;
-
   listener!:any;
-  @ViewChild('transTable',{static:false}) scrollTableRef!: ElementRef;
   showHead: boolean = false;
+
+  isHandset: Observable<BreakpointState> = this.responsive.observe(Breakpoints.HandsetPortrait);
 
   constructor(
       private transactionService: TransactionsService,
-      private accountsService: AccountsService,
       private dialog: MatDialog, private route: ActivatedRoute,
       private router: Router, private renderer2: Renderer2,
-      private _bottomSheet: MatBottomSheet
+      private _bottomSheet: MatBottomSheet,
+      private responsive: BreakpointObserver,
   ) {
     this.route.queryParams.subscribe(params => {
       this.date.value.setMonth(params['month'])
@@ -56,14 +58,11 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
       this.showHead = this.scrollTableRef.nativeElement.scrollTop > 6;
     })
   }
-  ngOnInit(): void {
-  }
 
   changeDate(numOfMonths: number) {
     const holderDate: Date = this.date.value
     holderDate.setMonth(this.date.value.getMonth() + numOfMonths);
     this.date.setValue(holderDate);
-
   }
   
   setMonthYear(value: Date, widget:any) {
@@ -87,6 +86,15 @@ export class TransactionsViewComponent implements OnInit, AfterViewInit {
         if(data) this.setUpAmounts(data[0]);
       })
     })
+  }
+  checkCurrMonth(): boolean {
+    return this.today.getMonth() == this.date.value.getMonth() && this.today.getFullYear() == this.date.value.getFullYear()
+  }
+  getMonthDays(): number {
+    if(!this.checkCurrMonth()) {
+      return new Date(this.date.value.getFullYear(), this.date.value.getMonth() + 1, 0).getDate()
+    }
+    return this.today.getDate()
   }
 }
 
