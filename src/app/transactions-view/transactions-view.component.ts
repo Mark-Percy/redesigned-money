@@ -1,7 +1,7 @@
-import { AfterViewInit, Component, ElementRef, Inject, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { DocumentData } from '@angular/fire/firestore';
 import { FormControl } from '@angular/forms';
-import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { MatBottomSheet, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -16,23 +16,21 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
   templateUrl: './transactions-view.component.html',
   styleUrls: ['./transactions-view.component.css']
 })
-export class TransactionsViewComponent implements AfterViewInit {
-  @ViewChild('transTable',{static:false}) scrollTableRef!: ElementRef;
+export class TransactionsViewComponent {
 
   today: Date = new Date();
   date: FormControl = new FormControl(new Date())
   amounts:Amount[] = [];
   totalAmount: number = 0;
   transactions: Observable<DocumentData[]>;
-  listener!:any;
-  showHead: boolean = false;
 
   isHandset: Observable<BreakpointState> = this.responsive.observe(Breakpoints.HandsetPortrait);
 
   constructor(
       private transactionService: TransactionsService,
-      private dialog: MatDialog, private route: ActivatedRoute,
-      private router: Router, private renderer2: Renderer2,
+      private dialog: MatDialog, 
+      private route: ActivatedRoute,
+      private router: Router,
       private _bottomSheet: MatBottomSheet,
       private responsive: BreakpointObserver,
   ) {
@@ -51,11 +49,6 @@ export class TransactionsViewComponent implements AfterViewInit {
       this.transactionService.getAmountForMonth(this.date.value).then((data) => {
         if(data) this.setUpAmounts(data[0]);
       })
-    })
-  }
-  ngAfterViewInit(): void {
-    this.listener = this.renderer2.listen(this.scrollTableRef.nativeElement, 'scroll', (e) => {
-      this.showHead = this.scrollTableRef.nativeElement.scrollTop > 6;
     })
   }
 
@@ -79,6 +72,7 @@ export class TransactionsViewComponent implements AfterViewInit {
   openBottom() {
     this._bottomSheet.open(AmountsBottomSheet, {data: this.amounts})
   }
+
   openTransactionsDialog(row: any) {
     const addTransactionDialog = this.dialog.open(AddTransactionComponent, {data: row})
     addTransactionDialog.afterClosed().subscribe(() => {
@@ -87,9 +81,11 @@ export class TransactionsViewComponent implements AfterViewInit {
       })
     })
   }
+
   checkCurrMonth(): boolean {
     return this.today.getMonth() == this.date.value.getMonth() && this.today.getFullYear() == this.date.value.getFullYear()
   }
+  
   getMonthDays(): number {
     if(!this.checkCurrMonth()) {
       return new Date(this.date.value.getFullYear(), this.date.value.getMonth() + 1, 0).getDate()
