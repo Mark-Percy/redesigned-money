@@ -62,7 +62,7 @@ export class ProfileComponent implements OnInit {
 @Component({
   selector: 'add-account',
   template:`
-  <h3 mat-dialog-title></h3>
+  <h3 mat-dialog-title>Add Account</h3>
   <div mat-dialog-content>
     <form (ngSubmit)="submitAccount()" [formGroup]="accountForm">
       <mat-form-field>
