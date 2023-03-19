@@ -29,13 +29,14 @@ export class SavingsService {
       await runTransaction(this.fs, async(transaction) => {
         const potDoc = await transaction.get(potRef)
         const accDoc = await transaction.get(accRef)
-        let potAmount = Number((potDoc.data()?.amount + updAmount).toFixed(2))
-        let accAmount = Number((accDoc.data()?.amount + updAmount).toFixed(2))
+        let potAmount = Number((potDoc.data()?.amount + updAmount)).toFixed(2)
+        let accAmount = Number((accDoc.data()?.amount + updAmount)).toFixed(2)
         transaction.update(potRef, {amount: potAmount})
         transaction.update(accRef, {amount: accAmount})
       })
       return 1
-    } catch {
+    } catch (e){
+      console.error(e)
       return 0
     }
   }
