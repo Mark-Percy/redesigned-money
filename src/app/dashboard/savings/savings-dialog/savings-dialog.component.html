@@ -1,15 +1,29 @@
 <h1 mat-dialog-title>{{account.name}}</h1>
 <div mat-dialog-content>
-    <button mat-button (click)="showAddPot = true">Add Pot</button>
-    <div>Amount</div><div>{{account.amount ? account.amount : 0}}</div>
-    <section *ngIf="showAddPot">
-        <form [formGroup]="addPotsForm" (ngSubmit)="addPot()">
-            <mat-form-field>
-            <label for="name"></label>
-            <input matInput formControlName="name">
-            </mat-form-field>
-            <button mat-flat-button color="success">Add Pot</button>
-        </form>
+    <section class="head-section">
+        <article>
+            <button mat-button (click)="showAddPot = !showAddPot">{{ showAddPot ? 'cancel' : 'Add Pot' }}</button>
+            <div>Amount</div><div>{{account.amount ? account.amount : 0 | currency}}</div>
+            <form [formGroup]="addPotsForm" (ngSubmit)="addPot()" *ngIf="showAddPot">
+                <mat-form-field>
+                    <label for="name"></label>
+                    <input matInput formControlName="name">
+                </mat-form-field>
+                <button mat-flat-button color="success">Add Pot</button>
+            </form>
+        </article>
+        <article id="transfer" *ngIf="potsBetween.length > 0">
+            <h4>Transfering</h4>
+            <div *ngFor="let pot of potsBetween">
+                <p>{{ pot.name }} : {{ pot.amount | currency }}</p>
+            </div>
+            <form (ngSubmit)="transferValue()" *ngIf="potsBetween.length == 2">
+                <mat-form-field>
+                    <input matInput type="number" color="primary" [formControl]="transferVal">
+                </mat-form-field>
+                <button mat-button color="accent">Transfer</button>
+            </form>
+        </article>
     </section>
     <section>
         <h3>Pots</h3>
@@ -23,9 +37,7 @@
                 <td mat-cell *matCellDef="let pot">{{pot.amount ? pot.amount : 0}}</td>
             </ng-container>
             <tr mat-header-row *matHeaderRowDef="columns"></tr>
-            <tr mat-row
-                *matRowDef="let row; columns: columns;"
-            ></tr>
+            <tr mat-row *matRowDef="let pot; columns: columns;" (click)="addToTransfer(pot)"></tr>
         </table>
     </section>
 </div>
