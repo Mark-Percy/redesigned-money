@@ -1,3 +1,16 @@
 table {
     width:100%
 }
+.head-section {
+    display: grid;
+    grid-template: "a b" 50%;
+}
+p {
+    padding: 0;
+}
+#transfer div {
+    display: flex
+}
+#transfer div p {
+    justify-self: flex-end;
+}

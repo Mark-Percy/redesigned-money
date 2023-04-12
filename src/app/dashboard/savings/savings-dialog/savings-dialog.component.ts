@@ -20,12 +20,19 @@ export class SavingsDialogComponent {
   account: Account = {name: '', type: ''}
   showAddPot: boolean = false;
 
+  potsBetween: Pot[] = []
+
   columns = ['name', 'amount']
   pots: Observable<Pot[]>; 
   addPotsForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
     amount: '0'
   });
+
+
+  transferValForm: FormGroup = this.fb.group({
+    amount: ''
+  })
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public id: string,
@@ -44,5 +51,15 @@ export class SavingsDialogComponent {
   addPot() {
     if(this.accountId) this.savingsService.addPot(this.accountId, this.addPotsForm.value);
     this.showAddPot = false
+  }
+
+  addToTransfer(pot: Pot) {
+    this.potsBetween.push(pot)
+    if(this.potsBetween.length == 3) this.potsBetween.shift()
+    while(this.potsBetween[0].amount == 0) this.potsBetween.shift() 
+  }
+
+  transferValue() {
+
   }
 }
