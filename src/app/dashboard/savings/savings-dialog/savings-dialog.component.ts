@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { DocumentSnapshot } from '@angular/fire/firestore';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { Pot } from '../pots.interface';
@@ -26,13 +26,11 @@ export class SavingsDialogComponent {
   pots: Observable<Pot[]>; 
   addPotsForm: FormGroup = this.fb.group({
     name: ['', Validators.required],
-    amount: '0'
+    amount: 0
   });
 
 
-  transferValForm: FormGroup = this.fb.group({
-    amount: ''
-  })
+  transferVal: FormControl<number | null> = this.fb.control(0)
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public id: string,
@@ -60,6 +58,7 @@ export class SavingsDialogComponent {
   }
 
   transferValue() {
-
+    if(this.transferVal.value && this.accountId) this.savingsService.updatePotsAmounts(this.accountId, this.potsBetween, this.transferVal.value)
+    this.potsBetween = []
   }
 }

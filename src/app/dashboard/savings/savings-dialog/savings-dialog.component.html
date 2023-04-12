@@ -17,9 +17,9 @@
             <div *ngFor="let pot of potsBetween">
                 <p>{{ pot.name }} : {{ pot.amount | currency }}</p>
             </div>
-            <form [formGroup]="transferValForm" (ngSubmit)="transferValue()" *ngIf="potsBetween.length == 2">
+            <form (ngSubmit)="transferValue()" *ngIf="potsBetween.length == 2">
                 <mat-form-field>
-                    <input matInput type="number" color="primary" formControlName="amount">
+                    <input matInput type="number" color="primary" [formControl]="transferVal">
                 </mat-form-field>
                 <button mat-button color="accent">Transfer</button>
             </form>
