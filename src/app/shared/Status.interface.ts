@@ -1,4 +1,4 @@
 export interface Status{
-    status:String
-    msg: String
+    status: string
+    msg: string
 }

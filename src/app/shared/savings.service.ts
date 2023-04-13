@@ -13,17 +13,17 @@ export class SavingsService {
 
   constructor(private fs: Firestore ,private auth: AuthorisationService) { }
 
-  addPot(accountId: String, potForm: Pot) {
+  addPot(accountId: string, name: string) {
     const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+accountId+'/pots');
-    addDoc(potCollection, potForm)
+    addDoc(potCollection, {name: name, amount: 0})
   }
 
-  getPots(accountId: String): Observable<Pot[]> {
+  getPots(accountId: string): Observable<Pot[]> {
     const potCollection = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts/'+accountId+'/pots');
     return collectionData(potCollection, {idField: 'id'}) as Observable<Pot[]>
   }
 
-  async updatePot(potId: String, accountId: String, updAmount: Number, betweenPots?: boolean): Promise<Status> {
+  async updatePot(potId: string, accountId: string, updAmount: Number, betweenPots?: boolean): Promise<Status> {
     const potRef = doc(this.fs,`users/${this.auth.getUserId()}/Accounts/${accountId}/pots/${potId}`)
     const accRef = doc(this.fs,`users/${this.auth.getUserId()}/Accounts/${accountId}`)
     try {
@@ -42,7 +42,7 @@ export class SavingsService {
     }
   }
 
-  updatePotsAmounts(accountId: String, pots: Pot[], amount:number): Status {
+  updatePotsAmounts(accountId: string, pots: Pot[], amount:number): Status {
     let allGood = true
     if(pots.length > 2) return {status: 'Error', msg: 'number of pots passed through was greater than the 2 expected'}
     for(let [i, pot] of pots.entries()) {
@@ -51,7 +51,7 @@ export class SavingsService {
         if(pot.id) this.updatePot(pot.id, accountId, transAmount, true).then((val) => {allGood = val.status == 'Success'})
       }
     }
-    return {status: 'Success', msg: 'Both Pot amounts were updated'}
+    return {status: 'Success', msg: `£${amount} was transfered from ${pots[0].name} to ${pots[1].name}`}
 
   }
 }

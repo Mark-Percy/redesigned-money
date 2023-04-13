@@ -23,7 +23,7 @@ export class NewUserComponent implements OnInit {
 	hideConfirm: boolean = true;
 
 	newAccountForm!: UntypedFormGroup;
-	errorMessage: String = '';
+	errorMessage: string = '';
 
   	constructor(private authService: AuthorisationService, private fb: FormBuilder, private router:Router) {
 

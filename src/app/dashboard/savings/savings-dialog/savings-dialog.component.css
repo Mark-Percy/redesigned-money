@@ -1,5 +1,5 @@
 table {
-    width:100%
+    width:100%;
 }
 .head-section {
     display: grid;
@@ -9,8 +9,19 @@ p {
     padding: 0;
 }
 #transfer div {
-    display: flex
+    display: flex;
 }
 #transfer div p {
     justify-self: flex-end;
+}
+
+form>* {
+    display: block;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
 }
