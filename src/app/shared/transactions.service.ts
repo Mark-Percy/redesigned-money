@@ -66,7 +66,8 @@ export class TransactionsService {
   getTransactionsForMonth(date: Date){
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const start = new Date(date.getFullYear(), date.getMonth(), 1)
-    const end = new Date(date.getFullYear(), date.getMonth()+1, 0)
+    const end = new Date(date.getFullYear(), date.getMonth()+1, 0, 23, 59, 59)
+    console.log(end)
     const q = query(transCol, where('transactionDate', '>=', start), where('transactionDate', '<=', end))
     return collectionData(q, {idField: 'id'})
   }
