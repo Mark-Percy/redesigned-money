@@ -10,7 +10,7 @@ import { SavingsService } from '../shared/savings.service';
 import { TransactionsService } from '../shared/transactions.service';
 import { Account } from '../user/account/account.interface';
 
-export interface TransactionInter {
+export interface TransactionInterface {
   id: string;
   transactionDate: Date;
   date: Date;
@@ -50,7 +50,20 @@ export class AddTransactionComponent implements OnInit {
   pots: Observable<Pot[]>
   numberOfItems: number = 1;
   items: FormArray;
-  formPrefill: TransactionInter = {
+  formPrefill: TransactionInterface = {
+    transactionDate: new Date(),
+    id: '',
+    date: new Date(),
+    account: '',
+    toAccount: '',
+    pot: '',
+    category: '',
+    location: '',
+    amount: null,
+    frequency: '',
+    items: []
+  }
+  oldTransaction: TransactionInterface = {
     transactionDate: new Date(),
     id: '',
     date: new Date(),
@@ -75,7 +88,7 @@ export class AddTransactionComponent implements OnInit {
               private accountsService: AccountsService,
               private savingsService: SavingsService,
               private router: Router,
-              @Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:TransactionInter | null}  
+              @Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:TransactionInterface | null}  
   ){
     if(this.data && this.data.row) {
       this.formPrefill = this.data.row
@@ -137,6 +150,9 @@ export class AddTransactionComponent implements OnInit {
       this.accountsArr = ret
       this.updateTheAccount(ret)
     })
+    if(this.update) {
+      this.oldTransaction = this.transactionForm.value
+    }
   }
   // function called to check the value of the accounts select is correct
   // If old saved pre March 2023, will automatically update account value to 
@@ -160,8 +176,10 @@ export class AddTransactionComponent implements OnInit {
   // dont close is for when the user opens a transaction that was added before march 2023, 
   //Function called automtically for accounts stored as account name and not id, to update the stored value to id
   updateTransaction(id:string, dontClose?: Boolean) {
-    this.transactionsService.updateTransaction(id, this.transactionForm.value);
-    if(!dontClose) this.transactionDialog.close()
+   if(!(this.transactionForm.value.transactionDate == this.oldTransaction.transactionDate)) {
+      this.transactionsService.updateTransaction(id, this.transactionForm.value, this.oldTransaction);
+      if(!dontClose) this.transactionDialog.close()
+    } else console.log('Nothing Changed bozo')
   }
 
   addItem() {

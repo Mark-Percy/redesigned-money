@@ -1,19 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, DocumentReference, getDoc, runTransaction, where, DocumentSnapshot, updateDoc, DocumentData } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
-import { TransactionInter } from '../add-transaction/add-transaction.component';
+import { TransactionInterface } from '../add-transaction/add-transaction.component';
 import { Amount } from "./amount";
 import { AuthorisationService } from './../authorisation.service';
 import { SavingsService } from './savings.service';
+import { Account } from '../user/account/account.interface';
+import { AccountsService } from './accounts.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionsService {
-  
-  constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService) {}
+  accounts: Account[];
+  constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService, private accountsService: AccountsService) {
+    this.accountsService.getAccounts().subscribe(data => {
+      this.accounts = data
+    })
+  }
 
-  async addTransaction(transactionForm: TransactionInter, items:any, accountName: string): Promise<any> {
+  async addTransaction(transactionForm: TransactionInterface, items:any, accountName: string): Promise<any> {
     let resCode = 0
     const savings = transactionForm.category == 'savings'
     if(!savings && transactionForm.amount){
@@ -67,7 +73,6 @@ export class TransactionsService {
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const start = new Date(date.getFullYear(), date.getMonth(), 1)
     const end = new Date(date.getFullYear(), date.getMonth()+1, 0, 23, 59, 59)
-    console.log(end)
     const q = query(transCol, where('transactionDate', '>=', start), where('transactionDate', '<=', end))
     return collectionData(q, {idField: 'id'})
   }
@@ -93,10 +98,32 @@ export class TransactionsService {
     return null;
   }
 
-  async updateTransaction(id: string, transaction: any) {
+  async updateTransaction(id: string, transaction: any, oldTransaction: any) {
+    let amountUpdated = false
+    if((transaction.transactionDate.getMonth()!= oldTransaction.transactionDate.getMonth()) ||
+      transaction.transactionDate.getFullYear() != oldTransaction.transactionDate.getFullYear()
+    ){
+      const oldAccount = this.accounts.find(item => oldTransaction.account == item.id)?.name
+      const newAccount = this.accounts.find(item => transaction.account == item.id)?.name
+      if(oldAccount && newAccount) {
+        await this.updateMonth(oldTransaction.transactionDate,
+          oldTransaction.category,
+          oldTransaction.frequency,
+          oldAccount,
+          Number(0 - oldTransaction.amount.toFixed(2))
+        )  
+        await this.updateMonth(transaction.transactionDate,
+          transaction.category,
+          transaction.frequency,
+          newAccount,
+          transaction.amount)
+        amountUpdated = true  
+      }
+    }
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const transactionRef = doc(transCol, id)
     await updateDoc(transactionRef, transaction)
+    return {success: true, amountUpdate: amountUpdated}
   }
 
   async deleteTransaction(transactionId: string, amount: number, account: string, category: string, date: Date, frequency : string) {

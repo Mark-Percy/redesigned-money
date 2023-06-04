@@ -48,6 +48,7 @@ export class TransactionsViewComponent {
       this.transactions = this.transactionService.getTransactionsForMonth(value);
       this.transactionService.getAmountForMonth(this.date.value).then((data) => {
         if(data) this.setUpAmounts(data[0]);
+        else this.totalAmount = 0
       })
     })
   }
