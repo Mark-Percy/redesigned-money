@@ -41,6 +41,7 @@ export class Savings {
 })
 export class AddTransactionComponent implements OnInit {
 
+  addingMultiple: boolean = false
 
   ngOnInit(): void {
   }
@@ -169,7 +170,12 @@ export class AddTransactionComponent implements OnInit {
     //if an account is selected
     if(name) {
       this.transactionsService.addTransaction(this.transactionForm.value, this.items, name).then(() => {
-        this.transactionDialog.close();
+        if (!this.addingMultiple) this.transactionDialog.close();
+        else {
+          const dateHold: Date = this.transactionForm.value.transactionDate
+          this.transactionForm.reset()
+          this.transactionForm.get('transactionDate')?.patchValue(dateHold)
+        }
       });
     }
   }
