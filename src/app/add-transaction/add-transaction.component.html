@@ -1,6 +1,7 @@
 <h4 mat-dialog-title>Add Transaction</h4>
 <div mat-dialog-content>
   <mat-slide-toggle (click)="addingMultiple = !addingMultiple">Add Multiple</mat-slide-toggle>
+  <mat-slide-toggle (click)="keepAccount = !keepAccount" [disabled]="!addingMultiple">Keep Account</mat-slide-toggle>
   <form [formGroup]="transactionForm">
     <mat-form-field>
       <mat-label>Date</mat-label>

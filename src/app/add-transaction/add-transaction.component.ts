@@ -43,6 +43,7 @@ export class AddTransactionComponent implements OnInit {
 
   addingMultiple: boolean = false
   submitting: boolean = false
+  keepAccount: boolean = false
 
   ngOnInit(): void {
   }
@@ -175,8 +176,10 @@ export class AddTransactionComponent implements OnInit {
         if (!this.addingMultiple) this.transactionDialog.close();
         else {
           const dateHold: Date = this.transactionForm.value.transactionDate
+          const account: string = this.transactionForm.value.account
           this.transactionForm.reset()
           this.transactionForm.get('transactionDate')?.patchValue(dateHold)
+          if(this.keepAccount) this.transactionForm.get('account')?.patchValue(account)
         }
         this.submitting = false
       });
