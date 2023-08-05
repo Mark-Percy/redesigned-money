@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, User, signInWithEmailAndPassword, sendEmailVerification, updateProfile } from "@angular/fire/auth"
 import { from, Observable } from 'rxjs';
 import { Firestore, collection, docData, setDoc, doc } from '@angular/fire/firestore';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angular/router';
+import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { getDoc } from 'firebase/firestore';
 
 @Injectable({
@@ -66,7 +66,7 @@ export class AuthorisationService {
 @Injectable({
   providedIn: 'root'
 })
-export class accountCreationGuard implements CanActivate {
+export class accountCreationGuard  {
 	constructor(private authService: AuthorisationService) {}
 	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
 		return this.authService.getAccountCreationEnabled()
