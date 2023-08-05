@@ -164,9 +164,9 @@ export class TransactionsService {
           let monthData = {}
           let nonAddedFreq = frequency == 'Monthly' ? 'Annually' : 'Monthly'
           if(category == 'bills'){
-            monthData = {amount:amount, [category]: {[frequency]: amount, [nonAddedFreq]: 0}, [account]: amount}
+            monthData = {amount:Number(amount), [category]: {[frequency]: Number(amount), [nonAddedFreq]: Number(0)}, [account]: Number(amount)}
           } else {
-            monthData = {amount:amount, [category]: amount, [account]: amount, bills: {Monthly: 0, Annually: 0}}
+            monthData = {amount:Number(amount), [category]: Number(amount), [account]: Number(amount), bills: {Monthly: Number(0), Annually: Number(0)}}
           }
           transaction.set(monthDocRef,monthData)
         } else {
