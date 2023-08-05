@@ -42,6 +42,7 @@ export class Savings {
 export class AddTransactionComponent implements OnInit {
 
   addingMultiple: boolean = false
+  submitting: boolean = false
 
   ngOnInit(): void {
   }
@@ -166,6 +167,7 @@ export class AddTransactionComponent implements OnInit {
   }
 
   addTransaction() {
+    this.submitting = true
     const name = this.accountsArr.find(item => item.id == this.transactionForm.value.account)?.name
     //if an account is selected
     if(name) {
@@ -176,6 +178,7 @@ export class AddTransactionComponent implements OnInit {
           this.transactionForm.reset()
           this.transactionForm.get('transactionDate')?.patchValue(dateHold)
         }
+        this.submitting = false
       });
     }
   }
