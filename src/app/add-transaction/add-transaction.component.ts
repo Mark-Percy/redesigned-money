@@ -1,5 +1,5 @@
-import { Component, Inject, INJECTOR, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+import { Component, Inject, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -41,9 +41,9 @@ export class Savings {
 })
 export class AddTransactionComponent implements OnInit {
 
-  addingMultiple: boolean = false
+  addingMultiple: FormControl = new FormControl(false)
+  keepAccount: FormControl = new FormControl({value: false, disabled: true})
   submitting: boolean = false
-  keepAccount: boolean = false
 
   ngOnInit(): void {
   }
@@ -156,6 +156,13 @@ export class AddTransactionComponent implements OnInit {
     if(this.update) {
       this.oldTransaction = this.transactionForm.value
     }
+    this.addingMultiple.valueChanges.subscribe(val => {
+      if(val) this.keepAccount.enable()
+      else {
+        this.keepAccount.patchValue(false)
+        this.keepAccount.disable()
+      }
+    })
   }
   // function called to check the value of the accounts select is correct
   // If old saved pre March 2023, will automatically update account value to 
@@ -173,13 +180,13 @@ export class AddTransactionComponent implements OnInit {
     //if an account is selected
     if(name) {
       this.transactionsService.addTransaction(this.transactionForm.value, this.items, name).then(() => {
-        if (!this.addingMultiple) this.transactionDialog.close();
+        if (!this.addingMultiple.value) this.transactionDialog.close();
         else {
           const dateHold: Date = this.transactionForm.value.transactionDate
           const account: string = this.transactionForm.value.account
           this.transactionForm.reset()
           this.transactionForm.get('transactionDate')?.patchValue(dateHold)
-          if(this.keepAccount) this.transactionForm.get('account')?.patchValue(account)
+          if(this.keepAccount.value) this.transactionForm.get('account')?.patchValue(account)
         }
         this.submitting = false
       });
