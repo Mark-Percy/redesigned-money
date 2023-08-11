@@ -2,7 +2,7 @@
     <mat-grid-tile colspan="2">{{ account?.name }}</mat-grid-tile> 
     <mat-grid-tile>{{ account?.type }}</mat-grid-tile>
     <mat-grid-tile>
-        <button *ngIf="account?.type == 'Credit'" (click)="editAccount()" mat-icon-button color="accent"><mat-icon>edit</mat-icon></button>
+        <button *ngIf="account?.type == 'Credit' && account?.amount == 0" (click)="editAccount()" mat-icon-button color="accent"><mat-icon>edit</mat-icon></button>
         <button (click)="deleteAccount()" mat-icon-button color="warn"><mat-icon>delete</mat-icon></button>
     </mat-grid-tile>
 </mat-grid-list>
