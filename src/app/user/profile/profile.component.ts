@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from 'src/app/authorisation.service';
 import { AccountsService } from 'src/app/shared/accounts.service';
@@ -43,8 +43,8 @@ export class ProfileComponent implements OnInit {
     return this.authService.user?.emailVerified
   }
 
-  openAddAccount(){
-    const addAccountDialog = this.dialog.open(AddAccountDialog)
+  openAddAccount(id?: string){
+    const addAccountDialog = this.dialog.open(AddAccountDialog, {data: id})
   }
   updateDisplayName() {
     this.authService.updateDisplayName(this.userDetailsForm.get('displayName')?.value);
@@ -62,7 +62,7 @@ export class ProfileComponent implements OnInit {
 @Component({
   selector: 'add-account',
   template:`
-  <h3 mat-dialog-title>Add Account</h3>
+  <h3 mat-dialog-title>{{ action }}</h3>
   <div mat-dialog-content>
     <form (ngSubmit)="submitAccount()" [formGroup]="accountForm">
       <mat-form-field>
@@ -76,7 +76,7 @@ export class ProfileComponent implements OnInit {
         </mat-select>
       </mat-form-field>
       <mat-form-field *ngIf="showNum">
-        <mat-label>Account Name</mat-label>
+        <mat-label>Amount</mat-label>
         <input type="number" matInput formControlName="amount">
       </mat-form-field>
       <button mat-raised-button>Submit</button>
@@ -89,21 +89,34 @@ export class AddAccountDialog {
   accountTypes:string[] = ['Credit', 'Debit', 'Savings'];
   accountForm: FormGroup;
   showNum: boolean = false;
+  action = 'Add Account'
 
-  constructor(public dialogRef: MatDialogRef<AddAccountDialog>, private fb: FormBuilder, private accountsService: AccountsService){
+  constructor(public dialogRef: MatDialogRef<AddAccountDialog>,
+    private fb: FormBuilder,
+    private accountsService: AccountsService,
+    @Inject(MAT_DIALOG_DATA) public id: string,
+  ){
     this.accountForm = this.fb.group({
-      name: [''],
-      type: [''],
-      amount: ['0']
+      name: '',
+      type: '',
+      amount: 0
     })
+    if(id) {
+      this.action = 'Edit Account'
+      this.accountsService.getAccount(id).then(account => {
+        const Acc: Account | undefined = account.data()
+        if(Acc) this.accountForm = this.fb.group(Acc)
+        this.showNum = Acc?.type == 'Credit'
+      })
+    }
     this.accountForm.get('type')?.valueChanges.subscribe((val) => {
-      this.showNum = val == 'Savings'
+      this.showNum = val == 'Savings' || val == 'Credit'
     })
   }
   
   submitAccount(){
     this.dialogRef.close();
-    this.accountsService.addAccount(this.accountForm.value);
+    if(this.id == '') this.accountsService.addAccount(this.accountForm.value);
   }
 
 }

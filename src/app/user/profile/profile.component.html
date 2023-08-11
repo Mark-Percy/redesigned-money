@@ -41,6 +41,6 @@
             <h3>Accounts</h3>
             <button mat-icon-button color="accent" (click)="openAddAccount()"><mat-icon>add</mat-icon></button>
         </header>
-        <app-account *ngFor="let account of accounts | async" [account]="account" (deleteTheAccount)="deleteAccount($event)"></app-account>
+        <app-account *ngFor="let account of accounts | async" [account]="account" (editTheAccount)="openAddAccount($event)" (deleteTheAccount)="deleteAccount($event)"></app-account>
     </article>
 </section>
