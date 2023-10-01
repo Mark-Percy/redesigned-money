@@ -64,13 +64,13 @@ export class TransactionsService {
   }
 
   getTransactions(numberToLimit: number){
-    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const transCol = collection(this.fs, `users/${this.auth.getUserId()}/transactions`);
     const q = query(transCol, orderBy('transactionDate', 'desc'), limit(numberToLimit))
     return collectionData(q, {idField: 'id'})
   }
 
   getTransactionsForMonth(date: Date){
-    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const transCol = collection(this.fs, `users/${this.auth.getUserId()}/transactions`);
     const start = new Date(date.getFullYear(), date.getMonth(), 1)
     const end = new Date(date.getFullYear(), date.getMonth()+1, 0, 23, 59, 59)
     const q = query(transCol, where('transactionDate', '>=', start), where('transactionDate', '<=', end))
@@ -120,15 +120,15 @@ export class TransactionsService {
         amountUpdated = true  
       }
     }
-    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const transCol = collection(this.fs, `users/${this.auth.getUserId()}/transactions`);
     const transactionRef = doc(transCol, id)
     await updateDoc(transactionRef, transaction)
     return {success: true, amountUpdate: amountUpdated}
   }
 
   async deleteTransaction(transactionId: string, amount: number, account: string, category: string, date: Date, frequency : string) {
-    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
-    const itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
+    const transCol = collection(this.fs, `users/${this.auth.getUserId()}/transactions`);
+    const itemsCol = collection(this.fs, `users/${this.auth.getUserId()}/items`);
     const items = this.getItems(transactionId);
 
     items.forEach((data) => {
@@ -143,7 +143,7 @@ export class TransactionsService {
   }
 
   getItems(transactionId: string) {
-    const itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
+    const itemsCol = collection(this.fs, `users/${this.auth.getUserId()}/items`);
 
     const q = query(itemsCol, where('transactionId', '==', transactionId))
     return collectionData(q, {idField: 'id'})
@@ -190,5 +190,10 @@ export class TransactionsService {
       return {code: 0, message: `Month Amounts failed: ${message}`}
     }
     return {code: 1, message: `Successful Month Amount: ${message}`}
+  }
+
+  getYearAmounts(year: number) {
+    const col = collection(this.fs, `users/${this.auth.getUserId()}/${year}`)
+    return collectionData(col, {idField: 'month'})
   }
 }
