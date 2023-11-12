@@ -37,10 +37,17 @@ export class TransactionsViewComponent {
     this.route.queryParams.subscribe(params => {
       this.date.value.setMonth(params['month'])
     });
-    this.transactionService.getAmountForMonth(this.date.value).then((data) => {
-      if(data) this.setUpAmounts(data[0]);
-    })
+    
     this.transactions = this.transactionService.getTransactionsForMonth(this.date.value)
+    
+    // Allow the changing of the amount value when the data in the transactions updates
+    this.transactions.subscribe(() => {
+      this.transactionService.getAmountForMonth(this.date.value).then((data) => {
+        if(data) this.setUpAmounts(data[0]);
+      })
+    })
+
+    // When the date in the page changes - refresh the data for the new date
     this.date.valueChanges.subscribe(value =>{
       this.router.navigate([], {
         queryParams: {month: value.getMonth()}
@@ -76,11 +83,6 @@ export class TransactionsViewComponent {
 
   openTransactionsDialog(row: any) {
     const addTransactionDialog = this.dialog.open(AddTransactionComponent, {data: row})
-    addTransactionDialog.afterClosed().subscribe(() => {
-      this.transactionService.getAmountForMonth(this.date.value).then((data) => {
-        if(data) this.setUpAmounts(data[0]);
-      })
-    })
   }
 
   checkCurrMonth(): boolean {
