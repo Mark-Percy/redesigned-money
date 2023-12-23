@@ -11,7 +11,7 @@ import { getDoc } from 'firebase/firestore';
 
 export class AuthorisationService {
 	user: User | null = null;	
-	constructor(private auth: Auth, private fA: Auth, private fs: Firestore) {
+	constructor(private auth: Auth, private fs: Firestore) {
 		this.auth.onAuthStateChanged(user => {
 			if(user) {
 				this.user = user;
