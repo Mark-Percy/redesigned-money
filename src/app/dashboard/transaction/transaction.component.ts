@@ -16,6 +16,7 @@ export class TransactionComponent implements OnInit {
   dashboardOpen: boolean | null = null;
   currDate: Date = new Date();
   month = this.currDate.getMonth();
+  year = this.currDate.getFullYear();
   transactions: Observable<DocumentData[]> = this.transactionService.getTransactions(5);
   @Input() panelWidth = '45vw';
 

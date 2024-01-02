@@ -36,6 +36,7 @@ export class TransactionsViewComponent {
   ) {
     this.route.queryParams.subscribe(params => {
       this.date.value.setMonth(params['month'])
+      this.date.value.setYear(params['year'])
     });
     
     this.transactions = this.transactionService.getTransactionsForMonth(this.date.value)
@@ -50,7 +51,7 @@ export class TransactionsViewComponent {
     // When the date in the page changes - refresh the data for the new date
     this.date.valueChanges.subscribe(value =>{
       this.router.navigate([], {
-        queryParams: {month: value.getMonth()}
+        queryParams: {month: value.getMonth(), year: value.getFullYear()}
       })
       this.transactions = this.transactionService.getTransactionsForMonth(value);
       this.transactionService.getAmountForMonth(this.date.value).then((data) => {
