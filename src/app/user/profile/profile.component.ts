@@ -24,8 +24,10 @@ export class ProfileComponent implements OnInit {
 
   constructor(private authService: AuthorisationService, private fb: FormBuilder, private dialog: MatDialog, private accountsService: AccountsService) {
     this.authService.getDetails().subscribe(data => {
-      this.userDetailsForm.get('firstName')?.patchValue(data['firstName']);
-      this.userDetailsForm.get('surname')?.patchValue(data['surname']);
+      if(data) {
+        this.userDetailsForm.get('firstName')?.patchValue(data['firstName']);
+        this.userDetailsForm.get('surname')?.patchValue(data['surname']);
+      }
     });
   }
 
