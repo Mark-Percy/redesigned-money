@@ -20,14 +20,11 @@ export class TransactionsViewComponent {
 
   today: Date = new Date();
   date: FormControl = new FormControl(new Date())
-  amounts:Amount[] = [];
-  totalAmount: number = 0;
-  transactions: Observable<DocumentData[]>;
 
   isHandset: Observable<BreakpointState> = this.responsive.observe(Breakpoints.HandsetPortrait);
 
   constructor(
-      private transactionService: TransactionsService,
+      public transactionService: TransactionsService,
       private dialog: MatDialog, 
       private route: ActivatedRoute,
       private router: Router,
@@ -39,25 +36,25 @@ export class TransactionsViewComponent {
       this.date.value.setYear(params['year'])
     });
     
-    this.transactions = this.transactionService.getTransactionsForMonth(this.date.value)
+    this.transactionService.setTransactionsForMonth(this.date.value)
     
     // Allow the changing of the amount value when the data in the transactions updates
-    this.transactions.subscribe(() => {
-      this.transactionService.getAmountForMonth(this.date.value).then((data) => {
-        if(data) this.setUpAmounts(data[0]);
-      })
-    })
+    // this.transactionService.transactions.subscribe(() => {
+    //   this.transactionService.getAmountForMonth(this.date.value).then((data) => {
+    //     if(data) this.setUpAmounts(data[0]);
+    //   })
+    // })
 
     // When the date in the page changes - refresh the data for the new date
     this.date.valueChanges.subscribe(value =>{
       this.router.navigate([], {
         queryParams: {month: value.getMonth(), year: value.getFullYear()}
       })
-      this.transactions = this.transactionService.getTransactionsForMonth(value);
-      this.transactionService.getAmountForMonth(this.date.value).then((data) => {
-        if(data) this.setUpAmounts(data[0]);
-        else this.totalAmount = 0
-      })
+      this.transactionService.setTransactionsForMonth(value);
+      // this.transactionService.getAmountForMonth(this.date.value).then((data) => {
+      //   if(data) this.setUpAmounts(data[0]);
+      //   else this.totalAmount = 0
+      // })
     })
   }
 
@@ -72,14 +69,9 @@ export class TransactionsViewComponent {
     widget.close()
   }
 
-  setUpAmounts(data: Amount[]) {
-    const amount = data.find(item => item.name == 'amount')?.amount
-    this.totalAmount = amount ? amount: 0
-    this.amounts = data
-  }
 
   openBottom() {
-    this._bottomSheet.open(AmountsBottomSheet, {data: this.amounts})
+    this._bottomSheet.open(AmountsBottomSheet)
   }
 
   openTransactionsDialog(row: any) {
@@ -109,17 +101,11 @@ export interface Bills {
   styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}']
 })
 export class AmountsBottomSheet {
-  accountAm:Amount[] = [] 
-  accountsArr: string[] = [];
-  categoriesAm: Amount[] = [];
-  bills: number[] = []
-  constructor(@Inject(MAT_BOTTOM_SHEET_DATA) public data: Amount[], 
-    private accountsService: AccountsService,
-  ) {
-    this.accountsService.getAccounts().subscribe(res => {
-      this.accountsArr = res.map(item => item.name)
-      this.categoriesAm = data.filter(item => !this.accountsArr.includes(item.name) && item.name != 'amount')
-      this.accountAm = data.filter(item => this.accountsArr.includes(item.name))
-    })
+  categoryAmounts = this.transactionService.categoryAmounts;
+  accountAmounts = this.transactionService.accountAmounts
+  constructor( 
+    private transactionService: TransactionsService,
+  ) {  
+
   }
 }

@@ -1,8 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { DocumentData } from '@angular/fire/firestore';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { AddTransactionComponent } from 'src/app/add-transaction/add-transaction.component';
 import { TransactionsService } from 'src/app/shared/transactions.service';
 
@@ -17,7 +15,6 @@ export class TransactionComponent implements OnInit {
   currDate: Date = new Date();
   month = this.currDate.getMonth();
   year = this.currDate.getFullYear();
-  transactions: Observable<DocumentData[]> = this.transactionService.getTransactions(5);
   @Input() panelWidth = '45vw';
 
   constructor(private dialog: MatDialog, private router:Router, private route: ActivatedRoute, private transactionService: TransactionsService) {
@@ -32,6 +29,8 @@ export class TransactionComponent implements OnInit {
         });
       }
     });
+
+    this.transactionService.setTransactions(5)
   }
 
   transactionDialog() {

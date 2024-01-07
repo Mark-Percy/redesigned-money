@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, getDoc, runTransaction, where, updateDoc, DocumentData } from '@angular/fire/firestore';
+import { Injectable, OnInit } from '@angular/core';
+import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, getDoc, runTransaction, where, updateDoc, DocumentData, getAggregateFromServer, count, sum } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
 import { TransactionInterface } from '../add-transaction/add-transaction.component';
 import { Amount } from "./amount";
@@ -7,12 +7,19 @@ import { AuthorisationService } from './../authorisation.service';
 import { SavingsService } from './savings.service';
 import { Account } from '../user/account/account.interface';
 import { AccountsService } from './accounts.service';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TransactionsService {
   accounts: Account[];
+  numberOfTransactions: number = 0;
+  transactions: Observable<DocumentData[]>;
+  sumOfAmounts: number = 0;
+  categoryAmounts = new Map();
+  accountAmounts = new Map();
+
   constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService, private accountsService: AccountsService) {
     this.accountsService.getAccounts().subscribe(data => {
       this.accounts = data
@@ -63,18 +70,30 @@ export class TransactionsService {
     return res
   }
 
-  getTransactions(numberToLimit: number){
+  setTransactions(numberToLimit: number){
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const q = query(transCol, orderBy('transactionDate', 'desc'), limit(numberToLimit))
-    return collectionData(q, {idField: 'id'})
+    this.transactions = collectionData(q, {idField: 'id'})
   }
 
-  getTransactionsForMonth(date: Date){
+  setTransactionsForMonth(date: Date): void{
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const start = new Date(date.getFullYear(), date.getMonth(), 1)
     const end = new Date(date.getFullYear(), date.getMonth()+1, 0, 23, 59, 59)
-    const q = query(transCol, where('transactionDate', '>=', start), where('transactionDate', '<=', end))
-    return collectionData(q, {idField: 'id'})
+    const q = query(transCol,
+      where('transactionDate', '>=', start),
+      where('transactionDate', '<=', end)
+    );
+    const snap = getAggregateFromServer(q, {
+      countOfDocs: count(),
+      sumOfAmounts: sum('amount')
+    });
+    snap.then(data => {
+      this.numberOfTransactions = data.data().countOfDocs;
+      this.sumOfAmounts = data.data().sumOfAmounts;
+    })
+    this.transactions = collectionData(q, {idField: 'id'})
+    this.setAmounts()
   }
 
   async getAmountForMonth(date: Date): Promise<DocumentData | null> {
@@ -190,5 +209,32 @@ export class TransactionsService {
       return {code: 0, message: `Month Amounts failed: ${message}`}
     }
     return {code: 1, message: `Successful Month Amount: ${message}`}
+  }
+
+  setAmounts(){
+    const accounts = this.accountsService.getAccounts()
+    const accountsMap = new Map()
+    accounts.forEach(docs => {
+      docs.forEach(doc => {
+        accountsMap.set(doc.id, doc.name)
+      })
+    })
+    this.transactions.forEach(docs => {
+      this.categoryAmounts = new Map();
+      this.accountAmounts = new Map();
+      const accountAmounts = this.accountAmounts
+      const categoryAmounts = this.categoryAmounts
+      docs.forEach(doc => {
+        if(!categoryAmounts.has(doc.category) && doc.category != 'bills') categoryAmounts.set(doc.category, doc.amount);
+        else if(doc.category == 'bills'){
+          if(!categoryAmounts.has(doc.frequency)) categoryAmounts.set(doc.frequency, doc.amount);
+          else categoryAmounts.set(doc.frequency, Number((categoryAmounts.get(doc.frequency) + doc.amount).toFixed(2)));
+        }
+        else categoryAmounts.set(doc.category, Number((categoryAmounts.get(doc.category) + doc.amount).toFixed(2)));
+
+        if(!accountAmounts.has(accountsMap.get(doc.account))) accountAmounts.set(accountsMap.get(doc.account), doc.amount);
+        else accountAmounts.set(accountsMap.get(doc.account), Number((accountAmounts.get(accountsMap.get(doc.account)) + doc.amount).toFixed(2)));
+      });
+    });
   }
 }

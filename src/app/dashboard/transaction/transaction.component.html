@@ -4,5 +4,5 @@
         <a mat-button [routerLink]="['/transactions']" [queryParams]="{month: month, year:year}">Transactions</a>
         <button mat-icon-button color="primary" (click)="transactionDialog()"><mat-icon>add</mat-icon></button>
     </header>
-    <app-transactions-table [dataSource]="transactions"></app-transactions-table>
+    <app-transactions-table></app-transactions-table>
 </section>

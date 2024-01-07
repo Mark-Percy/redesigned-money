@@ -1,5 +1,5 @@
-import { CdkTableDataSourceInput } from '@angular/cdk/table';
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
+import { TransactionsService } from '../shared/transactions.service';
 
 @Component({
   selector: 'app-transactions-table',
@@ -8,12 +8,11 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 })
 export class TransactionsTableComponent {
 
-  @Input() dataSource!: CdkTableDataSourceInput<any>;
   @Output('openDialog') close: EventEmitter<any> = new EventEmitter<any>();
 
   displayedColumns: string[] = ['transactionDate','amount', 'category', 'location'];
 
-  constructor() { }
+  constructor(public transactionService: TransactionsService) { }
 
   openEditDialog(row: any) {
     row.date = row.transactionDate.toDate();

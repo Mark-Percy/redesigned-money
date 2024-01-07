@@ -1,16 +1,16 @@
 <mat-tab-group>
   <mat-tab label="Accounts">
     <ul>
-      <li *ngFor="let account of accountAm">
-        <span>{{account.name | titlecase}}</span><span>{{account.amount | currency}}</span>
+      <li *ngFor="let account of accountAmounts | keyvalue">
+        <span>{{account.key | titlecase}}</span><span>{{account.value | currency}}</span>
       </li>
     </ul>
   </mat-tab>
   <mat-tab label="Categories">
     <ul>
-      <li *ngFor="let category of categoriesAm">
-        <span>{{category.name | titlecase}}</span>
-        <span>{{category.amount | currency}}</span>
+      <li *ngFor="let category of categoryAmounts | keyvalue">
+        <span>{{category.key | titlecase}}</span>
+        <span>{{category.value | currency}}</span>
       </li>
     </ul>
   </mat-tab>
