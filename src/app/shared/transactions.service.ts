@@ -15,8 +15,8 @@ import { Observable } from 'rxjs';
 export class TransactionsService {
   accounts: Account[];
   numberOfTransactions: number = 0;
-  transactions: Observable<DocumentData[]>;
   sumOfAmounts: number = 0;
+  transactions: Observable<DocumentData[]>;
   categoryAmounts = new Map();
   accountAmounts = new Map();
 
@@ -37,6 +37,7 @@ export class TransactionsService {
     if(resCode == 1 || savings) {
       const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
       return addDoc(transCol, transactionForm).then(transaction => {
+        this.numberOfTransactions += 1
         if(!savings) {
           return this.addItems(items, transaction.id)
         } else {
@@ -158,7 +159,9 @@ export class TransactionsService {
     if(!(category == 'savings')) {
       this.updateMonth(date, category, frequency, account, 0 - amount)
     }
-    return deleteDoc(doc(transCol, transactionId))
+    deleteDoc(doc(transCol, transactionId)).then(() => {
+      this.numberOfTransactions -= 1
+    })
   }
 
   getItems(transactionId: string) {
@@ -178,6 +181,17 @@ export class TransactionsService {
     try {
       await runTransaction(this.fs, async(transaction) => {
         const monthDoc = await transaction.get(monthDocRef);
+        //Transition to new calculating amount through existing queries: add to variable
+        this.sumOfAmounts = Number((this.sumOfAmounts + amount).toFixed(2))
+        const accounts = this.accountsService.getAccounts()
+        const accountsMap = new Map()
+        accounts.forEach(docs => {
+          docs.forEach(doc => {
+            accountsMap.set(doc.id, doc.name)
+          })
+        })
+        this.setSubAmounts(category, account, amount, accountsMap, frequency);
+        // End of code for transition
         if (!monthDoc.exists()) {
           message = 'Adding new month'
           let monthData = {}
@@ -222,19 +236,23 @@ export class TransactionsService {
     this.transactions.forEach(docs => {
       this.categoryAmounts = new Map();
       this.accountAmounts = new Map();
-      const accountAmounts = this.accountAmounts
-      const categoryAmounts = this.categoryAmounts
       docs.forEach(doc => {
-        if(!categoryAmounts.has(doc.category) && doc.category != 'bills') categoryAmounts.set(doc.category, doc.amount);
-        else if(doc.category == 'bills'){
-          if(!categoryAmounts.has(doc.frequency)) categoryAmounts.set(doc.frequency, doc.amount);
-          else categoryAmounts.set(doc.frequency, Number((categoryAmounts.get(doc.frequency) + doc.amount).toFixed(2)));
-        }
-        else categoryAmounts.set(doc.category, Number((categoryAmounts.get(doc.category) + doc.amount).toFixed(2)));
-
-        if(!accountAmounts.has(accountsMap.get(doc.account))) accountAmounts.set(accountsMap.get(doc.account), doc.amount);
-        else accountAmounts.set(accountsMap.get(doc.account), Number((accountAmounts.get(accountsMap.get(doc.account)) + doc.amount).toFixed(2)));
+        this.setSubAmounts(doc.category, doc.account, doc.amount, accountsMap, doc.frequency);
       });
     });
+  }
+
+  setSubAmounts(category: string, account:string, amount: number, accountsMap: Map<string,number>, frequency: string) {
+    const accountAmounts = this.accountAmounts
+    const categoryAmounts = this.categoryAmounts
+    if(!categoryAmounts.has(category) && category != 'bills') categoryAmounts.set(category, amount);
+    else if(category == 'bills'){
+      if(!categoryAmounts.has(frequency)) categoryAmounts.set(frequency, amount);
+      else categoryAmounts.set(frequency, Number((categoryAmounts.get(frequency) + amount).toFixed(2)));
+    }
+    else categoryAmounts.set(category, Number((categoryAmounts.get(category) + amount).toFixed(2)));
+
+    if(!accountAmounts.has(accountsMap.get(account))) accountAmounts.set(accountsMap.get(account), amount);
+    else accountAmounts.set(accountsMap.get(account), Number((accountAmounts.get(accountsMap.get(account)) + amount).toFixed(2)));
   }
 }
