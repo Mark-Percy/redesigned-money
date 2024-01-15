@@ -213,7 +213,7 @@ export class TransactionsService {
   async setTransactionsForYear(date: Date) {
     for (let i = 0; i < 12; i++) {
       date.setMonth(i);
-      this.setCurrentMonth(date, true, i)
+      await this.setCurrentMonth(date, true, i)
     }
   }
 

@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
-import { TransactionsService } from '../shared/transactions.service';
+import { TransactionMonthInterface, TransactionsService, TransactionsYearInterface } from '../shared/transactions.service';
 
 
 @Component({
@@ -12,7 +12,8 @@ export class DashboardComponent implements OnInit {
 
   dashboardCols: number = 2;
   panelWidth: string = '45vw;'
-  constructor(private responsive: BreakpointObserver, private transactionService: TransactionsService) {
+  currYear: number = new Date().getFullYear()
+  constructor(private responsive: BreakpointObserver, public transactionService: TransactionsService) {
     this.responsive.observe([
       Breakpoints.Web,
       Breakpoints.HandsetPortrait
@@ -35,6 +36,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     
+  }
+
+  getCurrentYear(): TransactionsYearInterface {
+    return this.transactionService.transactionsForYear.years[0]
   }
 
 }

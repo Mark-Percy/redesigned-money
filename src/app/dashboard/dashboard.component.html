@@ -4,6 +4,6 @@
 <mat-grid-list [cols]="dashboardCols" rowHeight="45vh">
     <mat-grid-tile ><app-transaction [panelWidth]="panelWidth"></app-transaction></mat-grid-tile>
     <mat-grid-tile><app-savings [panelWidth]="panelWidth"></app-savings></mat-grid-tile>
-    <mat-grid-tile *ngIf="dashboardCols == 2"><app-bills></app-bills></mat-grid-tile>
+    <mat-grid-tile *ngIf="dashboardCols == 2"><app-totals [year]="getCurrentYear()"></app-totals></mat-grid-tile>
     <mat-grid-tile *ngIf="dashboardCols == 2">empty</mat-grid-tile>
 </mat-grid-list>

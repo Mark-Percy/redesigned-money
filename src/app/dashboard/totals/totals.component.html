@@ -1,0 +1,14 @@
+<div class="totals-row">
+    <div>Totals</div>
+    <div>Spending</div>
+    <div>Useless</div>
+    <div>Monthly</div>
+    <div>Annually</div>
+</div>
+<div *ngFor="let month of year.months" class="totals-row">
+    <div>{{ month.totalAmount }}</div>
+    <div>{{ month.categoryAmounts.get('spending') ? month.categoryAmounts.get('spending') : 0 }}</div>
+    <div>{{ month.categoryAmounts.get('useless') ? month.categoryAmounts.get('useless') : 0 }}</div>
+    <div>{{ month.categoryAmounts.get('Monthly') ? month.categoryAmounts.get('Monthly') : 0 }}</div>
+    <div>{{ month.categoryAmounts.get('Annually') ? month.categoryAmounts.get('Annually') : 0 }}</div>
+</div>
