@@ -1,5 +1,6 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
+import { TransactionsService } from '../shared/transactions.service';
 
 
 @Component({
@@ -11,7 +12,7 @@ export class DashboardComponent implements OnInit {
 
   dashboardCols: number = 2;
   panelWidth: string = '45vw;'
-  constructor(private responsive: BreakpointObserver) {
+  constructor(private responsive: BreakpointObserver, private transactionService: TransactionsService) {
     this.responsive.observe([
       Breakpoints.Web,
       Breakpoints.HandsetPortrait
@@ -26,6 +27,8 @@ export class DashboardComponent implements OnInit {
         this.panelWidth = '45vw'
       }
     })
+    const date = new Date()
+    this.transactionService.setTransactionsForYear(date)
   }
 
   ngOnInit(): void {

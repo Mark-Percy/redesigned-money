@@ -1,14 +1,11 @@
-import { Component, Inject } from '@angular/core';
-import { DocumentData } from '@angular/fire/firestore';
+import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatBottomSheet, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
-import { AccountsService } from '../shared/accounts.service';
 import { TransactionsService } from '../shared/transactions.service';
-import { Amount } from '../shared/amount';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 @Component({
@@ -35,26 +32,15 @@ export class TransactionsViewComponent {
       this.date.value.setMonth(params['month'])
       this.date.value.setYear(params['year'])
     });
-    
-    this.transactionService.setTransactionsForMonth(this.date.value)
-    
-    // Allow the changing of the amount value when the data in the transactions updates
-    // this.transactionService.transactions.subscribe(() => {
-    //   this.transactionService.getAmountForMonth(this.date.value).then((data) => {
-    //     if(data) this.setUpAmounts(data[0]);
-    //   })
-    // })
+
+    this.transactionService.setCurrentMonth(this.date.value, false, 0);
 
     // When the date in the page changes - refresh the data for the new date
     this.date.valueChanges.subscribe(value =>{
       this.router.navigate([], {
         queryParams: {month: value.getMonth(), year: value.getFullYear()}
       })
-      this.transactionService.setTransactionsForMonth(value);
-      // this.transactionService.getAmountForMonth(this.date.value).then((data) => {
-      //   if(data) this.setUpAmounts(data[0]);
-      //   else this.totalAmount = 0
-      // })
+      this.transactionService.setCurrentMonth(this.date.value, false, 0)
     })
   }
 
@@ -101,11 +87,9 @@ export interface Bills {
   styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}']
 })
 export class AmountsBottomSheet {
-  categoryAmounts = this.transactionService.categoryAmounts;
-  accountAmounts = this.transactionService.accountAmounts
+  categoryAmounts = this.transactionService.currMonth.categoryAmounts;
+  accountAmounts = this.transactionService.currMonth.accountAmounts
   constructor( 
     private transactionService: TransactionsService,
-  ) {  
-
-  }
+  ) {}
 }

@@ -31,6 +31,7 @@ import { TransactionsTableComponent } from './transactions-table/transactions-ta
 import { AddTransactionComponent } from './add-transaction/add-transaction.component';
 import { SavingsComponent } from './dashboard/savings/savings.component';
 import { SavingsDialogComponent } from './dashboard/savings/savings-dialog/savings-dialog.component';
+import { BillsComponent } from './dashboard/bills/bills.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ import { SavingsDialogComponent } from './dashboard/savings/savings-dialog/savin
     AddTransactionComponent,
     SavingsComponent,
     SavingsDialogComponent,
-    AmountsBottomSheet
+    AmountsBottomSheet,
+    BillsComponent
   ],
   imports: [
     BrowserModule,
