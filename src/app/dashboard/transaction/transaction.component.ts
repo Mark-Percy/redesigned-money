@@ -29,8 +29,6 @@ export class TransactionComponent implements OnInit {
         });
       }
     });
-
-    this.transactionService.setTransactions(5)
   }
 
   transactionDialog() {

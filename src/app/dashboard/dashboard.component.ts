@@ -29,6 +29,8 @@ export class DashboardComponent implements OnInit {
     })
     const date = new Date()
     this.transactionService.setTransactionsForYear(date)
+    this.transactionService.setMonthLimit(5);
+    console.log(this.transactionService.transactionsForYear)
   }
 
   ngOnInit(): void {

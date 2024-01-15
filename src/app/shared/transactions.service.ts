@@ -70,7 +70,7 @@ export class TransactionsService {
     return res
   }
 
-  setTransactions(numberToLimit: number){
+  getTransactions(numberToLimit: number): Observable<DocumentData[]>{
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const q = query(transCol, orderBy('transactionDate', 'desc'), limit(numberToLimit))
     return collectionData(q, {idField: 'id'})
@@ -233,6 +233,17 @@ export class TransactionsService {
     }
     if(!justLoad) {
       this.currMonth = transactionsMonth;
+    }
+  }
+
+  setMonthLimit(num: number) {
+    this.currMonth = {
+      monthNum: 0,
+      transactions: this.getTransactions(num),
+      accountAmounts: new Map(),
+      categoryAmounts: new Map(),
+      totalAmount: 0,
+      totalTransactions: 0,
     }
   }
 }
