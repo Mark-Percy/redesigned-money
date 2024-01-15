@@ -38,8 +38,6 @@ export class DashboardComponent implements OnInit {
     
   }
 
-  getCurrentYear(): TransactionsYearInterface {
-    return this.transactionService.transactionsForYear.years[0]
-  }
+
 
 }
