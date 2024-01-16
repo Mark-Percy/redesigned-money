@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
-import { TransactionsService } from '../shared/transactions.service';
+import { TransactionMonthInterface, TransactionsService } from '../shared/transactions.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 @Component({
@@ -17,11 +17,13 @@ export class TransactionsViewComponent {
 
   today: Date = new Date();
   date: FormControl = new FormControl(new Date())
-
+  currMonth: TransactionMonthInterface = {accountAmounts: new Map(), categoryAmounts: new Map(), monthNum: 0, totalTransactions:0, totalAmount: 0};
   isHandset: Observable<BreakpointState> = this.responsive.observe(Breakpoints.HandsetPortrait);
+  year: number = -1
+  month: number = -1
 
   constructor(
-      public transactionService: TransactionsService,
+      private transactionService: TransactionsService,
       private dialog: MatDialog, 
       private route: ActivatedRoute,
       private router: Router,
@@ -31,9 +33,16 @@ export class TransactionsViewComponent {
     this.route.queryParams.subscribe(params => {
       this.date.value.setMonth(params['month'])
       this.date.value.setYear(params['year'])
+      this.transactionService.getCurrMonth(this.date.value).then(month => {
+        this.currMonth = month
+        const monthIndexes = this.transactionService.getMonthIndexes(this.date.value)
+        this.year = monthIndexes.yearIndex
+        this.month = monthIndexes.monthIndex
+      })
     });
+    console.log(this.currMonth)
 
-    this.transactionService.setCurrentMonth(this.date.value, false, 0);
+    // this.transactionService.setCurrentMonth(this.date.value, false, 0);
 
     // When the date in the page changes - refresh the data for the new date
     this.date.valueChanges.subscribe(value =>{
@@ -87,9 +96,12 @@ export interface Bills {
   styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}']
 })
 export class AmountsBottomSheet {
-  categoryAmounts = this.transactionService.currMonth.categoryAmounts;
-  accountAmounts = this.transactionService.currMonth.accountAmounts
+  monthTransactions = this.transactionService.getCurrMonth(new Date());
+  categoryAmounts: Map<string, number> = new Map();
+  accountAmounts: Map<string, number> = new Map();
   constructor( 
     private transactionService: TransactionsService,
-  ) {}
+  ) {
+    
+  }
 }

@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="transactionService.currMonth.transactions">
+<table mat-table [dataSource]="currTransactions">
     <ng-container matColumnDef="transactionDate">
         <th mat-header-cell *matHeaderCellDef>Date</th>
         <td mat-cell *matCellDef="let transaction"> {{transaction.transactionDate.toDate() | date:'d' }} </td>

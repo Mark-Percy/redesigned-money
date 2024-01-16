@@ -17,7 +17,8 @@ export class TransactionsService {
   accounts: Account[];
   transactionsForYear: TransactionsInterface = {years: []};
   currDate = new Date();
-  currMonth: TransactionMonthInterface;
+  currYearInd: number = 0
+  currMonthInd: number = 0
 
   constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService, private accountsService: AccountsService) {
     this.accountsService.getAccounts().pipe(take(1)).subscribe(data => {
@@ -36,7 +37,7 @@ export class TransactionsService {
     if(resCode == 1 || savings) {
       const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
       return addDoc(transCol, transactionForm).then(transaction => {
-        this.currMonth.totalTransactions += 1
+        this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd].totalTransactions += 1
         if(!savings) {
           return this.addItems(items, transaction.id)
         } else {
@@ -152,7 +153,7 @@ export class TransactionsService {
       if(accountToUse) this.updateMonth(date, category, frequency, accountToUse, 0 - amount)
     }
     deleteDoc(doc(transCol, transactionId)).then(() => {
-      this.currMonth.totalTransactions -= 1
+      this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd].totalTransactions -= 1
     })
   }
 
@@ -169,9 +170,9 @@ export class TransactionsService {
     const month = date.toLocaleString('default', { month: 'long' })
     const monthDocRef= doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
     let message = '';
-
-    this.currMonth.totalAmount = Number((this.currMonth.totalAmount + amount).toFixed(2))
-    this.setSubAmounts(category, account, amount, frequency, this.currMonth)
+    const currMonth = this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd]
+    currMonth.totalAmount = Number((currMonth.totalAmount + amount).toFixed(2))
+    this.setSubAmounts(category, account, amount, frequency, currMonth)
     return {code: 1, message: `Successful Month Amount: ${message}`}
   }
 
@@ -183,9 +184,10 @@ export class TransactionsService {
         accountsMap.set(doc.id, doc.name)
       })
     })
-    transactionMonth.transactions.pipe(take(1)).subscribe(docs => {
+    transactionMonth.transactions?.pipe(take(1)).subscribe(docs => {
       docs.forEach(doc => {
         const account = accountsMap.get(doc.account)
+        console.log('calling')
         this.setSubAmounts(doc.category, account, doc.amount, doc.frequency, transactionMonth);
       });
     });
@@ -193,6 +195,7 @@ export class TransactionsService {
 
   setSubAmounts(category: string, account:string, amount: number, frequency: string, transactionMonth: TransactionMonthInterface) {
     //Categories
+    // console.log(`setSubAmounts: ${category}, ${account}, ${amount}`)
     const accountAmounts = transactionMonth.accountAmounts
     const categoryAmounts = transactionMonth.categoryAmounts
     const categoryAm = categoryAmounts.get(category)
@@ -234,22 +237,62 @@ export class TransactionsService {
       transactionsMonth = await this.setTransactionsForMonth(date, monthNum, justLoad);
       transactionYear.months.push(transactionsMonth)
     }
+    const yearInd = this.transactionsForYear.years.findIndex(year => year.yearNum == date.getFullYear())
+    const monthInd = this.transactionsForYear.years[yearInd].months.findIndex(month => month.monthNum == date.getMonth())
     if(!justLoad) {
-      this.currMonth = transactionsMonth;
+      console.log(yearInd)
+      console.log(monthInd)
+      this.currYearInd = yearInd
+      this.currMonthInd = monthInd
     }
+    
     return {success: true, indexes: {year: transactionYearIndex}}
   }
 
   setMonthLimit(num: number) {
-    this.currMonth = {
-      monthNum: 0,
-      transactions: this.getTransactions(num),
-      accountAmounts: new Map(),
-      categoryAmounts: new Map(),
-      totalAmount: 0,
-      totalTransactions: 0,
+    const ind = this.transactionsForYear.years.findIndex(year => year.yearName == 'limited')
+    console.log(ind)
+    if(ind == -1){
+
+      const currMonth: TransactionMonthInterface = {
+        monthNum: 0,
+        name: 'limited',
+        transactions: this.getTransactions(num),
+        accountAmounts: new Map(),
+        categoryAmounts: new Map(),
+        totalAmount: 0,
+        totalTransactions: 0,
+      }
+      const currYear: TransactionsYearInterface = {
+        yearName: 'limited',
+        months: [currMonth]
+      }
+      this.transactionsForYear.years.push(currYear)
+      this.currYearInd = this.transactionsForYear.years.length -1
+    } else {
+      this.currYearInd = ind
     }
+    this.currMonthInd = 0
+    console.log(this.transactionsForYear)
   }
+
+  async getCurrMonth(date: Date) {
+    await this.setCurrentMonth(date, false, -1)
+    return this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd]
+  }
+
+  getCurrTransactions(year: number, month: number): Observable<DocumentData[]> {
+    if(year == -1 && month == -1) return this.getTransactions(5)
+    const transactions = this.transactionsForYear.years[year].months[month].transactions
+    if(transactions) return transactions
+    return this.getTransactions(1)
+  }
+
+  getMonthIndexes(date: Date) {
+    const yearIndex = this.transactionsForYear.years.findIndex(year => year.yearNum == date.getFullYear()) 
+    const monthIndex = this.transactionsForYear.years[yearIndex].months.findIndex(month => month.monthNum == date.getMonth()) 
+    return {yearIndex: yearIndex, monthIndex: monthIndex}
+  } 
 }
 
 
@@ -258,13 +301,14 @@ export interface TransactionsInterface {
 }
 
 export interface TransactionsYearInterface {
-  yearNum: number;
+  yearNum?: number;
+  yearName?: string
   months: TransactionMonthInterface[]
 }
 export interface TransactionMonthInterface {
   name?: string;
   monthNum: number;
-  transactions: Observable<DocumentData[]>;
+  transactions?: Observable<DocumentData[]>;
   totalAmount: number;
   totalTransactions: number;
   categoryAmounts: Map<string, number>;

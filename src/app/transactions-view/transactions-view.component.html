@@ -5,7 +5,7 @@
             <mat-datepicker #monthYearPicker touchUi [startView]="'year'" (monthSelected)="setMonthYear($event, monthYearPicker)"></mat-datepicker>
         </mat-form-field>
         <button mat-icon-button (click)="date.setValue(today)"><mat-icon>calendar_today</mat-icon></button>
-        <div>{{ (isHandset | async)?.matches ? 'DA: ' : 'Daily Average: ' }}{{ (transactionService.currMonth.totalAmount / this.getMonthDays()).toFixed(2) | currency }}</div>
+        <div>{{ (isHandset | async)?.matches ? 'DA: ' : 'Daily Average: ' }}{{ (currMonth.totalAmount / this.getMonthDays()).toFixed(2) | currency }}</div>
     </section>
     <section id="month">
         <button mat-icon-button (click)="changeDate(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
@@ -18,9 +18,9 @@
 </header>
 <section class="table-head">
     <button mat-button (click)="openTransactionsDialog({date: this.date.value})">Add Transaction</button>
-    <button mat-flat-button (click)="openBottom()">{{transactionService.currMonth.totalAmount | currency}}</button>
-    <div>{{transactionService.currMonth.totalTransactions}}</div>
+    <button mat-flat-button (click)="openBottom()">{{currMonth.totalAmount | currency}}</button>
+    <div>{{currMonth.totalTransactions}}</div>
 </section>
 <div #transTable class="transactions-table-container">
-    <app-transactions-table (openDialog)="openTransactionsDialog($event)"></app-transactions-table>
+    <app-transactions-table (openDialog)="openTransactionsDialog($event)" [year]="this.year" [month]="this.month"></app-transactions-table>
 </div>
