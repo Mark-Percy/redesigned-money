@@ -11,6 +11,7 @@ import { TransactionMonthInterface, TransactionsService, TransactionsYearInterfa
 export class DashboardComponent {
 
   dashboardCols: number = 2;
+  currCol: number = 0
   panelWidth: string = '45vw;'
   currYear: number = new Date().getFullYear()
   constructor(private responsive: BreakpointObserver, public transactionService: TransactionsService) {
@@ -31,6 +32,10 @@ export class DashboardComponent {
     const date = new Date()
     this.transactionService.setTransactionsForYear(date)
     this.transactionService.setMonthLimit(5);
-    console.log(this.transactionService.transactionsForYear)
+    console.log(this.dashboardCols)
+  }
+
+  switchCol(col: number) {
+    this.currCol = col
   }
 }

@@ -215,7 +215,6 @@ export class TransactionsService {
     for (let i = 0; i < 12; i++) {
       date.setMonth(i);
       ret = await this.setCurrentMonth(date, true, i)
-      console.log('current month: ', i, 'month: ', this.transactionsForYear.years[ret.indexes.year])
     }
     return {finished: true, transactionsForYear: this.transactionsForYear.years[ret.indexes.year]}
   }
