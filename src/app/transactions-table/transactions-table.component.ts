@@ -21,7 +21,7 @@ export class TransactionsTableComponent implements OnChanges{
 
   }
   ngOnChanges(changes: SimpleChanges): void {
-    this.currTransactions = this.transactionService.getCurrTransactions(changes.year.currentValue, changes.month.currentValue)
+    this.currTransactions = this.transactionService.getCurrTransactions(this.year, this.month)
   }
 
   openEditDialog(row: any) {
