@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { TransactionsInterface, TransactionsService } from 'src/app/shared/transactions.service';
+import { TransactionsInterface, TransactionsService, TransactionsYearInterface } from 'src/app/shared/transactions.service';
 
 @Component({
   selector: 'app-totals',
@@ -7,7 +7,7 @@ import { TransactionsInterface, TransactionsService } from 'src/app/shared/trans
   styleUrls: ['./totals.component.css']
 })
 export class TotalsComponent {
-  @Input('year') YearsData: TransactionsInterface;
+  YearsData: TransactionsYearInterface = this.transactionService.transactionsForYear.years[0];
 
   yearnum: number = new Date().getFullYear()
   yearIndex = 0
@@ -17,12 +17,11 @@ export class TotalsComponent {
   }
   async setYear(num: number) {
     this.yearnum += num
-    const ind = this.YearsData.years.findIndex(year => year.yearNum == this.yearnum)
-    if(ind == -1) {
-      const date = new Date()
-      date.setFullYear(this.yearnum)
-      await this.transactionService.setTransactionsForYear(date)
-      this.yearIndex = this.YearsData.years.length
-    } else this.yearIndex = ind
+    const date = new Date()
+    date.setFullYear(this.yearnum)
+    this.transactionService.setTransactionsForYear(date).then((finished) => {
+      if(!finished) return
+      this.YearsData = finished.transactionsForYear
+    })
   }
 }

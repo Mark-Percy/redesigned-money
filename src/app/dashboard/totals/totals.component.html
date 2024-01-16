@@ -8,7 +8,7 @@
     <div>Monthly</div>
     <div>Annually</div>
 </div>
-<div *ngFor="let month of YearsData.years[yearIndex].months" class="totals-row">
+<div *ngFor="let month of YearsData.months" class="totals-row">
     <div>{{ month.totalAmount | currency}}</div>
     <div>{{ (month.categoryAmounts.get('spending') ? month.categoryAmounts.get('spending') : 0) | currency }}</div>
     <div>{{ (month.categoryAmounts.get('useless') ? month.categoryAmounts.get('useless') : 0) | currency}}</div>

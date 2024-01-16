@@ -211,10 +211,13 @@ export class TransactionsService {
   }
 
   async setTransactionsForYear(date: Date) {
+    let ret = {success: false, indexes: {year: -1}}
     for (let i = 0; i < 12; i++) {
       date.setMonth(i);
-      await this.setCurrentMonth(date, true, i)
+      ret = await this.setCurrentMonth(date, true, i)
+      console.log('current month: ', i, 'month: ', this.transactionsForYear.years[ret.indexes.year])
     }
+    return {finished: true, transactionsForYear: this.transactionsForYear.years[ret.indexes.year]}
   }
 
   async setCurrentMonth(date: Date, justLoad: boolean, monthNum: number) {
@@ -222,6 +225,7 @@ export class TransactionsService {
     const monthcomp = justLoad ? monthNum : date.getMonth()
 
     let transactionYear: TransactionsYearInterface | undefined  = this.transactionsForYear.years.find(year => year.yearNum == yearcomp)
+    let transactionYearIndex: number | undefined  = this.transactionsForYear.years.findIndex(year => year.yearNum == yearcomp)
     if(!transactionYear) {
       transactionYear = {yearNum: yearcomp, months: []}
       this.transactionsForYear.years.push(transactionYear)
@@ -234,6 +238,7 @@ export class TransactionsService {
     if(!justLoad) {
       this.currMonth = transactionsMonth;
     }
+    return {success: true, indexes: {year: transactionYearIndex}}
   }
 
   setMonthLimit(num: number) {

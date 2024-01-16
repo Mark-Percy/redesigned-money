@@ -8,7 +8,7 @@ import { TransactionMonthInterface, TransactionsService, TransactionsYearInterfa
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
-export class DashboardComponent implements OnInit {
+export class DashboardComponent {
 
   dashboardCols: number = 2;
   panelWidth: string = '45vw;'
@@ -33,11 +33,4 @@ export class DashboardComponent implements OnInit {
     this.transactionService.setMonthLimit(5);
     console.log(this.transactionService.transactionsForYear)
   }
-
-  ngOnInit(): void {
-    
-  }
-
-
-
 }
