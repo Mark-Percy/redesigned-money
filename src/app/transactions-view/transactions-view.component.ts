@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -45,7 +45,8 @@ export class TransactionsViewComponent {
       this.router.navigate([], {
         queryParams: {month: value.getMonth(), year: value.getFullYear()}
       })
-      this.transactionService.setCurrentMonth(this.date.value, false, 0)
+      this.year = this.date.value.getFullYear()
+      this.month = this.date.value.getMonth()
     })
   }
 
@@ -62,7 +63,7 @@ export class TransactionsViewComponent {
 
 
   openBottom() {
-    this._bottomSheet.open(AmountsBottomSheet)
+    this._bottomSheet.open(AmountsBottomSheet, {data: this.date.value})
   }
 
   openTransactionsDialog(row: any) {
@@ -92,11 +93,12 @@ export interface Bills {
   styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}']
 })
 export class AmountsBottomSheet {
-  monthTransactions = this.transactionService.getCurrMonth(new Date());
+  monthTransactions = this.transactionService.getCurrMonth(this.passed);
   categoryAmounts: Map<string, number> = new Map();
   accountAmounts: Map<string, number> = new Map();
   constructor( 
     private transactionService: TransactionsService,
+    @Inject(MAT_BOTTOM_SHEET_DATA) public passed: any
   ) {
     this.monthTransactions.then(data => {
       this.categoryAmounts = data.categoryAmounts
