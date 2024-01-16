@@ -99,7 +99,7 @@ export class TransactionsService {
       categoryAmounts: new Map(),
       accountAmounts: new Map()
     }
-    this.setAmounts(month)
+    await this.setAmounts(month)
     return month
   }
 
@@ -195,7 +195,7 @@ export class TransactionsService {
 
   setSubAmounts(category: string, account:string, amount: number, frequency: string, transactionMonth: TransactionMonthInterface) {
     //Categories
-    // console.log(`setSubAmounts: ${category}, ${account}, ${amount}`)
+    console.log(`setSubAmounts: ${category}, ${account}, ${amount}`)
     const accountAmounts = transactionMonth.accountAmounts
     const categoryAmounts = transactionMonth.categoryAmounts
     const categoryAm = categoryAmounts.get(category)
@@ -246,7 +246,7 @@ export class TransactionsService {
       this.currMonthInd = monthInd
     }
     
-    return {success: true, indexes: {year: transactionYearIndex}}
+    return {success: true, indexes: {year: transactionYearIndex, month: monthInd}}
   }
 
   setMonthLimit(num: number) {
@@ -277,7 +277,7 @@ export class TransactionsService {
   }
 
   async getCurrMonth(date: Date) {
-    await this.setCurrentMonth(date, false, -1)
+    const dat =  await this.setCurrentMonth(date, false, -1)
     return this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd]
   }
 
@@ -288,9 +288,9 @@ export class TransactionsService {
     return this.getTransactions(1)
   }
 
-  getMonthIndexes(date: Date) {
-    const yearIndex = this.transactionsForYear.years.findIndex(year => year.yearNum == date.getFullYear()) 
-    const monthIndex = this.transactionsForYear.years[yearIndex].months.findIndex(month => month.monthNum == date.getMonth()) 
+  getMonthIndexes(date: Date): {yearIndex: number, monthIndex: number} {
+    const yearIndex: number = this.transactionsForYear.years.findIndex(year => year.yearNum == date.getFullYear()) 
+    const monthIndex: number = this.transactionsForYear.years[yearIndex].months.findIndex(month => month.monthNum == date.getMonth()) 
     return {yearIndex: yearIndex, monthIndex: monthIndex}
   } 
 }

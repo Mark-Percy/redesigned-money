@@ -40,10 +40,6 @@ export class TransactionsViewComponent {
         this.month = monthIndexes.monthIndex
       })
     });
-    console.log(this.currMonth)
-
-    // this.transactionService.setCurrentMonth(this.date.value, false, 0);
-
     // When the date in the page changes - refresh the data for the new date
     this.date.valueChanges.subscribe(value =>{
       this.router.navigate([], {
@@ -102,6 +98,9 @@ export class AmountsBottomSheet {
   constructor( 
     private transactionService: TransactionsService,
   ) {
-    
+    this.monthTransactions.then(data => {
+      this.categoryAmounts = data.categoryAmounts
+      this.accountAmounts = data.accountAmounts
+    })
   }
 }
