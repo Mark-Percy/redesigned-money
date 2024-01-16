@@ -249,33 +249,6 @@ export class TransactionsService {
     return {success: true, indexes: {year: transactionYearIndex, month: monthInd}}
   }
 
-  setMonthLimit(num: number) {
-    const ind = this.transactionsForYear.years.findIndex(year => year.yearName == 'limited')
-    console.log(ind)
-    if(ind == -1){
-
-      const currMonth: TransactionMonthInterface = {
-        monthNum: 0,
-        name: 'limited',
-        transactions: this.getTransactions(num),
-        accountAmounts: new Map(),
-        categoryAmounts: new Map(),
-        totalAmount: 0,
-        totalTransactions: 0,
-      }
-      const currYear: TransactionsYearInterface = {
-        yearName: 'limited',
-        months: [currMonth]
-      }
-      this.transactionsForYear.years.push(currYear)
-      this.currYearInd = this.transactionsForYear.years.length -1
-    } else {
-      this.currYearInd = ind
-    }
-    this.currMonthInd = 0
-    console.log(this.transactionsForYear)
-  }
-
   async getCurrMonth(date: Date) {
     const dat =  await this.setCurrentMonth(date, false, -1)
     return this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd]
