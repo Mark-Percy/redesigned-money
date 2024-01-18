@@ -5,13 +5,11 @@
     <div>Totals</div>
     <div>Spending</div>
     <div>Useless</div>
-    <div>Monthly</div>
-    <div>Annually</div>
+    <div>Bills</div>
 </div>
-<div *ngFor="let month of YearsData.months" class="totals-row">
-    <div>{{ month.totalAmount | currency}}</div>
-    <div>{{ (month.categoryAmounts.get('spending') ? month.categoryAmounts.get('spending') : 0) | currency }}</div>
-    <div>{{ (month.categoryAmounts.get('useless') ? month.categoryAmounts.get('useless') : 0) | currency}}</div>
-    <div>{{ (month.categoryAmounts.get('Monthly') ? month.categoryAmounts.get('Monthly') : 0) | currency}}</div>
-    <div>{{ (month.categoryAmounts.get('Annually') ? month.categoryAmounts.get('Annually') : 0) | currency}}</div>
+<div *ngFor="let month of YearsData | keyvalue" class="totals-row">
+    <div>{{ month.value.totalAmount | currency}}</div>
+    <div>{{ (month.value.categoryAmounts.get('spending') ? month.value.categoryAmounts.get('spending') : 0) | currency }}</div>
+    <div>{{ (month.value.categoryAmounts.get('useless') ? month.value.categoryAmounts.get('useless') : 0) | currency}}</div>
+    <div>{{ (month.value.categoryAmounts.get('bills') ? month.value.categoryAmounts.get('bills') : 0) | currency}}</div>
 </div>

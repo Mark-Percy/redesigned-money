@@ -2,27 +2,22 @@ import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from
 import { TransactionsService } from '../shared/transactions.service';
 import { Observable } from 'rxjs';
 import { DocumentData } from 'firebase/firestore';
+import { TransactionInterface } from '../add-transaction/add-transaction.component';
 
 @Component({
   selector: 'app-transactions-table',
   templateUrl: './transactions-table.component.html',
   styleUrls: ['./transactions-table.component.css']
 })
-export class TransactionsTableComponent implements OnChanges{
+export class TransactionsTableComponent{
 
   @Output('openDialog') close: EventEmitter<any> = new EventEmitter<any>();
-  @Input('year') year: number = -1
-  @Input('month') month: number = -1
+  @Input('transactions') transactions: Observable<TransactionInterface[]> = this.transactionService.getTransactions(5)
 
   displayedColumns: string[] = ['transactionDate','amount', 'category', 'location'];
-  currTransactions: Observable<DocumentData[]> = this.transactionService.getCurrTransactions(this.year, this.month);
 
-  constructor(public transactionService: TransactionsService) {
+  constructor(public transactionService: TransactionsService) {}
 
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    this.currTransactions = this.transactionService.getCurrTransactions(this.year, this.month)
-  }
 
   openEditDialog(row: any) {
     row.date = row.transactionDate.toDate();

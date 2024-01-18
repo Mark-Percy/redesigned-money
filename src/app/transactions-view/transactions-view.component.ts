@@ -1,11 +1,11 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
-import { TransactionMonthInterface, TransactionsService } from '../shared/transactions.service';
+import { Observable, Subscription } from 'rxjs';
+import { AddTransactionComponent, TransactionInterface } from '../add-transaction/add-transaction.component';
+import { TransactionsService } from '../shared/transactions.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
 @Component({
@@ -13,14 +13,15 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
   templateUrl: './transactions-view.component.html',
   styleUrls: ['./transactions-view.component.css']
 })
-export class TransactionsViewComponent {
+export class TransactionsViewComponent implements OnDestroy {
 
   today: Date = new Date();
+  transactions: Observable<TransactionInterface[]>;
+  $transactions:Subscription;
+  numberOfTransactions: number = 0;
+  totalAmount: number = 0;
   date: FormControl = new FormControl(new Date())
-  currMonth: TransactionMonthInterface = {accountAmounts: new Map(), categoryAmounts: new Map(), monthNum: 0, totalTransactions:0, totalAmount: 0};
   isHandset: Observable<BreakpointState> = this.responsive.observe(Breakpoints.HandsetPortrait);
-  year: number = -1
-  month: number = -1
 
   constructor(
       private transactionService: TransactionsService,
@@ -31,13 +32,16 @@ export class TransactionsViewComponent {
       private responsive: BreakpointObserver,
   ) {
     this.route.queryParams.subscribe(params => {
-      this.date.value.setMonth(params['month'])
-      this.date.value.setYear(params['year'])
-      this.transactionService.getCurrMonth(this.date.value).then(month => {
-        this.currMonth = month
-        const monthIndexes = this.transactionService.getMonthIndexes(this.date.value)
-        this.year = monthIndexes.yearIndex
-        this.month = monthIndexes.monthIndex
+      this.date.value.setMonth(params['month']);
+      this.date.value.setYear(params['year']);
+      this.transactionService.setMonth(this.date.value, true).then(month => {
+        if(month.transactions) this.transactions = month.transactions;
+        this.$transactions = this.transactions.subscribe(() => {
+          this.transactionService.setMonth(this.date.value, false).then(month => {
+            this.totalAmount = month.totalAmount;
+            this.numberOfTransactions = month.totalTransactions
+          });
+        })
       })
     });
     // When the date in the page changes - refresh the data for the new date
@@ -45,9 +49,10 @@ export class TransactionsViewComponent {
       this.router.navigate([], {
         queryParams: {month: value.getMonth(), year: value.getFullYear()}
       })
-      this.year = this.date.value.getFullYear()
-      this.month = this.date.value.getMonth()
     })
+  }
+  ngOnDestroy(): void {
+    this.$transactions.unsubscribe()
   }
 
   changeDate(numOfMonths: number) {
@@ -93,7 +98,7 @@ export interface Bills {
   styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}']
 })
 export class AmountsBottomSheet {
-  monthTransactions = this.transactionService.getCurrMonth(this.passed);
+  monthTransactions = this.transactionService.setMonth(this.passed, false);
   categoryAmounts: Map<string, number> = new Map();
   accountAmounts: Map<string, number> = new Map();
   constructor( 

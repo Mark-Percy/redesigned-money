@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, getDoc, runTransaction, where, updateDoc, DocumentData, getAggregateFromServer, count, sum } from '@angular/fire/firestore';
+import { Injectable, forwardRef } from '@angular/core';
+import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, getDoc, runTransaction, where, updateDoc, DocumentData, getAggregateFromServer, count, sum, Query } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
 import { TransactionInterface } from '../add-transaction/add-transaction.component';
 import { Amount } from "./amount";
@@ -15,7 +15,7 @@ import { take } from 'rxjs/operators';
 })
 export class TransactionsService {
   accounts: Account[];
-  transactionsForYear: TransactionsInterface = {years: []};
+  years: Map<number, Map<number, TransactionMonthInterface>> = new Map();
   currDate = new Date();
   currYearInd: number = 0
   currMonthInd: number = 0
@@ -30,14 +30,11 @@ export class TransactionsService {
     let resCode = 0
     const savings = transactionForm.category == 'savings'
     if(!savings && transactionForm.amount){
-      resCode = await this.updateMonth(transactionForm.transactionDate, transactionForm.category, transactionForm.frequency, accountName, transactionForm.amount).then((res) => {
-        return res.code
-      });
+      resCode = (await this.updateMonth(transactionForm.transactionDate, transactionForm.category, transactionForm.frequency, accountName, transactionForm.amount)).code;
     }
     if(resCode == 1 || savings) {
       const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
       return addDoc(transCol, transactionForm).then(transaction => {
-        this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd].totalTransactions += 1
         if(!savings) {
           return this.addItems(items, transaction.id)
         } else {
@@ -71,36 +68,90 @@ export class TransactionsService {
     return res
   }
 
-  getTransactions(numberToLimit: number): Observable<DocumentData[]>{
+  getTransactions(numberToLimit: number): Observable<TransactionInterface[]> {
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const q = query(transCol, orderBy('transactionDate', 'desc'), limit(numberToLimit))
-    return collectionData(q, {idField: 'id'})
+    return collectionData(q, {idField: 'id'}) as Observable<TransactionInterface[]>
   }
 
-  async setTransactionsForMonth(date: Date, monthNum: number, mult?: boolean): Promise<TransactionMonthInterface> {
+  async setMonth(date: Date, includeTransactions: boolean): Promise<TransactionMonthInterface> {
+    const year: number = date.getFullYear()
+    const month: number = date.getMonth()
+    
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
-    const start = new Date(date.getFullYear(), date.getMonth(), 1)
-    const end = new Date(date.getFullYear(), date.getMonth()+1, 0, 23, 59, 59)
-    const q = query(transCol,
+    const start = new Date(year, date.getMonth(), 1)
+    const end = new Date(year, date.getMonth() + 1, 0, 23, 59, 59)
+
+    const allTrans = query(transCol,
       where('transactionDate', '>=', start),
       where('transactionDate', '<=', end)
     );
-    const snap = getAggregateFromServer(q, {
+
+    let heldYear = this.years.get(year)
+    if(heldYear) {
+      const heldMonth = heldYear.get(month);
+      if(heldMonth) {
+        const transactionsExist =  heldMonth.transactions
+        if(!transactionsExist && includeTransactions) heldMonth.transactions = this.getTransactionsDataForMonth(allTrans)
+        return heldMonth
+      }
+    } else {
+      this.years.set(year, new Map())
+      heldYear = this.years.get(year)
+    }
+    
+
+    // Might be ported so that users can create their own categories
+    // set up category amounts
+    const categories = ['bills', 'spending', 'useless'];
+    let categoryAmountsMap: Map<string, number> = new Map()
+    let accountAmountsMap: Map<string, number> = new Map()
+
+    for(let category of categories) {
+      const groupedTrans = query(transCol,
+        where('transactionDate', '>=', start),
+        where('transactionDate', '<=', end),
+        where('category', '==', category)
+      );
+      const snap = await getAggregateFromServer(groupedTrans, {
+        amount: sum('amount')
+      })
+      categoryAmountsMap.set(category, snap.data().amount)
+    }
+    const accounts = (await this.accountsService.getAccountsStatic('Savings', true)).docs;
+    for(let account of accounts) {
+        const groupedTrans = query(transCol,
+        where('transactionDate', '>=', start),
+        where('transactionDate', '<=', end),
+        where('account', '==', account.id)
+      );
+      const snap = await getAggregateFromServer(groupedTrans, {
+        amount: sum('amount')
+      })
+      accountAmountsMap.set(account.data().name, snap.data().amount)
+    }
+
+    // Totals
+
+    const allSnap = getAggregateFromServer(allTrans, {
       countOfDocs: count(),
       sumOfAmounts: sum('amount')
     });
-    const data = await snap
-    const transactions = collectionData(q, {idField: 'id'})
-    const month: TransactionMonthInterface = {
-      monthNum: mult ? monthNum : date.getMonth(),
-      transactions: transactions,
+
+    const data = await allSnap
+    const monthData: TransactionMonthInterface = {
       totalAmount: data.data().sumOfAmounts,
       totalTransactions: data.data().countOfDocs,
-      categoryAmounts: new Map(),
-      accountAmounts: new Map()
+      categoryAmounts: categoryAmountsMap,
+      accountAmounts: accountAmountsMap
     }
-    await this.setAmounts(month)
-    return month
+    if(includeTransactions) monthData.transactions = this.getTransactionsDataForMonth(allTrans)
+    heldYear?.set(month, monthData)
+    return monthData
+  }
+
+  getTransactionsDataForMonth(allTrans: Query<DocumentData, DocumentData>) {
+    return collectionData(allTrans, {idField: 'id'}) as Observable<TransactionInterface[]>
   }
 
   async updateTransaction(id: string, transaction: any, oldTransaction: any) {
@@ -153,7 +204,7 @@ export class TransactionsService {
       if(accountToUse) this.updateMonth(date, category, frequency, accountToUse, 0 - amount)
     }
     deleteDoc(doc(transCol, transactionId)).then(() => {
-      this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd].totalTransactions -= 1
+      this.updateMonth(date, category, frequency, account, 0 - amount, true)
     })
   }
 
@@ -164,124 +215,59 @@ export class TransactionsService {
     return collectionData(q, {idField: 'id'})
   }
 
-  async updateMonth(date:Date, category:string, frequency: string, account:string, amount: number): Promise<{code: number, message:string}> {
-
+  async updateMonth(date:Date, category:string, frequency: string, account:string, amount: number, remove?: boolean): Promise<{code: number, message:string}> {
+    const num = remove ? -1 : 1
     const year = date.getFullYear();
-    const month = date.toLocaleString('default', { month: 'long' })
-    const monthDocRef= doc(this.fs,`users/${this.auth.getUserId()}/${year}/${month}`)
+    const month = date.getMonth();
     let message = '';
-    const currMonth = this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd]
-    currMonth.totalAmount = Number((currMonth.totalAmount + amount).toFixed(2))
-    this.setSubAmounts(category, account, amount, frequency, currMonth)
+    const yearHeld = this.years.get(year);
+    let monthHeld
+    if(yearHeld) monthHeld = yearHeld.get(month);
+    if(monthHeld) {
+      monthHeld.totalAmount = Number((monthHeld.totalAmount + amount).toFixed(2))
+      monthHeld.totalTransactions += num
+      this.setSubAmounts(category, account, amount, frequency, monthHeld)
+    }
     return {code: 1, message: `Successful Month Amount: ${message}`}
   }
 
-  setAmounts(transactionMonth: TransactionMonthInterface){
-    const accounts = this.accountsService.getAccounts()
-    const accountsMap = new Map()
-    accounts.pipe(take(1)).subscribe(docs => {
-      docs.forEach(doc => {
-        accountsMap.set(doc.id, doc.name)
-      })
-    })
-    transactionMonth.transactions?.pipe(take(1)).subscribe(docs => {
-      docs.forEach(doc => {
-        const account = accountsMap.get(doc.account)
-        console.log('calling')
-        this.setSubAmounts(doc.category, account, doc.amount, doc.frequency, transactionMonth);
-      });
-    });
-  }
+ 
 
   setSubAmounts(category: string, account:string, amount: number, frequency: string, transactionMonth: TransactionMonthInterface) {
     //Categories
-    console.log(`setSubAmounts: ${category}, ${account}, ${amount}`)
     const accountAmounts = transactionMonth.accountAmounts
     const categoryAmounts = transactionMonth.categoryAmounts
     const categoryAm = categoryAmounts.get(category)
-    if(!categoryAm && category != 'bills') categoryAmounts.set(category, amount);
-    else if(category == 'bills'){
+    if(!categoryAm) categoryAmounts.set(category, amount);
+    else categoryAmounts.set(category, Number((categoryAm + amount).toFixed(2)));
+    if(category == 'bills'){
       const categoryFreq = categoryAmounts.get(frequency)
       if(categoryFreq) categoryAmounts.set(frequency, Number((categoryFreq + amount).toFixed(2)));
       else categoryAmounts.set(frequency, amount);
     }
-    else if(categoryAm) categoryAmounts.set(category, Number((categoryAm + amount).toFixed(2)));
 
     //Accounts
     const currAccountAm = accountAmounts.get(account);
     if(!currAccountAm) accountAmounts.set(account, amount)
     else accountAmounts.set(account, Number((currAccountAm + amount).toFixed(2)));
+  
   }
 
   async setTransactionsForYear(date: Date) {
-    let ret = {success: false, indexes: {year: -1}}
     for (let i = 0; i < 12; i++) {
       date.setMonth(i);
-      ret = await this.setCurrentMonth(date, true, i)
+      await this.setMonth(date, false);
     }
-    return {finished: true, transactionsForYear: this.transactionsForYear.years[ret.indexes.year]}
+    return {finished: true, transactionsForYear: this.years.get(date.getFullYear())}
   }
 
-  async setCurrentMonth(date: Date, justLoad: boolean, monthNum: number) {
-    const yearcomp: number = date.getFullYear()
-    const monthcomp = justLoad ? monthNum : date.getMonth()
-
-    let transactionYear: TransactionsYearInterface | undefined  = this.transactionsForYear.years.find(year => year.yearNum == yearcomp)
-    let transactionYearIndex: number | undefined  = this.transactionsForYear.years.findIndex(year => year.yearNum == yearcomp)
-    if(!transactionYear) {
-      transactionYear = {yearNum: yearcomp, months: []}
-      this.transactionsForYear.years.push(transactionYear)
-    }
-    let transactionsMonth: TransactionMonthInterface | undefined = transactionYear.months.find(month => month.monthNum == monthcomp)
-    if(!transactionsMonth) {
-      transactionsMonth = await this.setTransactionsForMonth(date, monthNum, justLoad);
-      transactionYear.months.push(transactionsMonth)
-    }
-    const yearInd = this.transactionsForYear.years.findIndex(year => year.yearNum == date.getFullYear())
-    const monthInd = this.transactionsForYear.years[yearInd].months.findIndex(month => month.monthNum == date.getMonth())
-    if(!justLoad) {
-      console.log(yearInd)
-      console.log(monthInd)
-      this.currYearInd = yearInd
-      this.currMonthInd = monthInd
-    }
-    
-    return {success: true, indexes: {year: transactionYearIndex, month: monthInd}}
+  clearMonths() {
+    this.years.clear()
   }
-
-  async getCurrMonth(date: Date) {
-    const dat =  await this.setCurrentMonth(date, false, -1)
-    return this.transactionsForYear.years[this.currYearInd].months[this.currMonthInd]
-  }
-
-  getCurrTransactions(year: number, month: number): Observable<DocumentData[]> {
-    if(year == -1 && month == -1) return this.getTransactions(5)
-    const transactions = this.transactionsForYear.years[year].months[month].transactions
-    if(transactions) return transactions
-    return this.getTransactions(1)
-  }
-
-  getMonthIndexes(date: Date): {yearIndex: number, monthIndex: number} {
-    const yearIndex: number = this.transactionsForYear.years.findIndex(year => year.yearNum == date.getFullYear()) 
-    const monthIndex: number = this.transactionsForYear.years[yearIndex].months.findIndex(month => month.monthNum == date.getMonth()) 
-    return {yearIndex: yearIndex, monthIndex: monthIndex}
-  } 
 }
 
-
-export interface TransactionsInterface {
-  years: TransactionsYearInterface[];
-}
-
-export interface TransactionsYearInterface {
-  yearNum?: number;
-  yearName?: string
-  months: TransactionMonthInterface[]
-}
 export interface TransactionMonthInterface {
-  name?: string;
-  monthNum: number;
-  transactions?: Observable<DocumentData[]>;
+  transactions?: Observable<TransactionInterface[]>;
   totalAmount: number;
   totalTransactions: number;
   categoryAmounts: Map<string, number>;
