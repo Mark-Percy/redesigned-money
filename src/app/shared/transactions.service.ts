@@ -233,7 +233,6 @@ export class TransactionsService {
     if(yearHeld) monthHeld = yearHeld.get(month);
     if(monthHeld) {
       monthHeld.totalAmount = Number((monthHeld.totalAmount + amount).toFixed(2))
-      console.log(monthHeld.totalAmount)
       monthHeld.totalTransactions += num
       this.setSubAmounts(category, accountName, amount, frequency, monthHeld)
     }
