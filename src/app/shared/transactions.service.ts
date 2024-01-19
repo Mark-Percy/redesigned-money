@@ -30,7 +30,7 @@ export class TransactionsService {
     let resCode = 0
     const savings = transactionForm.category == 'savings'
     if(!savings && transactionForm.amount){
-      resCode = (await this.updateMonth(transactionForm.transactionDate, transactionForm.category, transactionForm.frequency, accountName, transactionForm.amount)).code;
+      resCode = (await this.updateMonth(transactionForm.transactionDate, transactionForm.category, transactionForm.frequency, transactionForm.account, transactionForm.amount)).code;
     }
     if(resCode == 1 || savings) {
       const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
@@ -132,7 +132,6 @@ export class TransactionsService {
     }
 
     // Totals
-
     const allSnap = getAggregateFromServer(allTrans, {
       countOfDocs: count(),
       sumOfAmounts: sum('amount')
@@ -203,9 +202,8 @@ export class TransactionsService {
       const accountToUse = accountsMap.get(account)
       if(accountToUse) this.updateMonth(date, category, frequency, accountToUse, 0 - amount)
     }
-    deleteDoc(doc(transCol, transactionId)).then(() => {
-      this.updateMonth(date, category, frequency, account, 0 - amount, true)
-    })
+    await this.updateMonth(date, category, frequency, account, 0 - amount, true)
+    await deleteDoc(doc(transCol, transactionId))
   }
 
   getItems(transactionId: string) {
@@ -215,7 +213,17 @@ export class TransactionsService {
     return collectionData(q, {idField: 'id'})
   }
 
-  async updateMonth(date:Date, category:string, frequency: string, account:string, amount: number, remove?: boolean): Promise<{code: number, message:string}> {
+  async updateMonth(
+    date:Date,
+    category:string,
+    frequency: string,
+    account:string,
+    amount: number,
+    remove?: boolean
+  ):Promise<{code: number, message:string}> {
+    const accountName = this.accounts.find(accountFind => accountFind.id == account)?.name
+    if(!accountName) throw new Error(`Account Not Id: ${account}; doesn't exist`)
+
     const num = remove ? -1 : 1
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -225,8 +233,9 @@ export class TransactionsService {
     if(yearHeld) monthHeld = yearHeld.get(month);
     if(monthHeld) {
       monthHeld.totalAmount = Number((monthHeld.totalAmount + amount).toFixed(2))
+      console.log(monthHeld.totalAmount)
       monthHeld.totalTransactions += num
-      this.setSubAmounts(category, account, amount, frequency, monthHeld)
+      this.setSubAmounts(category, accountName, amount, frequency, monthHeld)
     }
     return {code: 1, message: `Successful Month Amount: ${message}`}
   }
@@ -240,11 +249,6 @@ export class TransactionsService {
     const categoryAm = categoryAmounts.get(category)
     if(!categoryAm) categoryAmounts.set(category, amount);
     else categoryAmounts.set(category, Number((categoryAm + amount).toFixed(2)));
-    if(category == 'bills'){
-      const categoryFreq = categoryAmounts.get(frequency)
-      if(categoryFreq) categoryAmounts.set(frequency, Number((categoryFreq + amount).toFixed(2)));
-      else categoryAmounts.set(frequency, amount);
-    }
 
     //Accounts
     const currAccountAm = accountAmounts.get(account);
