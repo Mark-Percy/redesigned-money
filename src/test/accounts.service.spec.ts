@@ -5,7 +5,7 @@ import { AccountsService } from '../app/shared/accounts.service';
 import { AuthorisationService } from 'src/app/authorisation.service';
 import { Firestore } from '@angular/fire/firestore';
 
-fdescribe('AccountsService', () => {
+describe('AccountsService', () => {
   let service: AccountsService;
 
   beforeEach(() => {

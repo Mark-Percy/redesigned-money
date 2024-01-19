@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, User, signInWithEmailAndPassword, sendEmailVerification, updateProfile } from "@angular/fire/auth"
+import { Auth, createUserWithEmailAndPassword, User, signInWithEmailAndPassword, sendEmailVerification, updateProfile, UserCredential } from "@angular/fire/auth"
 import { from, Observable } from 'rxjs';
 import { Firestore, collection, docData, setDoc, doc } from '@angular/fire/firestore';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
@@ -30,8 +30,8 @@ export class AuthorisationService {
 		return from(this.auth.signOut());
 	}
 
-	signIn(email:string, password: string){
-		return from(signInWithEmailAndPassword(this.auth, email, password));
+	signIn(email:string, password: string): Promise<UserCredential>{
+		return signInWithEmailAndPassword(this.auth, email, password);
 	}
 
 	sendEmailVerification() {

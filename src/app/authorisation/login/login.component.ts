@@ -21,12 +21,9 @@ export class LoginComponent implements OnInit {
   }
 
   signIn(){
-    if(!this.signInForm.valid) {
-      return;
-    }
-
-    this.authService.signIn(this.signInForm.get('email')?.value, this.signInForm.get('password')?.value).subscribe(() => {
-      this.router.navigate(['dashboard'])
+    if(!this.signInForm.valid) return
+    this.authService.signIn(this.signInForm.get('email')?.value, this.signInForm.get('password')?.value).then(user => {
+      if(user.user.uid) this.router.navigate(['dashboard'])
     });
   }
 }
