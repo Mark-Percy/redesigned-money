@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { addDoc, collection, collectionData, deleteDoc, doc, DocumentSnapshot, Firestore, getDoc, orderBy, query, where } from '@angular/fire/firestore';
+import { addDoc, collection, collectionData, deleteDoc, doc, DocumentSnapshot, Firestore, getDoc, getDocs, orderBy, query, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from '../authorisation.service';
 import { Account } from '../user/account/account.interface';
@@ -30,6 +30,17 @@ export class AccountsService {
       q = query(accountsCol, orderBy('name'), where('type', '==', accountType))
     }
     return collectionData(q, {idField: 'id'}) as  Observable<Account[]>
+  }
+  
+  getAccountsStatic(accountType?: string, remove?: boolean) {
+    const accountsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts');
+    let q;
+    if(!accountType) {
+      q = query(accountsCol, orderBy('name'))
+    } else if(!remove) {
+      q = query(accountsCol, orderBy('name'), where('type', '==', accountType))
+    } else q = query(accountsCol, where('type', '!=', accountType))
+    return getDocs(q) 
   }
 
   getAccount(id: string) : Promise<DocumentSnapshot<Account>>{

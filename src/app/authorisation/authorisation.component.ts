@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthorisationService } from '../authorisation.service';
+import { TransactionsService } from '../shared/transactions.service';
 
 
 @Component({
@@ -7,20 +8,16 @@ import { AuthorisationService } from '../authorisation.service';
   templateUrl: './authorisation.component.html',
   styleUrls: ['./authorisation.component.css'],
 })
-export class AuthorisationComponent implements OnInit {
+export class AuthorisationComponent {
   links = [
     {label: "Login", link: "/account/login"}
   ];
-  constructor(private authService: AuthorisationService) { 
-      authService.getAccountCreationEnabled().then((val) => {
-        if(val){
-          this.links.push({label: "New Account", link: "/account/new-user"})
-        }
-      })
+  constructor(private authService: AuthorisationService, private transactionService: TransactionsService) {
+    this.transactionService.clearMonths();
+    authService.getAccountCreationEnabled().then((val) => {
+      if(val){
+        this.links.push({label: "New Account", link: "/account/new-user"});
+      }
+    })
   }
-
-  ngOnInit(): void {
-  }
-
-  
 }

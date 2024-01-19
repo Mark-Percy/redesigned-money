@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { Component, OnInit } from '@angular/core';
-import { TransactionMonthInterface, TransactionsService, TransactionsYearInterface } from '../shared/transactions.service';
+import { Component } from '@angular/core';
+import { TransactionsService } from '../shared/transactions.service';
 
 
 @Component({
@@ -30,9 +30,6 @@ export class DashboardComponent {
       }
     })
     const date = new Date()
-    this.transactionService.setTransactionsForYear(date)
-    this.transactionService.setMonthLimit(5);
-    console.log(this.dashboardCols)
   }
 
   switchCol(col: number) {

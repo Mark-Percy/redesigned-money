@@ -1,10 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Inject, OnDestroy, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable } from 'rxjs';
-import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
+import { Observable, Subscription } from 'rxjs';
+import { AddTransactionComponent, TransactionInterface } from '../add-transaction/add-transaction.component';
 import { TransactionsService } from '../shared/transactions.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 
@@ -13,15 +13,18 @@ import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/l
   templateUrl: './transactions-view.component.html',
   styleUrls: ['./transactions-view.component.css']
 })
-export class TransactionsViewComponent {
+export class TransactionsViewComponent implements OnDestroy {
 
   today: Date = new Date();
+  transactions: Observable<TransactionInterface[]>;
+  $transactions:Subscription;
+  numberOfTransactions: number = 0;
+  totalAmount: number = 0;
   date: FormControl = new FormControl(new Date())
-
   isHandset: Observable<BreakpointState> = this.responsive.observe(Breakpoints.HandsetPortrait);
 
   constructor(
-      public transactionService: TransactionsService,
+      private transactionService: TransactionsService,
       private dialog: MatDialog, 
       private route: ActivatedRoute,
       private router: Router,
@@ -29,19 +32,27 @@ export class TransactionsViewComponent {
       private responsive: BreakpointObserver,
   ) {
     this.route.queryParams.subscribe(params => {
-      this.date.value.setMonth(params['month'])
-      this.date.value.setYear(params['year'])
+      this.date.value.setMonth(params['month']);
+      this.date.value.setYear(params['year']);
+      this.transactionService.setMonth(this.date.value, true).then(month => {
+        if(month.transactions) this.transactions = month.transactions;
+        this.$transactions = this.transactions.subscribe(() => {
+          this.transactionService.setMonth(this.date.value, false).then(month => {
+            this.totalAmount = month.totalAmount;
+            this.numberOfTransactions = month.totalTransactions
+          });
+        })
+      })
     });
-
-    this.transactionService.setCurrentMonth(this.date.value, false, 0);
-
     // When the date in the page changes - refresh the data for the new date
     this.date.valueChanges.subscribe(value =>{
       this.router.navigate([], {
         queryParams: {month: value.getMonth(), year: value.getFullYear()}
       })
-      this.transactionService.setCurrentMonth(this.date.value, false, 0)
     })
+  }
+  ngOnDestroy(): void {
+    this.$transactions.unsubscribe()
   }
 
   changeDate(numOfMonths: number) {
@@ -57,7 +68,7 @@ export class TransactionsViewComponent {
 
 
   openBottom() {
-    this._bottomSheet.open(AmountsBottomSheet)
+    this._bottomSheet.open(AmountsBottomSheet, {data: this.date.value})
   }
 
   openTransactionsDialog(row: any) {
@@ -87,9 +98,16 @@ export interface Bills {
   styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}']
 })
 export class AmountsBottomSheet {
-  categoryAmounts = this.transactionService.currMonth.categoryAmounts;
-  accountAmounts = this.transactionService.currMonth.accountAmounts
+  monthTransactions = this.transactionService.setMonth(this.passed, false);
+  categoryAmounts: Map<string, number> = new Map();
+  accountAmounts: Map<string, number> = new Map();
   constructor( 
     private transactionService: TransactionsService,
-  ) {}
+    @Inject(MAT_BOTTOM_SHEET_DATA) public passed: any
+  ) {
+    this.monthTransactions.then(data => {
+      this.categoryAmounts = data.categoryAmounts
+      this.accountAmounts = data.accountAmounts
+    })
+  }
 }
