@@ -13,8 +13,8 @@ export class TotalsComponent {
   yearIndex = 0
  
   constructor(private transactionService: TransactionsService) {
-    this.transactionService.setTransactionsForYear(new Date()).then((finished) => {
-      if(finished.transactionsForYear) this.YearsData = finished.transactionsForYear
+    this.transactionService.setTransactionsForYear(new Date()).then((transactionsForYear) => {
+      if(transactionsForYear) this.YearsData = transactionsForYear
     })
 
   }
@@ -22,8 +22,8 @@ export class TotalsComponent {
     this.yearnum += num
     const date = new Date()
     date.setFullYear(this.yearnum)
-    this.transactionService.setTransactionsForYear(date).then((finished) => {
-      if(finished.transactionsForYear) this.YearsData = finished.transactionsForYear
+    this.transactionService.setTransactionsForYear(date).then((transactionsForYear) => {
+      if(transactionsForYear) this.YearsData = transactionsForYear
     })
   }
 }

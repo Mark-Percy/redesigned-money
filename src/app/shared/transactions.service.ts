@@ -253,12 +253,14 @@ export class TransactionsService {
   
   }
 
-  async setTransactionsForYear(date: Date) {
+  async setTransactionsForYear(date: Date): Promise<Map<number, TransactionMonthInterface>> {
     for (let i = 0; i < 12; i++) {
       date.setMonth(i);
       await this.setMonth(date, false);
     }
-    return {finished: true, transactionsForYear: this.years.get(date.getFullYear())}
+    const yearData = this.years.get(date.getFullYear())
+    if(yearData) return yearData
+    throw new Error(`There was an error Adding the selected year to the year data: ${date.getFullYear()}`)
   }
 
   clearMonths() {
