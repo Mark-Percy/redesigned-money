@@ -84,14 +84,16 @@ export class AddTransactionComponent implements OnInit {
   savings: boolean = false;
 
   
-  constructor(private fb: FormBuilder,
-              private transactionDialog: MatDialogRef<AddTransactionComponent>,
-              private _adapter: DateAdapter<any>,
-              private transactionsService: TransactionsService,
-              private accountsService: AccountsService,
-              private savingsService: SavingsService,
-              private router: Router,
-              @Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:TransactionInterface | null}  
+  constructor(
+    private fb: FormBuilder,
+    private transactionDialog: MatDialogRef<AddTransactionComponent>,
+    private _adapter: DateAdapter<any>,
+    private transactionsService: TransactionsService,
+    private accountsService: AccountsService,
+    private savingsService: SavingsService,
+    private router: Router,
+    @Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:TransactionInterface | null
+  }  
   ){
     if(this.data && this.data.row) {
       this.formPrefill = this.data.row
