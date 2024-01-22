@@ -1,17 +1,36 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {HarnessLoader} from '@angular/cdk/testing';
+import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
+
+
 
 import { AddTransactionComponent } from '../app/add-transaction/add-transaction.component';
 import { TransactionsService } from 'src/app/shared/transactions.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { DateAdapter } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { AccountsService } from 'src/app/shared/accounts.service';
 import { SavingsService } from 'src/app/shared/savings.service';
-import { Observable, Subscriber } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Account } from 'src/app/user/account/account.interface';
 
-fdescribe('AddTransactionComponent', () => {
+import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
+import { MatFormFieldHarness } from '@angular/material/form-field/testing';
+
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { ReactiveFormsModule } from '@angular/forms';
+
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+
+describe('AddTransactionComponent', () => {
   let component: AddTransactionComponent;
   let fixture: ComponentFixture<AddTransactionComponent>;
+  let loader: HarnessLoader;
   
   let MockTransactionService: Partial<TransactionsService>;
   let MockAccountsService: Partial<AccountsService>;
@@ -68,11 +87,23 @@ fdescribe('AddTransactionComponent', () => {
         {provide: MatDialogRef, useValue: MockMatDialogRef},
         {provide: DateAdapter, useValue: MockDateAdapter},
         {provide: MAT_DIALOG_DATA, useValue: MockDialogData},
+        // {provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
+      ],
+      imports: [
+        MatSlideToggleModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        BrowserAnimationsModule,
+        // MatDatepickerModule,
+        // MatNativeDateModule,
+        ReactiveFormsModule,
       ]
     })
     .compileComponents();
 
     fixture = TestBed.createComponent(AddTransactionComponent);
+    loader = TestbedHarnessEnvironment.loader(fixture);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
