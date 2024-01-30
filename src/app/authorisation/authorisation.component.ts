@@ -14,7 +14,7 @@ export class AuthorisationComponent {
   ];
   constructor(private authService: AuthorisationService, private transactionService: TransactionsService) {
     this.transactionService.clearMonths();
-    authService.getAccountCreationEnabled().then((val) => {
+    this.authService.getAccountCreationEnabled().then((val) => {
       if(val){
         this.links.push({label: "New Account", link: "/account/new-user"});
       }
