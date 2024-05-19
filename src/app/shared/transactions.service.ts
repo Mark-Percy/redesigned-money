@@ -155,25 +155,21 @@ export class TransactionsService {
 
   async updateTransaction(id: string, transaction: any, oldTransaction: any) {
     let amountUpdated = false
-    if((transaction.transactionDate.getMonth()!= oldTransaction.transactionDate.getMonth()) ||
-      transaction.transactionDate.getFullYear() != oldTransaction.transactionDate.getFullYear()
-    ){
-      const oldAccount = this.accounts.find(item => oldTransaction.account == item.id)?.name
-      const newAccount = this.accounts.find(item => transaction.account == item.id)?.name
-      if(oldAccount && newAccount) {
-        await this.updateMonth(oldTransaction.transactionDate,
-          oldTransaction.category,
-          oldTransaction.frequency,
-          oldAccount,
-          Number(0 - oldTransaction.amount.toFixed(2))
-        )  
-        await this.updateMonth(transaction.transactionDate,
-          transaction.category,
-          transaction.frequency,
-          newAccount,
-          transaction.amount)
-        amountUpdated = true  
-      }
+    const oldAccount = oldTransaction.account
+    const newAccount = transaction.account
+    if(oldAccount && newAccount) {
+      await this.updateMonth(oldTransaction.transactionDate,
+        oldTransaction.category,
+        oldTransaction.frequency,
+        oldAccount,
+        Number(0 - oldTransaction.amount.toFixed(2))
+      )  
+      await this.updateMonth(transaction.transactionDate,
+        transaction.category,
+        transaction.frequency,
+        newAccount,
+        transaction.amount)
+      amountUpdated = true  
     }
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const transactionRef = doc(transCol, id)
