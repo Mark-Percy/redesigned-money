@@ -197,7 +197,7 @@ export class AddTransactionComponent implements OnInit {
   // dont close is for when the user opens a transaction that was added before march 2023, 
   //Function called automtically for accounts stored as account name and not id, to update the stored value to id
   updateTransaction(id:string, dontClose?: Boolean) {
-   if(!(this.transactionForm.value.transactionDate == this.oldTransaction.transactionDate)) {
+   if(!(this.transactionForm.value == this.oldTransaction)) {
       this.transactionsService.updateTransaction(id, this.transactionForm.value, this.oldTransaction);
       if(!dontClose) this.transactionDialog.close()
     } else console.log('Nothing Changed bozo')
