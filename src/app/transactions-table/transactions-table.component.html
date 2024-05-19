@@ -1,3 +1,8 @@
+@if(enableFilter){
+    <button (click)="filterData()">Filter</button>
+    <button (click)="removeFilter()">Remove</button>
+}
+
 <table mat-table [dataSource]="transactions">
     <ng-container matColumnDef="transactionDate">
         <th mat-header-cell *matHeaderCellDef>Date</th>
