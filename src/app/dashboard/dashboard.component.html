@@ -2,8 +2,8 @@
     <app-personal-info></app-personal-info>
 </div>
 <div *ngIf="dashboardCols == 1">
-    <button mat-icon-button (click)="switchCol(0)" [disabled]="currCol == 0"><mat-icon>add</mat-icon></button>
-    <button mat-icon-button (click)="switchCol(1)" [disabled]="currCol == 1"><mat-icon>remove</mat-icon></button>
+    <button mat-icon-button (click)="switchCol(0)" [disabled]="currCol == 0"><mat-icon>remove</mat-icon></button>
+    <button mat-icon-button (click)="switchCol(1)" [disabled]="currCol == 1"><mat-icon>add</mat-icon></button>
 </div>
 <mat-grid-list [cols]="dashboardCols" rowHeight="45vh">
     <mat-grid-tile *ngIf="currCol == 0"><app-transaction [panelWidth]="panelWidth"></app-transaction></mat-grid-tile>
