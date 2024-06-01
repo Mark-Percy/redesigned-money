@@ -77,6 +77,7 @@ export class TransactionsService {
   async setMonth(date: Date, includeTransactions: boolean): Promise<TransactionMonthInterface> {
     const year: number = date.getFullYear()
     const month: number = date.getMonth()
+    const monthName = new Date(0, month).toLocaleString('default', { month: 'long' });
     
     const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
     const start = new Date(year, date.getMonth(), 1)
@@ -142,7 +143,8 @@ export class TransactionsService {
       totalAmount: data.data().sumOfAmounts,
       totalTransactions: data.data().countOfDocs,
       categoryAmounts: categoryAmountsMap,
-      accountAmounts: accountAmountsMap
+      accountAmounts: accountAmountsMap,
+      monthName: monthName
     }
     if(includeTransactions) monthData.transactions = this.getTransactionsDataForMonth(allTrans)
     heldYear?.set(month, monthData)
@@ -235,8 +237,6 @@ export class TransactionsService {
     return {code: 1, message: `Successful Month Amount: ${message}`}
   }
 
- 
-
   setSubAmounts(category: string, account:string, amount: number, frequency: string, transactionMonth: TransactionMonthInterface) {
     //Categories
     const accountAmounts = transactionMonth.accountAmounts
@@ -255,7 +255,7 @@ export class TransactionsService {
   async setTransactionsForYear(date: Date): Promise<Map<number, TransactionMonthInterface>> {
     for (let i = 0; i < 12; i++) {
       date.setMonth(i);
-      await this.setMonth(date, false);
+      this.setMonth(date, false);
     }
     const yearData = this.years.get(date.getFullYear())
     if(yearData) return yearData
@@ -273,4 +273,5 @@ export interface TransactionMonthInterface {
   totalTransactions: number;
   categoryAmounts: Map<string, number>;
   accountAmounts: Map<string, number>;
+  monthName: string;
 }

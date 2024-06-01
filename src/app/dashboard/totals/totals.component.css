@@ -1,9 +1,21 @@
-.totals-row {
-    display: flex;
-    width: 100%;
-    justify-content: space-around;
-}
 :host {
     width: 95%;
     height: 95%;
-  }
+}
+
+.year-chooser {
+    display: flex;
+    justify-content: space-evenly;
+    align-content: center;
+}
+
+table {
+    width: 100%
+}
+td {
+    text-align: center;
+    vertical-align: middle;
+}
+.table-month {
+    text-align: start;
+}
