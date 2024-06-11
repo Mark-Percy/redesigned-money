@@ -1,13 +1,15 @@
 <section class="account-holder">
     <div class="account-content">
         <nav mat-tab-nav-bar color="primary" mat-align-tabs="center" [tabPanel]="authPanel">
-            <a mat-tab-link *ngFor="let link of this.links"
-                [routerLink]="link.link" 
-                routerLinkActive #rla="routerLinkActive"
-                [active]="rla.isActive"
-            >
-                {{ link.label }}
-            </a>
+            @for (link of links; track link.label) {
+                <a mat-tab-link
+                    [routerLink]="link.link" 
+                    routerLinkActive #rla="routerLinkActive"
+                    [active]="rla.isActive"
+                >
+                    {{ link.label }}
+                </a>
+            }
         </nav>
         <mat-tab-nav-panel #authPanel>
             <router-outlet></router-outlet>

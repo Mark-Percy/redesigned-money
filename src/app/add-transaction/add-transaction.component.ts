@@ -1,7 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
-import { DateAdapter } from '@angular/material/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DateAdapter, MatOption } from '@angular/material/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Pot } from '../dashboard/savings/pots.interface';
@@ -9,6 +9,15 @@ import { AccountsService } from '../shared/accounts.service';
 import { SavingsService } from '../shared/savings.service';
 import { TransactionsService } from '../shared/transactions.service';
 import { Account } from '../user/account/account.interface';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { AsyncPipe, NgFor } from '@angular/common';
+import { MatSelect } from '@angular/material/select';
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel, MatHint, MatSuffix, MatPrefix } from '@angular/material/form-field';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 export interface TransactionInterface {
   id: string;
@@ -35,9 +44,33 @@ export class Savings {
 }
 
 @Component({
-  selector: 'app-add-transaction',
-  templateUrl: './add-transaction.component.html',
-  styleUrls: ['./add-transaction.component.css']
+    selector: 'app-add-transaction',
+    templateUrl: './add-transaction.component.html',
+    styleUrls: ['./add-transaction.component.css'],
+    standalone: true,
+    imports: [
+      MatDialogTitle,
+      CdkScrollable,
+      MatDialogContent,
+      MatSlideToggle,
+      FormsModule,
+      ReactiveFormsModule,
+      MatFormField,
+      MatLabel,
+      MatInput,
+      MatDatepickerInput,
+      MatHint,
+      MatDatepickerToggle,
+      MatSuffix,
+      MatDatepicker,
+      MatSelect,
+      MatOption,
+      MatPrefix,
+      MatButton,
+      MatIcon,
+      AsyncPipe,
+      NgFor,
+    ]
 })
 export class AddTransactionComponent implements OnInit {
 

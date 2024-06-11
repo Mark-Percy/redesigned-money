@@ -1,15 +1,40 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from 'src/app/authorisation.service';
 import { AccountsService } from 'src/app/shared/accounts.service';
 import { Account } from '../account/account.interface';
+import { MatOption } from '@angular/material/core';
+import { MatSelect } from '@angular/material/select';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { AccountComponent } from '../account/account.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { AsyncPipe } from '@angular/common';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 
 @Component({
-  selector: 'app-profile',
-  templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+    selector: 'app-profile',
+    templateUrl: './profile.component.html',
+    styleUrls: ['./profile.component.css'],
+    standalone: true,
+    imports: [
+      FormsModule,
+      ReactiveFormsModule,
+      MatGridList,
+      MatGridTile,
+      MatFormField,
+      MatLabel,
+      MatInput,
+      MatIconButton,
+      MatSuffix,
+      MatIcon,
+      AccountComponent,
+      AsyncPipe,
+    ]
 })
 export class ProfileComponent implements OnInit {
 
@@ -62,8 +87,8 @@ export class ProfileComponent implements OnInit {
 }
 
 @Component({
-  selector: 'add-account',
-  template:`
+    selector: 'add-account',
+    template: `
   <h3 mat-dialog-title>{{ action }}</h3>
   <div mat-dialog-content>
     <form (ngSubmit)="submitAccount()" [formGroup]="accountForm">
@@ -84,7 +109,9 @@ export class ProfileComponent implements OnInit {
       <button mat-raised-button>Submit</button>
     </form>
   </div>
-  `
+  `,
+    standalone: true,
+    imports: [MatDialogTitle, CdkScrollable, MatDialogContent, FormsModule, ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatSelect, MatOption, MatButton]
 })
 export class AddAccountDialog {
 
@@ -98,6 +125,7 @@ export class AddAccountDialog {
     private accountsService: AccountsService,
     @Inject(MAT_DIALOG_DATA) public id: string,
   ){
+    console.log(id)
     this.accountForm = this.fb.group({
       name: '',
       type: '',
@@ -118,7 +146,7 @@ export class AddAccountDialog {
   
   submitAccount(){
     this.dialogRef.close();
-    if(this.id == '') this.accountsService.addAccount(this.accountForm.value);
+    if(this.id == undefined) this.accountsService.addAccount(this.accountForm.value);
   }
 
 }

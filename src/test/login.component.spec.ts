@@ -62,12 +62,12 @@ describe('LoginComponent', () => {
     
 
     await TestBed.configureTestingModule({
-      declarations: [ LoginComponent ],
-      providers: [
-        {provide: AuthorisationService, useValue: AuthServiceStub},
-        {provide: Router, useValue: routerStub},
-      ]
-    }).compileComponents();
+    imports: [LoginComponent],
+    providers: [
+        { provide: AuthorisationService, useValue: AuthServiceStub },
+        { provide: Router, useValue: routerStub },
+    ]
+}).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;

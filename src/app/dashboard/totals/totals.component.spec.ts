@@ -15,9 +15,9 @@ describe('TotalsComponent', () => {
     }
 
     TestBed.configureTestingModule({
-      declarations: [TotalsComponent],
-      providers: [{provide: TransactionsService, useValue: transactionsMock}]
-    });
+    imports: [TotalsComponent],
+    providers: [{ provide: TransactionsService, useValue: transactionsMock }]
+});
     fixture = TestBed.createComponent(TotalsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

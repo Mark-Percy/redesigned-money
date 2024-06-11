@@ -5,11 +5,27 @@ import { SavingsDialogComponent } from 'src/app/dashboard/savings/savings-dialog
 import { AccountsService } from 'src/app/shared/accounts.service';
 import { TransactionsService } from 'src/app/shared/transactions.service';
 import { Account } from 'src/app/user/account/account.interface';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import { NgStyle } from '@angular/common';
 
 @Component({
-  selector: 'app-savings',
-  templateUrl: './savings.component.html',
-  styleUrls: ['./savings.component.css']
+    selector: 'app-savings',
+    templateUrl: './savings.component.html',
+    styleUrls: ['./savings.component.css'],
+    standalone: true,
+    imports: [
+      NgStyle,
+      MatTable,
+      MatColumnDef,
+      MatHeaderCellDef,
+      MatHeaderCell,
+      MatCellDef,
+      MatCell,
+      MatHeaderRowDef,
+      MatHeaderRow,
+      MatRowDef,
+      MatRow,
+    ]
 })
 export class SavingsComponent {
 

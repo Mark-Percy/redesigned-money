@@ -1,5 +1,5 @@
 import { Component, Inject, OnDestroy, SimpleChanges } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -7,11 +7,34 @@ import { Observable, Subscription } from 'rxjs';
 import { AddTransactionComponent, TransactionInterface } from '../add-transaction/add-transaction.component';
 import { TransactionsService } from '../shared/transactions.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { AsyncPipe, CurrencyPipe, NgFor, TitleCasePipe, KeyValuePipe } from '@angular/common';
+import { TransactionsTableComponent } from '../transactions-table/transactions-table.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatDatepickerInput, MatDatepicker } from '@angular/material/datepicker';
+import { MatInput } from '@angular/material/input';
+import { MatFormField } from '@angular/material/form-field';
 
 @Component({
-  selector: 'app-transactions-view',
-  templateUrl: './transactions-view.component.html',
-  styleUrls: ['./transactions-view.component.css']
+    selector: 'app-transactions-view',
+    templateUrl: './transactions-view.component.html',
+    styleUrls: ['./transactions-view.component.css'],
+    standalone: true,
+    imports: [
+      MatFormField,
+      MatInput,
+      FormsModule,
+      MatDatepickerInput,
+      ReactiveFormsModule,
+      MatDatepicker,
+      MatIconButton,
+      MatIcon,
+      MatButton,
+      TransactionsTableComponent,
+      AsyncPipe,
+      CurrencyPipe,
+    ]
 })
 export class TransactionsViewComponent implements OnDestroy {
 
@@ -93,9 +116,11 @@ export interface Bills {
 }
 
 @Component({
-  selector: 'bottom-sheet-overview-example-sheet',
-  templateUrl: './amounts-bottom-sheet.component.html',
-  styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}']
+    selector: 'bottom-sheet-overview-example-sheet',
+    templateUrl: './amounts-bottom-sheet.component.html',
+    styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}'],
+    standalone: true,
+    imports: [MatTabGroup, MatTab, NgFor, TitleCasePipe, CurrencyPipe, KeyValuePipe]
 })
 export class AmountsBottomSheet {
   monthTransactions = this.transactionService.setMonth(this.passed, false);

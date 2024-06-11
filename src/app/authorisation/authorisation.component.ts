@@ -1,12 +1,24 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthorisationService } from '../authorisation.service';
 import { TransactionsService } from '../shared/transactions.service';
+import { RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
+import { NgFor } from '@angular/common';
+import { MatTabNav, MatTabLink, MatTabNavPanel } from '@angular/material/tabs';
 
 
 @Component({
-  selector: 'app-authorisation',
-  templateUrl: './authorisation.component.html',
-  styleUrls: ['./authorisation.component.css'],
+    selector: 'app-authorisation',
+    templateUrl: './authorisation.component.html',
+    styleUrls: ['./authorisation.component.css'],
+    standalone: true,
+    imports: [
+        MatTabNav,
+        MatTabLink,
+        RouterLinkActive,
+        RouterLink,
+        MatTabNavPanel,
+        RouterOutlet,
+    ],
 })
 export class AuthorisationComponent {
   links = [

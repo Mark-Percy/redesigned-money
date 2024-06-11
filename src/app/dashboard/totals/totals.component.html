@@ -14,12 +14,14 @@
         </tr>
     </thead>
     <tbody>
-        <tr *ngFor="let month of YearsData | keyvalue">
-            <td class="table-month">{{ month.value.monthName}}</td>
-            <td>{{ month.value.totalAmount | currency}}</td>
-            <td>{{ (month.value.categoryAmounts.get('spending') ? month.value.categoryAmounts.get('spending') : 0) | currency }}</td>
-            <td>{{ (month.value.categoryAmounts.get('useless') ? month.value.categoryAmounts.get('useless') : 0) | currency}}</td>
-            <td>{{ (month.value.categoryAmounts.get('bills') ? month.value.categoryAmounts.get('bills') : 0) | currency}}</td>
-        </tr>
+        @for(month of YearsData | keyvalue; track month.value.monthName) {
+            <tr>
+                <td class="table-month">{{ month.value.monthName}}</td>
+                <td>{{ month.value.totalAmount | currency}}</td>
+                <td>{{ (month.value.categoryAmounts.get('spending') ? month.value.categoryAmounts.get('spending') : 0) | currency }}</td>
+                <td>{{ (month.value.categoryAmounts.get('useless') ? month.value.categoryAmounts.get('useless') : 0) | currency}}</td>
+                <td>{{ (month.value.categoryAmounts.get('bills') ? month.value.categoryAmounts.get('bills') : 0) | currency}}</td>
+            </tr>
+        }
     </tbody>
 </table>

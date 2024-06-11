@@ -1,12 +1,31 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Component } from '@angular/core';
 import { TransactionsService } from '../shared/transactions.service';
+import { TotalsComponent } from './totals/totals.component';
+import { SavingsComponent } from './savings/savings.component';
+import { TransactionComponent } from './transaction/transaction.component';
+import { MatGridList, MatGridTile } from '@angular/material/grid-list';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { NgIf } from '@angular/common';
+import { PersonalInfoComponent } from '../user/personal-info/personal-info.component';
 
 
 @Component({
-  selector: 'app-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+    selector: 'app-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.css'],
+    standalone: true,
+    imports: [
+      PersonalInfoComponent,
+      MatIconButton,
+      MatIcon,
+      MatGridList,
+      MatGridTile,
+      TransactionComponent,
+      SavingsComponent,
+      TotalsComponent,
+    ]
 })
 export class DashboardComponent {
 

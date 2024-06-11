@@ -10,9 +10,8 @@ describe('AccountComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AccountComponent ],
-      imports: [MatGridListModule, MatIconModule]
-    })
+    imports: [MatGridListModule, MatIconModule, AccountComponent]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(AccountComponent);
