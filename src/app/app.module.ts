@@ -14,7 +14,6 @@ import { HeaderComponent } from './header/header.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AngularFireModule } from '@angular/fire/compat';
 
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
 import { UserComponent } from './user/user.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { accountCreationGuard } from './authorisation.service';
@@ -66,12 +65,15 @@ import { TotalsComponent } from './dashboard/totals/totals.component';
     FormsModule,
     ReactiveFormsModule,
     AngularFireModule.initializeApp(environment.firebase),
-    AngularFireAuthModule,
+    AngularFireModule,
+  ],
+  providers: [
+    {provide:DEFAULT_CURRENCY_CODE, useValue: 'GBP'},
+    accountCreationGuard,
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())
   ],
-  providers: [{provide:DEFAULT_CURRENCY_CODE, useValue: 'GBP'}, accountCreationGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
