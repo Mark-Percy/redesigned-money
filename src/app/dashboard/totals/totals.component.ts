@@ -1,10 +1,20 @@
 import { Component } from '@angular/core';
 import { TransactionMonthInterface, TransactionsService } from 'src/app/shared/transactions.service';
+import { CurrencyPipe, KeyValuePipe } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
-  selector: 'app-totals',
-  templateUrl: './totals.component.html',
-  styleUrls: ['./totals.component.css']
+    selector: 'app-totals',
+    templateUrl: './totals.component.html',
+    styleUrls: ['./totals.component.css'],
+    standalone: true,
+    imports: [
+      MatIconButton,
+      MatIcon,
+      CurrencyPipe,
+      KeyValuePipe
+    ]
 })
 export class TotalsComponent {
   YearsData: Map<number, TransactionMonthInterface>

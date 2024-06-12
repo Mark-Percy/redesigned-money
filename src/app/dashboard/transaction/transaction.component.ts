@@ -1,13 +1,26 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AddTransactionComponent } from 'src/app/add-transaction/add-transaction.component';
 import { TransactionsService } from 'src/app/shared/transactions.service';
+import { TransactionsTableComponent } from '../../transactions-table/transactions-table.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatAnchor, MatIconButton } from '@angular/material/button';
+import { NgStyle } from '@angular/common';
 
 @Component({
-  selector: 'app-transaction',
-  templateUrl: './transaction.component.html',
-  styleUrls: ['./transaction.component.css']
+    selector: 'app-transaction',
+    templateUrl: './transaction.component.html',
+    styleUrls: ['./transaction.component.css'],
+    standalone: true,
+    imports: [
+      NgStyle,
+      MatAnchor,
+      RouterLink,
+      MatIconButton,
+      MatIcon,
+      TransactionsTableComponent
+    ]
 })
 export class TransactionComponent implements OnInit {
 

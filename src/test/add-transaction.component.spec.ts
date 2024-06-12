@@ -79,17 +79,16 @@ describe('AddTransactionComponent', () => {
     }
 
     await TestBed.configureTestingModule({
-      declarations: [ AddTransactionComponent ],
-      providers: [
-        {provide: TransactionsService, useValue: MockTransactionService},
-        {provide: AccountsService, useValue: MockAccountsService},
-        {provide: SavingsService, useValue: MockSavingsService},
-        {provide: MatDialogRef, useValue: MockMatDialogRef},
-        {provide: DateAdapter, useValue: MockDateAdapter},
-        {provide: MAT_DIALOG_DATA, useValue: MockDialogData},
+    providers: [
+        { provide: TransactionsService, useValue: MockTransactionService },
+        { provide: AccountsService, useValue: MockAccountsService },
+        { provide: SavingsService, useValue: MockSavingsService },
+        { provide: MatDialogRef, useValue: MockMatDialogRef },
+        { provide: DateAdapter, useValue: MockDateAdapter },
+        { provide: MAT_DIALOG_DATA, useValue: MockDialogData },
         // {provide: MAT_DATE_LOCALE, useValue: 'en-GB' },
-      ],
-      imports: [
+    ],
+    imports: [
         MatSlideToggleModule,
         MatFormFieldModule,
         MatInputModule,
@@ -98,8 +97,9 @@ describe('AddTransactionComponent', () => {
         // MatDatepickerModule,
         // MatNativeDateModule,
         ReactiveFormsModule,
-      ]
-    })
+        AddTransactionComponent,
+    ]
+})
     .compileComponents();
 
     fixture = TestBed.createComponent(AddTransactionComponent);

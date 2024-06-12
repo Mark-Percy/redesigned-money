@@ -10,6 +10,7 @@ import { Account } from '../user/account/account.interface';
 export class AccountsService {
 
   constructor(private fs: Firestore, private auth: AuthorisationService) {}
+
   addAccount(accountsForm: Account) {
     const accountsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts');
     let newDoc = addDoc(accountsCol, accountsForm);

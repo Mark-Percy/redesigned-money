@@ -1,13 +1,19 @@
 <div style="display:flex; justify-content: center;">
     <app-personal-info></app-personal-info>
 </div>
-<div *ngIf="dashboardCols == 1">
-    <button mat-icon-button (click)="switchCol(0)" [disabled]="currCol == 0"><mat-icon>remove</mat-icon></button>
-    <button mat-icon-button (click)="switchCol(1)" [disabled]="currCol == 1"><mat-icon>add</mat-icon></button>
-</div>
+@if(dashboardCols == 1){
+    <div>
+        <button mat-icon-button (click)="switchCol(0)" [disabled]="currCol == 0"><mat-icon>remove</mat-icon></button>
+        <button mat-icon-button (click)="switchCol(1)" [disabled]="currCol == 1"><mat-icon>add</mat-icon></button>
+    </div>
+}
 <mat-grid-list [cols]="dashboardCols" rowHeight="45vh">
-    <mat-grid-tile *ngIf="currCol == 0"><app-transaction [panelWidth]="panelWidth"></app-transaction></mat-grid-tile>
-    <mat-grid-tile *ngIf="currCol == 0"><app-savings [panelWidth]="panelWidth"></app-savings></mat-grid-tile>
-    <mat-grid-tile *ngIf="dashboardCols == 2 || currCol == 1"><app-totals></app-totals></mat-grid-tile>
-    <mat-grid-tile *ngIf="dashboardCols == 2 || currCol == 1">empty</mat-grid-tile>
+    @if(currCol == 0) {
+        <mat-grid-tile><app-transaction [panelWidth]="panelWidth"></app-transaction></mat-grid-tile>
+        <mat-grid-tile><app-savings [panelWidth]="panelWidth"></app-savings></mat-grid-tile>
+    }
+    @if(dashboardCols == 2 || currCol == 1) {
+        <mat-grid-tile><app-totals></app-totals></mat-grid-tile>
+        <mat-grid-tile>empty</mat-grid-tile>
+    }
 </mat-grid-list>

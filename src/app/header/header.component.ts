@@ -1,11 +1,29 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthorisationService } from '../authorisation.service';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { MatIcon } from '@angular/material/icon';
+import { MatMenuTrigger, MatMenu, MatMenuItem } from '@angular/material/menu';
+import { MatButton } from '@angular/material/button';
+import { NgIf } from '@angular/common';
+import { MatToolbar } from '@angular/material/toolbar';
 
 @Component({
-  selector: 'app-header',
-  templateUrl: './header.component.html',
-  styleUrls: ['./header.component.css']
+    selector: 'app-header',
+    templateUrl: './header.component.html',
+    styleUrls: ['./header.component.css'],
+    standalone: true,
+    imports: [
+      MatToolbar,
+      RouterLink,
+      MatButton,
+      RouterLinkActive,
+      MatMenuTrigger,
+      MatIcon,
+      MatMenu,
+      MatMenuItem,
+      MatSlideToggle,
+    ]
 })
 export class HeaderComponent {
 

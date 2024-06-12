@@ -4,27 +4,27 @@
 @include mat.all-component-typographies();
 @include mat.core();
 
-$money-manager-primary: mat.define-palette(mat.$amber-palette, 700);
-$money-manager-accent: mat.define-palette(mat.$green-palette, 400);
-$money-manager-warn: mat.define-palette(mat.$red-palette);
+$money-manager-primary: mat.m2-define-palette(mat.$m2-amber-palette, 700);
+$money-manager-accent: mat.m2-define-palette(mat.$m2-green-palette, 400);
+$money-manager-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$money-manager-dark: mat.define-dark-theme((
+$money-manager-dark: mat.m2-define-dark-theme((
   color: (
     primary: $money-manager-primary,
     accent: $money-manager-accent,
     warn: $money-manager-warn,
   ),
-  typography: mat.define-typography-config(),
+  typography: mat.m2-define-typography-config(),
   density: 0,
 ));
 
-$money-manager-light : mat.define-light-theme((
+$money-manager-light : mat.m2-define-light-theme((
   color: (
     primary:$money-manager-primary,
     accent: $money-manager-accent,
     warn: $money-manager-warn,
   ),
-  typography: mat.define-typography-config(),
+  typography: mat.m2-define-typography-config(),
   density: 0,
 ));
 

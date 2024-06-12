@@ -21,18 +21,18 @@ describe('NewUserComponent', () => {
     }
     
     await TestBed.configureTestingModule({
-      declarations: [ NewUserComponent ],
-      imports: [
+    imports: [
         MatTabsModule,
         BrowserAnimationsModule,
         ReactiveFormsModule,
         MatIconModule,
-        MatInputModule
-      ],
-      providers: [
-        {provide: AuthorisationService, useValue: MockAuthService}
-      ]
-    })
+        MatInputModule,
+        NewUserComponent
+    ],
+    providers: [
+        { provide: AuthorisationService, useValue: MockAuthService }
+    ]
+})
     .compileComponents();
   });
 

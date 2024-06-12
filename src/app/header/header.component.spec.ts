@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { AuthorisationService } from '../authorisation.service';
-import { AppModule } from '../app.module';
 
 class MockUnAuthService {
   user = null;
@@ -18,12 +17,11 @@ describe('When user is logged in', () => {
   let loader: HarnessLoader;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HeaderComponent ],
-      imports:[AppModule],
-      providers: [
-        HeaderComponent, {provide: AuthorisationService, useClass: MockAuthService}
-      ]
-    })
+    imports: [HeaderComponent],
+    providers: [
+        HeaderComponent, { provide: AuthorisationService, useClass: MockAuthService }
+    ]
+})
     .compileComponents();
   })
   beforeEach(() => {
@@ -45,12 +43,11 @@ describe('When Header Component not logged in', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ HeaderComponent ],
-      imports:[AppModule],
-      providers: [
-        HeaderComponent, {provide: AuthorisationService, useClass: MockUnAuthService}
-      ]
-    })
+    imports: [HeaderComponent],
+    providers: [
+        HeaderComponent, { provide: AuthorisationService, useClass: MockUnAuthService }
+    ]
+})
     .compileComponents();
   });
 

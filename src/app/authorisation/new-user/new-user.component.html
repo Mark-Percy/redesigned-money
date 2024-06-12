@@ -14,9 +14,11 @@
             </mat-form-field>
         </mat-tab>
         <mat-tab label="Account Details" formGroupName="accountDetails" disabled>
-            <div *ngIf="(newAccountForm.get('accountDetails')?.errors?.['passwordMatch'] || newAccountForm.get('accountDetails')?.get('email')?.errors?.['email']) && newAccountForm.touched ">
-                Error: {{ errorMessage }}
-            </div>
+            @if((newAccountForm.get('accountDetails')?.errors?.['passwordMatch'] || newAccountForm.get('accountDetails')?.get('email')?.errors?.['email']) && newAccountForm.touched) {
+                <div>
+                    Error: {{ errorMessage }}
+                </div>
+            }
             <mat-form-field>
                 <mat-label>Email</mat-label>
                 <input type="email" matInput formControlName="email">
@@ -37,7 +39,13 @@
             </mat-form-field>
         </mat-tab>
     </mat-tab-group>
-    <button *ngIf="this.selectedTab.value == 1" mat-raised-button color="accent" type="submit" class="right">Submit</button>
-    <button *ngIf="this.selectedTab.value < 1" mat-raised-button color="grey" type="button" class="right" (click)="moveTab(1)">Next</button>
-    <button *ngIf="this.selectedTab.value > 0" mat-raised-button color="grey" type="button" class="left" (click)="moveTab(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
+    @if(this.selectedTab.value == 1) {
+        <button mat-raised-button color="accent" type="submit" class="right">Submit</button>
+    }
+    @if(this.selectedTab.value < 1) {
+        <button mat-raised-button color="grey" type="button" class="right" (click)="moveTab(1)">Next</button>
+    }
+    @if(this.selectedTab.value > 0){
+        <button mat-raised-button color="grey" type="button" class="left" (click)="moveTab(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
+    }
 </form>

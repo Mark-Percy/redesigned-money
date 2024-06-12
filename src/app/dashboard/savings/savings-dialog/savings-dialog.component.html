@@ -7,26 +7,34 @@
         <article>
             <button mat-button (click)="enableAddPot()">{{ showAddPot ? 'cancel' : 'Add Pot' }}</button>
             <div>Amount</div><div>{{ (account.amount ? account.amount : 0) | currency}}</div>
-            <form (ngSubmit)="addPot()" *ngIf="showAddPot">
-                <mat-form-field>
-                    <label for="name"></label>
-                    <input matInput [formControl]="name">
-                </mat-form-field>
-                <button mat-flat-button color="accent">Add Pot</button>
-            </form>
+            @if(showAddPot) {
+                <form (ngSubmit)="addPot()">
+                    <mat-form-field>
+                        <label for="name"></label>
+                        <input matInput [formControl]="name">
+                    </mat-form-field>
+                    <button mat-flat-button color="accent">Add Pot</button>
+                </form>
+            }
         </article>
-        <article id="transfer" *ngIf="potsBetween.length > 0">
-            <h4>Transfering</h4>
-            <div *ngFor="let pot of potsBetween">
-                <p>{{ pot.name }} : {{ pot.amount | currency }}</p>
-            </div>
-            <form (ngSubmit)="transferValue()" *ngIf="potsBetween.length == 2">
-                <mat-form-field>
-                    <input matInput type="number" color="primary" [formControl]="transferVal">
-                </mat-form-field>
-                <button  mat-mini-fab color="accent"><mat-icon>sync_alt</mat-icon></button>
-            </form>
-        </article>
+        @if(potsBetween.length > 0) {
+            <article id="transfer">
+                <h4>Transfering</h4>
+                @for(pot of potsBetween; track pot.name) {
+                    <div>
+                        <p>{{ pot.name }} : {{ pot.amount | currency }}</p>
+                    </div>
+                }
+                @if(potsBetween.length == 2){
+                    <form (ngSubmit)="transferValue()">
+                        <mat-form-field>
+                            <input matInput type="number" color="primary" [formControl]="transferVal">
+                        </mat-form-field>
+                        <button  mat-mini-fab color="accent"><mat-icon>sync_alt</mat-icon></button>
+                    </form>
+                }
+            </article>
+        }
     </section>
     <section>
         <h3>Pots</h3>

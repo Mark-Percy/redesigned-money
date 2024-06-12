@@ -1,15 +1,33 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators } from '@angular/forms';
-import { MatTabGroup } from '@angular/material/tabs';
+import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { Router } from '@angular/router';
 import { AuthorisationService } from 'src/app/authorisation.service';
 import { passwordMatch } from 'src/app/form-validation.dirtective';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatInput } from '@angular/material/input';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 
 
 @Component({
-	selector: 'app-new-user',
-	templateUrl: './new-user.component.html',
-	styleUrls: ['./new-user.component.css']
+    selector: 'app-new-user',
+    templateUrl: './new-user.component.html',
+    styleUrls: ['./new-user.component.css'],
+    standalone: true,
+    imports: [
+		FormsModule,
+		ReactiveFormsModule,
+		MatTabGroup,
+		MatTab,
+		MatFormField,
+		MatLabel,
+		MatInput,
+		MatIconButton,
+		MatSuffix,
+		MatIcon,
+		MatButton,
+	]
 })
 
 
