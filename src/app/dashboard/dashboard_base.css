@@ -1,0 +1,15 @@
+section header{
+    display:flex;
+    justify-content:space-between;
+    border-bottom: white solid 1px;
+}
+h3 {
+    margin: 1% 0 0 2%;
+}
+
+section {
+    width: 45vw;
+    border: white solid 1px;
+    border-radius: 10px;
+    padding: 1%;
+}

@@ -10,7 +10,7 @@ import { NgStyle } from '@angular/common';
 @Component({
     selector: 'app-savings',
     templateUrl: './savings.component.html',
-    styleUrls: ['./savings.component.css'],
+    styleUrls: ['./savings.component.css', '../dashboard_base.css'],
     standalone: true,
     imports: [
       NgStyle,

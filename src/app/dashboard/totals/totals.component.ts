@@ -7,7 +7,7 @@ import { MatIconButton } from '@angular/material/button';
 @Component({
     selector: 'app-totals',
     templateUrl: './totals.component.html',
-    styleUrls: ['./totals.component.css'],
+    styleUrls: ['./totals.component.css', '../dashboard_base.css'],
     standalone: true,
     imports: [
       MatIconButton,

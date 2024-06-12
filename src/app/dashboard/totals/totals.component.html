@@ -1,29 +1,31 @@
-<div class="year-chooser">
-    <button mat-icon-button color="primary" (click)="setYear(-1)"><mat-icon>remove</mat-icon></button>
-    <h3>{{this.yearnum}}</h3>
-    <button mat-icon-button color="primary" (click)="setYear(1)"><mat-icon>add</mat-icon></button>
-</div>
-<table>
-    <thead class="totals-row">
-        <tr>
-            <th class="table-month">Month</th>
-            <th>Total</th>
-            <th>Spending</th>
-            <th>Useless</th>
-            <th>Bills</th>
-        </tr>
-    </thead>
-    <tbody>
-
-        @for(month of YearsData | keyvalue; track $index) {
+<section>
+    <header class="year-chooser">
+        <button mat-icon-button color="primary" (click)="setYear(-1)"><mat-icon>remove</mat-icon></button>
+        <h3>{{this.yearnum}}</h3>
+        <button mat-icon-button color="primary" (click)="setYear(1)"><mat-icon>add</mat-icon></button>
+    </header>
+    <table>
+        <thead class="totals-row">
             <tr>
-                <td class="table-month">{{ month.value.monthName}}</td>
-                <td>{{ month.value.totalAmount | currency}}</td>
-                <td>{{ (month.value.categoryAmounts.get('spending') ? month.value.categoryAmounts.get('spending') : 0) | currency }}</td>
-                <td>{{ (month.value.categoryAmounts.get('useless') ? month.value.categoryAmounts.get('useless') : 0) | currency}}</td>
-                <td>{{ (month.value.categoryAmounts.get('bills') ? month.value.categoryAmounts.get('bills') : 0) | currency}}</td>
+                <th class="table-month">Month</th>
+                <th>Total</th>
+                <th>Spending</th>
+                <th>Useless</th>
+                <th>Bills</th>
             </tr>
-        }
+        </thead>
+        <tbody>
 
-    </tbody>
-</table>
+            @for(month of YearsData | keyvalue; track $index) {
+                <tr>
+                    <td class="table-month">{{ month.value.monthName}}</td>
+                    <td>{{ month.value.totalAmount | currency}}</td>
+                    <td>{{ (month.value.categoryAmounts.get('spending') ? month.value.categoryAmounts.get('spending') : 0) | currency }}</td>
+                    <td>{{ (month.value.categoryAmounts.get('useless') ? month.value.categoryAmounts.get('useless') : 0) | currency}}</td>
+                    <td>{{ (month.value.categoryAmounts.get('bills') ? month.value.categoryAmounts.get('bills') : 0) | currency}}</td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</section>
