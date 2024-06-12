@@ -14,7 +14,8 @@
         </tr>
     </thead>
     <tbody>
-        @for(month of YearsData | keyvalue; track month.value.monthName) {
+
+        @for(month of YearsData | keyvalue; track $index) {
             <tr>
                 <td class="table-month">{{ month.value.monthName}}</td>
                 <td>{{ month.value.totalAmount | currency}}</td>
@@ -23,5 +24,6 @@
                 <td>{{ (month.value.categoryAmounts.get('bills') ? month.value.categoryAmounts.get('bills') : 0) | currency}}</td>
             </tr>
         }
+
     </tbody>
 </table>

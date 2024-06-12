@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, collectionData, addDoc, Firestore, doc  } from '@angular/fire/firestore';
-import { runTransaction } from 'firebase/firestore';
+import { collection, collectionData, addDoc, Firestore, doc, runTransaction  } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 import { AuthorisationService } from '../authorisation.service';
 import { Pot } from '../dashboard/savings/pots.interface';

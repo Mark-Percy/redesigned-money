@@ -1,7 +1,6 @@
-import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Output, EventEmitter, Input } from '@angular/core';
 import { TransactionsService } from '../shared/transactions.service';
 import { Observable } from 'rxjs';
-import { DocumentData } from 'firebase/firestore';
 import { TransactionInterface } from '../add-transaction/add-transaction.component';
 import { TitleCasePipe, CurrencyPipe, DatePipe } from '@angular/common';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';

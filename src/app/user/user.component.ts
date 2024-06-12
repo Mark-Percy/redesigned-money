@@ -8,11 +8,8 @@ import { RouterOutlet } from '@angular/router';
     standalone: true,
     imports: [RouterOutlet]
 })
-export class UserComponent implements OnInit {
+export class UserComponent {
 
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+  constructor() {}
 
 }

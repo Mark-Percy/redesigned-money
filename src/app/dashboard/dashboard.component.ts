@@ -7,7 +7,6 @@ import { TransactionComponent } from './transaction/transaction.component';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
-import { NgIf } from '@angular/common';
 import { PersonalInfoComponent } from '../user/personal-info/personal-info.component';
 
 

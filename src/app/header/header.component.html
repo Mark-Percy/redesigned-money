@@ -1,22 +1,28 @@
 <mat-toolbar color="primary">
         <span routerLink="/" class="tite">Money Tracker</span>
+
         @if(isLoggedIn()) {
             <button mat-button routerLink="dashboard" routerLinkActive="active" color="secondary">Dashboard</button>
         }
+
         <span class="spacer"></span>
+
         @if(isLoggedIn()) {
             <button mat-button [mat-menu-trigger-for]="accountMenu"><mat-icon>settings</mat-icon></button>
         }
+
         <mat-menu #accountMenu="matMenu" color="primary">
             <button mat-menu-item routerLink="user/profile"><mat-icon>account_circle</mat-icon>Profile</button>
             <button mat-menu-item>
                 <mat-slide-toggle (change)="changeThemeMode()" [checked]="isDark" (click)="$event.stopPropagation()"><mat-icon>light_mode</mat-icon></mat-slide-toggle>
             </button>
         </mat-menu>
+
         @if(isLoggedIn()) {
             <button mat-button (click)="logout()"><mat-icon>logout</mat-icon></button>
         }
         @else {
             <button mat-button routerLink="/account/login"><mat-icon>login</mat-icon></button>
         }
+
 </mat-toolbar>

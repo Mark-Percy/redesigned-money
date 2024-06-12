@@ -7,6 +7,7 @@
         <article>
             <button mat-button (click)="enableAddPot()">{{ showAddPot ? 'cancel' : 'Add Pot' }}</button>
             <div>Amount</div><div>{{ (account.amount ? account.amount : 0) | currency}}</div>
+
             @if(showAddPot) {
                 <form (ngSubmit)="addPot()">
                     <mat-form-field>
@@ -17,14 +18,17 @@
                 </form>
             }
         </article>
+
         @if(potsBetween.length > 0) {
             <article id="transfer">
                 <h4>Transfering</h4>
+
                 @for(pot of potsBetween; track pot.name) {
                     <div>
                         <p>{{ pot.name }} : {{ pot.amount | currency }}</p>
                     </div>
                 }
+                
                 @if(potsBetween.length == 2){
                     <form (ngSubmit)="transferValue()">
                         <mat-form-field>
@@ -35,6 +39,7 @@
                 }
             </article>
         }
+
     </section>
     <section>
         <h3>Pots</h3>

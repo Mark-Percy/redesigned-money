@@ -11,7 +11,7 @@ import { TransactionsService } from '../shared/transactions.service';
 import { Account } from '../user/account/account.interface';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatSelect } from '@angular/material/select';
 import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
 import { MatInput } from '@angular/material/input';
@@ -69,7 +69,6 @@ export class Savings {
       MatButton,
       MatIcon,
       AsyncPipe,
-      NgFor,
     ]
 })
 export class AddTransactionComponent implements OnInit {

@@ -2,7 +2,6 @@ import { Component, Input, EventEmitter, Output } from '@angular/core';
 import { Account } from './account.interface';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
-import { NgIf } from '@angular/common';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
 
 @Component({

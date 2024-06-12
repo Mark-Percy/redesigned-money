@@ -8,12 +8,15 @@
     </div>
 }
 <mat-grid-list [cols]="dashboardCols" rowHeight="45vh">
+
     @if(currCol == 0) {
         <mat-grid-tile><app-transaction [panelWidth]="panelWidth"></app-transaction></mat-grid-tile>
         <mat-grid-tile><app-savings [panelWidth]="panelWidth"></app-savings></mat-grid-tile>
     }
+
     @if(dashboardCols == 2 || currCol == 1) {
         <mat-grid-tile><app-totals></app-totals></mat-grid-tile>
         <mat-grid-tile>empty</mat-grid-tile>
     }
+
 </mat-grid-list>
