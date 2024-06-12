@@ -11,7 +11,7 @@ import { NgStyle } from '@angular/common';
 @Component({
     selector: 'app-transaction',
     templateUrl: './transaction.component.html',
-    styleUrls: ['./transaction.component.css'],
+    styleUrls: ['./transaction.component.css', '../dashboard_base.css'],
     standalone: true,
     imports: [
       NgStyle,
