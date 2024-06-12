@@ -15,7 +15,7 @@
     }
 
     @if(dashboardCols == 2 || currCol == 1) {
-        <mat-grid-tile><app-totals></app-totals></mat-grid-tile>
+        <mat-grid-tile><app-totals [panelWidth]="panelWidth"></app-totals></mat-grid-tile>
         <mat-grid-tile>empty</mat-grid-tile>
     }
 

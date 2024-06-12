@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
     selector: 'app-bills',
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
     standalone: true
 })
 export class BillsComponent {
-
+    @Input() panelWidth = '45vw';
 }

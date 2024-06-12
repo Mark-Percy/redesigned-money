@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { TransactionMonthInterface, TransactionsService } from 'src/app/shared/transactions.service';
-import { CurrencyPipe, KeyValuePipe } from '@angular/common';
+import { CurrencyPipe, KeyValuePipe, NgStyle } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 
@@ -13,7 +13,8 @@ import { MatIconButton } from '@angular/material/button';
       MatIconButton,
       MatIcon,
       CurrencyPipe,
-      KeyValuePipe
+      KeyValuePipe,
+      NgStyle,
     ]
 })
 export class TotalsComponent {
@@ -21,6 +22,7 @@ export class TotalsComponent {
 
   yearnum: number = new Date().getFullYear()
   yearIndex = 0
+  @Input() panelWidth = '45vw';
  
   constructor(private transactionService: TransactionsService) {
     this.transactionService.setTransactionsForYear(new Date()).then((transactionsForYear) => {
