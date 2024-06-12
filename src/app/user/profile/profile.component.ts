@@ -99,13 +99,17 @@ export class ProfileComponent implements OnInit {
       <mat-form-field>
         <mat-label>Type of Account</mat-label>
         <mat-select formControlName="type">
-          <mat-option *ngFor="let option of accountTypes" [value]="option">{{ option }}</mat-option>
-        </mat-select>
+          @for(option of accountTypes; track $index) {
+            <mat-option [value]="option">{{ option }}</mat-option>
+          }
+          </mat-select>
       </mat-form-field>
-      <mat-form-field *ngIf="showNum">
-        <mat-label>Amount</mat-label>
-        <input type="number" matInput formControlName="amount">
-      </mat-form-field>
+      @if(showNum) {
+        <mat-form-field>
+          <mat-label>Amount</mat-label>
+          <input type="number" matInput formControlName="amount">
+        </mat-form-field>
+      }
       <button mat-raised-button>Submit</button>
     </form>
   </div>
@@ -115,7 +119,7 @@ export class ProfileComponent implements OnInit {
 })
 export class AddAccountDialog {
 
-  accountTypes:string[] = ['Credit', 'Debit', 'Savings'];
+  accountTypes: string[] = ['Credit', 'Debit', 'Savings'];
   accountForm: FormGroup;
   showNum: boolean = false;
   action = 'Add Account'

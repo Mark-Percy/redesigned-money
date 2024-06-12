@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, User, signInWithEmailAndPassword, sendEmailVerification, updateProfile, UserCredential } from "@angular/fire/auth"
 import { from, Observable } from 'rxjs';
-import { Firestore, collection, docData, setDoc, doc } from '@angular/fire/firestore';
+import { Firestore, collection, docData, setDoc, doc, getDoc } from '@angular/fire/firestore';
 import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { getDoc } from 'firebase/firestore';
 
 @Injectable({
 	providedIn: 'root'

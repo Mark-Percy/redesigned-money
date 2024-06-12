@@ -1,8 +1,7 @@
-import { Injectable, forwardRef } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, getDoc, runTransaction, where, updateDoc, DocumentData, getAggregateFromServer, count, sum, Query } from '@angular/fire/firestore';
+import { Injectable } from '@angular/core';
+import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, where, updateDoc, DocumentData, getAggregateFromServer, count, sum, Query } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
 import { TransactionInterface } from '../add-transaction/add-transaction.component';
-import { Amount } from "./amount";
 import { AuthorisationService } from './../authorisation.service';
 import { SavingsService } from './savings.service';
 import { Account } from '../user/account/account.interface';

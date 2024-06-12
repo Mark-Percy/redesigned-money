@@ -14,11 +14,13 @@
             </mat-form-field>
         </mat-tab>
         <mat-tab label="Account Details" formGroupName="accountDetails" disabled>
+
             @if((newAccountForm.get('accountDetails')?.errors?.['passwordMatch'] || newAccountForm.get('accountDetails')?.get('email')?.errors?.['email']) && newAccountForm.touched) {
                 <div>
                     Error: {{ errorMessage }}
                 </div>
             }
+
             <mat-form-field>
                 <mat-label>Email</mat-label>
                 <input type="email" matInput formControlName="email">
@@ -39,13 +41,17 @@
             </mat-form-field>
         </mat-tab>
     </mat-tab-group>
+
     @if(this.selectedTab.value == 1) {
         <button mat-raised-button color="accent" type="submit" class="right">Submit</button>
     }
+
     @if(this.selectedTab.value < 1) {
         <button mat-raised-button color="grey" type="button" class="right" (click)="moveTab(1)">Next</button>
     }
+
     @if(this.selectedTab.value > 0){
         <button mat-raised-button color="grey" type="button" class="left" (click)="moveTab(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
     }
+
 </form>

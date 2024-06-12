@@ -1,5 +1,4 @@
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 import { AuthorisationComponent } from './authorisation/authorisation.component';
 import { LoginComponent } from './authorisation/login/login.component';
 import { NewUserComponent } from './authorisation/new-user/new-user.component';
@@ -14,7 +13,7 @@ import { accountCreationGuard } from './authorisation.service';
 const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['account','login']);
 const redirectAuthorisedToDashboard = () => redirectLoggedInTo(['dashboard']);
 
-const routes: Routes = [
+export const routes: Routes = [
   {path: '', component: HomeComponent, canActivate:[AngularFireAuthGuard], data: {authGuardPipe: redirectAuthorisedToDashboard}},
   {
     path: 'account',
@@ -36,9 +35,3 @@ const routes: Routes = [
   {path:'dashboard', component: DashboardComponent, canActivate:[AngularFireAuthGuard], data: {authGuardPipe: redirectUnauthorizedToLogin}},
   {path:'transactions', component:TransactionsViewComponent, canActivate:[AngularFireAuthGuard], data: {authGuardPipe: redirectUnauthorizedToLogin}}
 ];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
-})
-export class AppRoutingModule { }

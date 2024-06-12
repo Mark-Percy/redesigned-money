@@ -1,17 +1,21 @@
 <mat-tab-group>
   <mat-tab label="Accounts">
     <ul>
-      <li *ngFor="let account of accountAmounts | keyvalue">
-        <span>{{account.key | titlecase}}</span><span>{{account.value | currency}}</span>
-      </li>
+      @for(account of accountAmounts | keyvalue; track $index) {
+        <li>
+          <span>{{account.key | titlecase}}</span><span>{{account.value | currency}}</span>
+        </li>
+      }
     </ul>
   </mat-tab>
   <mat-tab label="Categories">
     <ul>
-      <li *ngFor="let category of categoryAmounts | keyvalue">
-        <span>{{category.key | titlecase}}</span>
-        <span>{{category.value | currency}}</span>
-      </li>
+      @for(category of categoryAmounts | keyvalue; track $index) {
+        <li>
+          <span>{{category.key | titlecase}}</span>
+          <span>{{category.value | currency}}</span>
+        </li>
+      }
     </ul>
   </mat-tab>
 </mat-tab-group>

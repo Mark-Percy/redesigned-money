@@ -2,13 +2,16 @@ import { Component } from '@angular/core';
 import { AuthorisationService } from 'src/app/authorisation.service';
 import { RouterLink } from '@angular/router';
 import { MatButton } from '@angular/material/button';
-import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'app-personal-info',
-    template: 'Hello {{ name }} <button mat-button color="primary" routerLink="/user/profile" *ngIf="!hasDisplayName()">Go to Profile</button>',
+    template: `<div>Hello {{ name }}<div>
+                @if(!hasDisplayName()) {
+                  <button mat-button color="primary" routerLink="/user/profile">Go to Profile</button>
+                }
+              `,
     standalone: true,
-    imports: [NgIf, MatButton, RouterLink]
+    imports: [MatButton, RouterLink]
 })
 export class PersonalInfoComponent {
   name: string = 'Unknown';
