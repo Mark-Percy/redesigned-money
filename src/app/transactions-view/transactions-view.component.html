@@ -22,5 +22,5 @@
     <div>{{numberOfTransactions}}</div>
 </section>
 <div #transTable class="transactions-table-container">
-    <app-transactions-table (openDialog)="openTransactionsDialog($event)" [transactions]="transactions"></app-transactions-table>
+    <app-transactions-table (getRow)="openTransactionsDialog($event)" [transactions]="transactions"></app-transactions-table>
 </div>

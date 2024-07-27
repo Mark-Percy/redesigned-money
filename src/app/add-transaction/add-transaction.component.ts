@@ -18,6 +18,8 @@ import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel, MatHint, MatSuffix, MatPrefix } from '@angular/material/form-field';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { CdkScrollable } from '@angular/cdk/scrolling';
+import { TransactionsTableComponent } from '../transactions-table/transactions-table.component';
+
 
 export interface TransactionInterface {
   id: string;
@@ -30,7 +32,10 @@ export interface TransactionInterface {
   location: string;
   amount: number | null;
   frequency: string;
-  items: [];
+  items: [{
+    item: string,
+    amount: number
+  }] | [];
 }
 export class Savings {
   name: string;
@@ -49,30 +54,32 @@ export class Savings {
     styleUrls: ['./add-transaction.component.css'],
     standalone: true,
     imports: [
-      MatDialogTitle,
-      CdkScrollable,
-      MatDialogContent,
-      MatSlideToggle,
-      FormsModule,
-      ReactiveFormsModule,
-      MatFormField,
-      MatLabel,
-      MatInput,
-      MatDatepickerInput,
-      MatHint,
-      MatDatepickerToggle,
-      MatSuffix,
-      MatDatepicker,
-      MatSelect,
-      MatOption,
-      MatPrefix,
-      MatButton,
-      MatIcon,
-      AsyncPipe,
-    ]
+    MatDialogTitle,
+    CdkScrollable,
+    MatDialogContent,
+    MatSlideToggle,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatDatepickerInput,
+    MatHint,
+    MatDatepickerToggle,
+    MatSuffix,
+    MatDatepicker,
+    MatSelect,
+    MatOption,
+    MatPrefix,
+    MatButton,
+    MatIcon,
+    AsyncPipe,
+    TransactionsTableComponent
+]
 })
 export class AddTransactionComponent implements OnInit {
 
+  similarTransactions: Observable<TransactionInterface[]>;
   addingMultiple: FormControl = new FormControl(false)
   keepAccount: FormControl = new FormControl({value: false, disabled: true})
   submitting: boolean = false
@@ -128,13 +135,13 @@ export class AddTransactionComponent implements OnInit {
   }  
   ){
     if(this.data && this.data.row) {
-      this.formPrefill = this.data.row
-      this.showFreq = this.formPrefill.category == 'bills'
-      this.savings = this.formPrefill.category == 'savings'
+      this.formPrefill = this.data.row;
+      this.showFreq = this.formPrefill.category == 'bills';
+      this.savings = this.formPrefill.category == 'savings';
       this.update = true;
     }
-    this.formPrefill.date = this.data && this.data.date ? this.data.date : this.formPrefill.date 
-    this._adapter.setLocale('en-GB')
+    this.formPrefill.date = this.data && this.data.date ? this.data.date : this.formPrefill.date;
+    this._adapter.setLocale('en-GB');
 
     this.accounts = this.accountsService.getAccounts();
     this.transactionForm = this.fb.group({
@@ -147,24 +154,21 @@ export class AddTransactionComponent implements OnInit {
       location: this.formPrefill.location,
       amount: this.formPrefill.amount,
       items: this.fb.array([
-        this.fb.group({
-          item: '',
-          amount: ['',{
-            updateOn: 'blur',
-          }],
-        })
       ])
     })
 
     this.transactionForm.get('category')?.valueChanges.subscribe((val) => {
-      this.showFreq = val == 'bills'
-      this.savings = val == 'savings'
+      this.showFreq = val == 'bills';
+      this.savings = val == 'savings';
     })
     this.transactionForm.get('toAccount')?.valueChanges.subscribe((val) => {
-      this.pots = this.savingsService.getPots(val)
+      this.pots = this.savingsService.getPots(val);
     })
 
     this.items = this.getItems();
+    this.formPrefill.items.forEach(data => {
+      this.addItem(data.item, data.amount);
+    });
 
     this.transactionDialog.afterClosed().subscribe(ref => {
       this.router.navigate([], {
@@ -178,23 +182,23 @@ export class AddTransactionComponent implements OnInit {
     this.items.valueChanges.subscribe(items => {
       let sum:number = 0;
       for(let i in items) {
-        sum += items[i].amount
+        sum += items[i].amount;
       }
       this.transactionForm.get('amount')?.patchValue(sum)
     });
 
     this.accounts.subscribe((ret) => {
-      this.accountsArr = ret
-      this.updateTheAccount(ret)
+      this.accountsArr = ret;
+      this.updateTheAccount(ret);
     })
     if(this.update) {
-      this.oldTransaction = this.transactionForm.value
+      this.oldTransaction = this.transactionForm.value;
     }
     this.addingMultiple.valueChanges.subscribe(val => {
-      if(val) this.keepAccount.enable()
+      if(val) this.keepAccount.enable();
       else {
-        this.keepAccount.patchValue(false)
-        this.keepAccount.disable()
+        this.keepAccount.patchValue(false);
+        this.keepAccount.disable();
       }
     })
   }
@@ -203,26 +207,26 @@ export class AddTransactionComponent implements OnInit {
   updateTheAccount(accounts: any[]) {
     const currentAccount = accounts.find(item => item.name == this.transactionForm.value.account)
     if(currentAccount) {
-      this.transactionForm.get('account')?.patchValue(currentAccount.id)
-      this.updateTransaction(this.formPrefill.id, true)
+      this.transactionForm.get('account')?.patchValue(currentAccount.id);
+      this.updateTransaction(this.formPrefill.id, true);
     }
   }
 
   addTransaction() {
-    this.submitting = true
-    const name = this.accountsArr.find(item => item.id == this.transactionForm.value.account)?.name
+    this.submitting = true;
+    const name = this.accountsArr.find(item => item.id == this.transactionForm.value.account)?.name;
     //if an account is selected
     if(name) {
       this.transactionsService.addTransaction(this.transactionForm.value, this.items, name).then(() => {
         if (!this.addingMultiple.value) this.transactionDialog.close();
         else {
-          const dateHold: Date = this.transactionForm.value.transactionDate
-          const account: string = this.transactionForm.value.account
-          this.transactionForm.reset()
-          this.transactionForm.get('transactionDate')?.patchValue(dateHold)
-          if(this.keepAccount.value) this.transactionForm.get('account')?.patchValue(account)
+          const dateHold: Date = this.transactionForm.value.transactionDate;
+          const account: string = this.transactionForm.value.account;
+          this.transactionForm.reset();
+          this.transactionForm.get('transactionDate')?.patchValue(dateHold);
+          if(this.keepAccount.value) this.transactionForm.get('account')?.patchValue(account);
         }
-        this.submitting = false
+        this.submitting = false;
       });
     }
   }
@@ -231,14 +235,12 @@ export class AddTransactionComponent implements OnInit {
   updateTransaction(id:string, dontClose?: Boolean) {
    if(!(this.transactionForm.value == this.oldTransaction)) {
       this.transactionsService.updateTransaction(id, this.transactionForm.value, this.oldTransaction);
-      if(!dontClose) this.transactionDialog.close()
-    } else console.log('Nothing Changed bozo')
+      if(!dontClose) this.transactionDialog.close();
+    } else console.log('Nothing Changed bozo');
   }
 
-  addItem() {
-    this.items.push(this.fb.group({item:'', amount: ['', {
-      updateOn: 'blur'
-    }]}));
+  addItem(item: string, amount: number | null) {
+    this.items.push(this.fb.group({item:item, amount: [amount, {updateOn: 'blur'}]}));
   }
 
   getItems() {
@@ -249,6 +251,21 @@ export class AddTransactionComponent implements OnInit {
     const transForm = this.transactionForm.value
     this.transactionsService.deleteTransaction(this.formPrefill.id, transForm.amount, transForm.account, transForm.category, transForm.transactionDate, transForm.frequency).then(() => {
       this.transactionDialog.close();
+    })
+  }
+
+  getSimilarTransactions() {
+    this.similarTransactions = this.transactionsService.getSimilarTransactions(this.transactionForm.value);
+  }
+
+  fillForm(data: {row: TransactionInterface}) {
+    const row = data.row;
+    this.transactionForm.get('account')?.setValue(row.account);
+    this.transactionForm.get('category')?.setValue(row.category);
+    this.transactionForm.get('frequency')?.setValue(row.frequency);
+    this.transactionForm.get('location')?.setValue(row.location);
+    row.items.forEach(data => {
+      this.addItem(data.item, data.amount);
     })
   }
 }

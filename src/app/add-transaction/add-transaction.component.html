@@ -78,7 +78,7 @@
       </mat-form-field>
     }
 
-    @if(!update && !savings) {
+    @if(!savings) {
       <section formArrayName="items">
         @for(item of items.controls; track $index) {
           <div>
@@ -101,15 +101,19 @@
     <section class="buttons">
       @if(!update) {
         <button mat-flat-button color="accent" (click)="addTransaction()" [disabled]="submitting">Submit</button>
+        <button mat-flat-button color="primary" (click)="getSimilarTransactions()" [disabled]="submitting">Find Similar</button>
       } @else {
         <button mat-flat-button color="primary" (click)="updateTransaction(formPrefill.id)">Update</button>
         <button mat-flat-button color="warn" (click)="deleteTransaction()"><mat-icon>delete</mat-icon></button>
       }
 
       @if(!update && !savings) {
-        <button mat-flat-button (click)="addItem()">Add Field</button>
+        <button mat-flat-button (click)="addItem('', null)">Add Field</button>
       }
 
+    </section>
+    <section>
+      <app-transactions-table [transactions]="similarTransactions" (getRow)="fillForm($event)"></app-transactions-table>
     </section>
   </form>
 </div>

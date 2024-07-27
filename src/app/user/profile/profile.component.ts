@@ -129,7 +129,6 @@ export class AddAccountDialog {
     private accountsService: AccountsService,
     @Inject(MAT_DIALOG_DATA) public id: string,
   ){
-    console.log(id)
     this.accountForm = this.fb.group({
       name: '',
       type: '',
