@@ -264,6 +264,22 @@ export class TransactionsService {
   clearMonths() {
     this.years.clear()
   }
+
+  getSimilarTransactions(transactionForm: TransactionInterface) {
+    const numberToLimit = 10;
+    const account = transactionForm.account;
+    const category = transactionForm.category;
+    const location = transactionForm.location;
+    const whereArr = [];
+
+    if(account != '') whereArr.push(where('account', '==', account));
+    if(category != '') whereArr.push(where('category', '==', category));
+    if(location != '') whereArr.push(where('location', '==', location));
+
+    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const q = query(transCol, ...whereArr, orderBy('transactionDate', 'desc'), limit(numberToLimit));
+    return collectionData(q, {idField: 'id'}) as Observable<TransactionInterface[]>;
+  }
 }
 
 export interface TransactionMonthInterface {

@@ -1,4 +1,4 @@
-import { Component, Output, EventEmitter, Input } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { TransactionsService } from '../shared/transactions.service';
 import { Observable } from 'rxjs';
 import { TransactionInterface } from '../add-transaction/add-transaction.component';
@@ -26,19 +26,29 @@ import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, Ma
       DatePipe,
     ]
 })
-export class TransactionsTableComponent{
+export class TransactionsTableComponent implements OnChanges {
 
-  @Output('openDialog') close: EventEmitter<any> = new EventEmitter<any>();
+  @Output('getRow') getRow: EventEmitter<any> = new EventEmitter<any>();
   @Input('transactions') transactions: Observable<TransactionInterface[]> = this.transactionService.getTransactions(5)
-
+  numOfTransactions: number = 1
   displayedColumns: string[] = ['transactionDate','amount', 'category', 'location'];
 
   constructor(public transactionService: TransactionsService) {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if(!this.transactions) {
+      this.numOfTransactions = 0
+      return
+    }
+    this.transactions.subscribe(data => {
+      this.numOfTransactions = data.length
+    })
+  }
 
-  openEditDialog(row: any) {
+
+  sendRow(row: any) {
     row.date = row.transactionDate.toDate();
-    this.close.emit({row:row})
+    this.getRow.emit({row:row})
   }
 
 }
