@@ -184,7 +184,7 @@ export class AddTransactionComponent implements OnInit {
       for(let i in items) {
         sum += items[i].amount;
       }
-      this.transactionForm.get('amount')?.patchValue(sum)
+      this.transactionForm.get('amount')?.patchValue(sum);
     });
 
     this.accounts.subscribe((ret) => {
@@ -205,7 +205,7 @@ export class AddTransactionComponent implements OnInit {
   // function called to check the value of the accounts select is correct
   // If old saved pre March 2023, will automatically update account value to 
   updateTheAccount(accounts: any[]) {
-    const currentAccount = accounts.find(item => item.name == this.transactionForm.value.account)
+    const currentAccount = accounts.find(item => item.name == this.transactionForm.value.account);
     if(currentAccount) {
       this.transactionForm.get('account')?.patchValue(currentAccount.id);
       this.updateTransaction(this.formPrefill.id, true);
@@ -225,6 +225,7 @@ export class AddTransactionComponent implements OnInit {
           this.transactionForm.reset();
           this.transactionForm.get('transactionDate')?.patchValue(dateHold);
           if(this.keepAccount.value) this.transactionForm.get('account')?.patchValue(account);
+          this.removeAllBut(0);
         }
         this.submitting = false;
       });
@@ -243,6 +244,10 @@ export class AddTransactionComponent implements OnInit {
     this.items.push(this.fb.group({item:item, amount: [amount, {updateOn: 'blur'}]}));
   }
 
+  removeItem() {
+    this.items.removeAt(-1);
+  }
+
   getItems() {
     return this.transactionForm.get('items') as FormArray;
   }
@@ -259,6 +264,7 @@ export class AddTransactionComponent implements OnInit {
   }
 
   fillForm(data: {row: TransactionInterface}) {
+    this.items.clear();
     const row = data.row;
     this.transactionForm.get('account')?.setValue(row.account);
     this.transactionForm.get('category')?.setValue(row.category);
@@ -267,5 +273,11 @@ export class AddTransactionComponent implements OnInit {
     row.items.forEach(data => {
       this.addItem(data.item, data.amount);
     })
+  }
+
+  removeAllBut(index: number) {
+    const indexKept = this.items.at(index);
+    this.items.clear();
+    this.items.push(indexKept)
   }
 }
