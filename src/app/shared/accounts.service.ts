@@ -9,6 +9,8 @@ import { Account } from '../user/account/account.interface';
 })
 export class AccountsService {
 
+  accounts = this.setAccounts();;
+
   constructor(private fs: Firestore, private auth: AuthorisationService) {}
 
   addAccount(accountsForm: Account) {
@@ -52,5 +54,20 @@ export class AccountsService {
   delete(id: string) {
     const accountsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/Accounts');
     deleteDoc(doc(accountsCol, id))
+  }
+  //Note tidy up this function maybe develop it further to add other attributes
+  setAccounts() {
+    const accounts = this.getAccounts()
+    const accountsMap = new Map()
+    accounts.forEach(accounts => {
+      accounts.forEach(account => {
+        accountsMap.set(account.id, account.name)
+      })
+    })
+    return accountsMap
+  }
+
+  getAccountName(id: string): string {
+    return this.accounts.get(id)
   }
 }
