@@ -113,6 +113,7 @@ export class TransactionsViewComponent implements OnDestroy {
 export interface Bills {
   annual:number;
   monthly: number;
+  oneOff: number;
 }
 
 @Component({
