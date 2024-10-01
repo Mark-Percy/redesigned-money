@@ -61,7 +61,7 @@ export class TransactionsViewComponent implements OnDestroy {
         if(month.transactions) this.transactions = month.transactions;
         this.$transactions = this.transactions.subscribe(() => {
           this.transactionService.setMonth(this.date.value, false).then(month => {
-            this.totalAmount = month.totalAmount;
+            this.totalAmount = month.totalsExcl;
             this.numberOfTransactions = month.totalTransactions
           });
         })

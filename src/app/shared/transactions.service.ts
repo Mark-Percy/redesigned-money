@@ -131,16 +131,28 @@ export class TransactionsService {
       accountAmountsMap.set(account.data().name, snap.data().amount)
     }
 
-    // Totals
-    const allSnap = getAggregateFromServer(allTrans, {
+    // Totals inclusive of all
+    const totals = getAggregateFromServer(allTrans, {
       countOfDocs: count(),
       sumOfAmounts: sum('amount')
     });
+    
+    // Totals excluding bills and repayments
+    const transExcBillsRepay = query(transCol,
+      where('transactionDate', '>=', start),
+      where('transactionDate', '<=', end),
+      where('category', 'not-in', ['bills', 'repayment']),
+    );
+    const totalsExcBillsRepay = getAggregateFromServer(transExcBillsRepay, {
+      sumOfAmounts: sum('amount')
+    });
 
-    const data = await allSnap
+    const allTotals = await totals
+    const totalsMinusBillsRepay = await totalsExcBillsRepay
     const monthData: TransactionMonthInterface = {
-      totalAmount: data.data().sumOfAmounts,
-      totalTransactions: data.data().countOfDocs,
+      totalAmount: allTotals.data().sumOfAmounts,
+      totalTransactions: allTotals.data().countOfDocs,
+      totalsExcl: totalsMinusBillsRepay.data().sumOfAmounts,
       categoryAmounts: categoryAmountsMap,
       accountAmounts: accountAmountsMap,
       monthName: monthName
@@ -286,6 +298,7 @@ export interface TransactionMonthInterface {
   transactions?: Observable<TransactionInterface[]>;
   totalAmount: number;
   totalTransactions: number;
+  totalsExcl: number;
   categoryAmounts: Map<string, number>;
   accountAmounts: Map<string, number>;
   monthName: string;
