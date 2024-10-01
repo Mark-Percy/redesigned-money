@@ -242,6 +242,7 @@ export class TransactionsService {
     if(yearHeld) monthHeld = yearHeld.get(month);
     if(monthHeld) {
       monthHeld.totalAmount = Number((monthHeld.totalAmount + amount).toFixed(2))
+      monthHeld.totalsExcl = Number((monthHeld.totalsExcl + amount).toFixed(2))
       monthHeld.totalTransactions += num
       this.setSubAmounts(category, accountName, amount, frequency, monthHeld)
     }
