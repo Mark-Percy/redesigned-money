@@ -5,7 +5,7 @@ import { AuthorisationService } from 'src/app/authorisation.service';
 import { MatButton } from '@angular/material/button';
 import { MatInput } from '@angular/material/input';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { UserCredential } from 'firebase/auth';
+import { AuthError, UserCredential } from 'firebase/auth';
 
 @Component({
   selector: 'app-login',
@@ -52,8 +52,6 @@ export class LoginComponent implements OnInit {
         if(user.user.uid) {
           this.router.navigate(['dashboard']);
         }
-    }).catch(error => {
-      this.errorMessage = error.message ?? 'An error has occurred, please try again!';
-    });
+    }).catch((error: AuthError) => this.errorMessage = 'Unable to login, please check credentials and try again!');
   }
 }
