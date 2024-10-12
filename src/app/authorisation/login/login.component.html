@@ -8,6 +8,9 @@
             <mat-label>Password</mat-label>
             <input matInput type="password" formControlName="password">
         </mat-form-field>
+        @if (errorMessage != '') {
+        <p class="error-text">{{ errorMessage }}</p>
+        }
         <button mat-raised-button color="accent" type="submit">Sign in</button>
     </form>
 </section>
