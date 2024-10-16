@@ -1,52 +1,62 @@
 <section>
-    <article>
-        <header>
-            <h3>Your Details</h3>
-        </header>
-        <form [formGroup]="userDetailsForm">
-            <mat-grid-list cols="2" rowHeight="10vh" gutterSize="15px">
-                <mat-grid-tile>
-                    <mat-form-field>
-                        <mat-label>Email</mat-label>
-                        <input type="text" matInput formControlName="email">
-                        @if(!emailVerified()) {
-                            <button mat-icon-button matSuffix (click)="verifyEmail()"><mat-icon>done</mat-icon></button>
-                        }
-                    </mat-form-field>
-                </mat-grid-tile> 
-                <mat-grid-tile>
-                    <mat-form-field>
-                        <mat-label>Display Name</mat-label>
-                        <input type="text" matInput formControlName="displayName">
-                        @if(!hasDisplayName()) {
-                            <button mat-icon-button matSuffix (click)="updateDisplayName()"><mat-icon>done</mat-icon></button>
-                        }
-                    </mat-form-field>   
-                </mat-grid-tile>
-                <mat-grid-tile>
-                    <mat-form-field>
-                        <mat-label>First Name</mat-label>
-                        <input type="text" matInput formControlName="firstName">
-                    </mat-form-field>   
-                </mat-grid-tile>
-                <mat-grid-tile>
-                    <mat-form-field>
-                        <mat-label>Surname</mat-label>
-                        <input type="text" matInput formControlName="surname">
-                    </mat-form-field>   
-                </mat-grid-tile>
-            </mat-grid-list>
-        </form>
-    </article>
+  <article>
+    <header>
+      <h3>Your Details</h3>
+    </header>
+    <form [formGroup]="userDetailsForm">
+      <mat-grid-list cols="2" rowHeight="10vh" gutterSize="15px">
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input type="text" matInput formControlName="email" />
+            @if (!emailVerified()) {
+              <button mat-icon-button matSuffix (click)="verifyEmail()">
+                <mat-icon>done</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-label>Display Name</mat-label>
+            <input type="text" matInput formControlName="displayName" />
+            @if (!hasDisplayName()) {
+              <button mat-icon-button matSuffix (click)="updateDisplayName()">
+                <mat-icon>done</mat-icon>
+              </button>
+            }
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-label>First Name</mat-label>
+            <input type="text" matInput formControlName="firstName" />
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile>
+          <mat-form-field>
+            <mat-label>Surname</mat-label>
+            <input type="text" matInput formControlName="surname" />
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </form>
+  </article>
 </section>
 <section>
-    <article>
-        <header style="display:flex">
-            <h3>Accounts</h3>
-            <button mat-icon-button color="accent" (click)="openAddAccount()"><mat-icon>add</mat-icon></button>
-        </header>
-        @for(account of accounts | async; track account.id) {
-            <app-account [account]="account" (editTheAccount)="openAddAccount($event)" (deleteTheAccount)="deleteAccount($event)"></app-account>
-        }
-    </article>
+  <article>
+    <header style="display: flex">
+      <h3>Accounts</h3>
+      <button mat-icon-button color="accent" (click)="openAddAccount()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </header>
+    @for (account of accounts; track account.id) {
+      <app-account
+        [account]="account"
+        (editTheAccount)="openAddAccount($event)"
+        (deleteTheAccount)="deleteAccount($event)"
+      ></app-account>
+    }
+  </article>
 </section>

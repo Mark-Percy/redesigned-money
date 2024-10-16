@@ -42,6 +42,7 @@ export const routes: Routes = [
     path: 'user',
     component: UserComponent,
     canActivate: [AngularFireAuthGuard],
+    resolve: { data: dashboardResolver },
     data: { authGuardPipe: redirectUnauthorizedToLogin },
     children: [{ path: 'profile', component: ProfileComponent }],
   },
