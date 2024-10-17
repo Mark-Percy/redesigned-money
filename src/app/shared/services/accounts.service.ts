@@ -5,6 +5,8 @@ import {
   collectionData,
   DocumentData,
   addDoc,
+  deleteDoc,
+  doc,
 } from '@angular/fire/firestore';
 import { BehaviorSubject, map, take } from 'rxjs';
 import { AuthorisationService } from 'src/app/authorisation.service';
@@ -36,7 +38,7 @@ export class AccountsServiceV2 {
       'users/' + this.auth.getUserId() + '/Accounts',
     );
 
-    collectionData(accountsCollection)
+    collectionData(accountsCollection, { idField: 'id' })
       .pipe(
         take(1),
         map((accounts: DocumentData | (DocumentData & {})) => {
@@ -84,7 +86,34 @@ export class AccountsServiceV2 {
   /* -------------------------------------------------------------------------- */
   /*                                    Read                                    */
   /* -------------------------------------------------------------------------- */
+  public getAccount(accountId: string): Account | undefined {
+    return this._accounts.find((account: Account) => account.id === accountId);
+  }
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   Update                                   */
+  /* -------------------------------------------------------------------------- */
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Delete                                   */
+  /* -------------------------------------------------------------------------- */
+  public deleteAccount(accountId: string): void {
+    const accountsCollection = collection(
+      this.fireStore,
+      'users/' + this.auth.getUserId() + '/Accounts',
+    );
+    deleteDoc(doc(accountsCollection, accountId)).then((response) => {
+      let updatedAccountList = this._accounts.filter(
+        (account: Account) => account.id !== accountId,
+      );
+
+      this.setAccountsSubject(updatedAccountList);
+    });
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                Miscellaneous                               */
+  /* -------------------------------------------------------------------------- */
   // Check if the account data has been fetched from firebase
   public hasAccounts(): boolean {
     return !!this._accounts.length;

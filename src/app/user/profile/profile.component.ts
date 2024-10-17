@@ -12,9 +12,8 @@ import {
   MatDialogTitle,
   MatDialogContent,
 } from '@angular/material/dialog';
-import { Observable, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { AuthorisationService } from 'src/app/authorisation.service';
-import { AccountsService } from 'src/app/shared/accounts.service';
 import { Account } from '../account/account.interface';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
@@ -116,7 +115,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   deleteAccount(id: string) {
-    // this.accountsService.delete(id);
+    this.accountsService.deleteAccount(id);
   }
 }
 
@@ -172,7 +171,7 @@ export class AddAccountDialog {
   constructor(
     public dialogRef: MatDialogRef<AddAccountDialog>,
     private fb: FormBuilder,
-    private accountsService: AccountsService,
+    private accountsService: AccountsServiceV2,
     @Inject(MAT_DIALOG_DATA) public id: string,
   ) {
     this.accountForm = this.fb.group({
@@ -182,11 +181,11 @@ export class AddAccountDialog {
     });
     if (id) {
       this.action = 'Edit Account';
-      this.accountsService.getAccount(id).then((account) => {
-        const Acc: Account | undefined = account.data();
-        if (Acc) this.accountForm = this.fb.group(Acc);
-        this.showNum = Acc?.type == 'Credit';
-      });
+      let account = this.accountsService.getAccount(id);
+      if (account) {
+        this.fb.group(account);
+        this.showNum = account.type == 'Credit';
+      }
     }
     this.accountForm.get('type')?.valueChanges.subscribe((val) => {
       this.showNum = val == 'Savings' || val == 'Credit';
