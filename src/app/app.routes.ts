@@ -13,7 +13,7 @@ import {
 import { ProfileComponent } from './user/profile/profile.component';
 import { TransactionsViewComponent } from './transactions-view/transactions-view.component';
 import { accountCreationGuard } from './authorisation.service';
-import { dashboardResolver } from './dashboard/dashboard.resolver';
+import { accountResolver } from './shared/resolvers/account.resolver';
 
 const redirectUnauthorizedToLogin = () =>
   redirectUnauthorizedTo(['account', 'login']);
@@ -42,14 +42,14 @@ export const routes: Routes = [
     path: 'user',
     component: UserComponent,
     canActivate: [AngularFireAuthGuard],
-    resolve: { data: dashboardResolver },
+    resolve: { data: accountResolver },
     data: { authGuardPipe: redirectUnauthorizedToLogin },
     children: [{ path: 'profile', component: ProfileComponent }],
   },
   {
     path: 'dashboard',
     component: DashboardComponent,
-    resolve: { data: dashboardResolver },
+    resolve: { data: accountResolver },
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin },
   },
