@@ -4,10 +4,11 @@ import {
   Firestore,
   collectionData,
   DocumentData,
+  addDoc,
 } from '@angular/fire/firestore';
 import { BehaviorSubject, map, take } from 'rxjs';
 import { AuthorisationService } from 'src/app/authorisation.service';
-import { Account } from 'src/app/user/account/account.interface';
+import { Account, DraftAccount } from 'src/app/user/account/account.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -25,6 +26,9 @@ export class AccountsServiceV2 {
     //
   }
 
+  /* -------------------------------------------------------------------------- */
+  /*                              Firebase Fetching                             */
+  /* -------------------------------------------------------------------------- */
   // Retrieve accounts from firebase and assign to local data
   public fetchAccounts(): void {
     const accountsCollection = collection(
@@ -47,6 +51,39 @@ export class AccountsServiceV2 {
         this.setAccountsSubject(accounts);
       });
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Create                                   */
+  /* -------------------------------------------------------------------------- */
+  public addAccount(newAccount: DraftAccount): void {
+    const accountsCollection = collection(
+      this.fireStore,
+      'users/' + this.auth.getUserId() + '/Accounts',
+    );
+    addDoc(accountsCollection, newAccount).then((response) => {
+      // add to list of accounts
+      const createdAccount: Account = { ...newAccount, id: response.id };
+      let updatedAccountList: Account[] = [...this._accounts, createdAccount];
+      this.setAccountsSubject(updatedAccountList);
+
+      if (createdAccount.type === 'Savings') {
+        this.addSavingsPot(createdAccount, 'Main', createdAccount.amount);
+      }
+    });
+  }
+
+  // Add a pot to an existing account
+  public addSavingsPot(account: Account, name: string, amount: number): void {
+    const potCollection = collection(
+      this.fireStore,
+      'users/' + this.auth.getUserId() + '/Accounts/' + account.id + '/pots',
+    );
+    addDoc(potCollection, { name: name, amount: amount ?? account.amount });
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                    Read                                    */
+  /* -------------------------------------------------------------------------- */
 
   // Check if the account data has been fetched from firebase
   public hasAccounts(): boolean {

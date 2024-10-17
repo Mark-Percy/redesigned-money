@@ -5,5 +5,5 @@ export interface Account extends DraftAccount {
 export interface DraftAccount {
   name: string;
   type: string;
-  amount?: number;
+  amount: number;
 }

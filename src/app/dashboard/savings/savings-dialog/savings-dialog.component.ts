@@ -70,7 +70,7 @@ import { MatButton, MatMiniFabButton } from '@angular/material/button';
 export class SavingsDialogComponent {
   accountId: string;
   accountData: Promise<DocumentSnapshot<Account>>;
-  account: DraftAccount = { name: '', type: '' };
+  account: DraftAccount = { name: '', type: '', amount: 0 };
   showAddPot: boolean = false;
   transfer = false;
 
