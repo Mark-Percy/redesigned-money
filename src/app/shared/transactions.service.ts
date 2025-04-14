@@ -19,10 +19,15 @@ export class TransactionsService {
   currYearInd: number = 0
   currMonthInd: number = 0
 
+  transactionsPath: string;
+  itemsPath: string;
+
   constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService, private accountsService: AccountsService) {
     this.accountsService.getAccounts().pipe(take(1)).subscribe(data => {
       this.accounts = data
     })
+    this.transactionsPath = `users/${this.auth.getUserId()}/transactions`;
+    this.itemsPath = `users/${this.auth.getUserId()}/items`;
   }
 
   async addTransaction(transactionForm: TransactionInterface, items:any, accountName: string): Promise<any> {
@@ -32,7 +37,7 @@ export class TransactionsService {
       resCode = (await this.updateMonth(transactionForm.transactionDate, transactionForm.category, transactionForm.frequency, transactionForm.account, transactionForm.amount)).code;
     }
     if(resCode == 1 || savings) {
-      const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+      const transCol = collection(this.fs, this.transactionsPath);
       return addDoc(transCol, transactionForm).then(transaction => {
         if(!savings) {
           return this.addItems(items, transaction.id)
@@ -45,7 +50,7 @@ export class TransactionsService {
   }
   
   addItems(items: FormArray, transactionId: string) {
-    const itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
+    const itemsCol = collection(this.fs, this.itemsPath);
     const batch = writeBatch(this.fs);
     const curritem = {
       transactionId: transactionId,
@@ -68,7 +73,7 @@ export class TransactionsService {
   }
 
   getTransactions(numberToLimit: number): Observable<TransactionInterface[]> {
-    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const transCol = collection(this.fs, this.transactionsPath);
     const q = query(transCol, orderBy('transactionDate', 'desc'), limit(numberToLimit))
     return collectionData(q, {idField: 'id'}) as Observable<TransactionInterface[]>
   }
@@ -78,7 +83,7 @@ export class TransactionsService {
     const month: number = date.getMonth()
     const monthName = new Date(0, month).toLocaleString('default', { month: 'long' });
     
-    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const transCol = collection(this.fs, this.transactionsPath);
     const start = new Date(year, date.getMonth(), 1)
     const end = new Date(year, date.getMonth() + 1, 0, 23, 59, 59)
 
@@ -184,15 +189,15 @@ export class TransactionsService {
         transaction.amount)
       amountUpdated = true  
     }
-    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const transCol = collection(this.fs, this.transactionsPath);
     const transactionRef = doc(transCol, id)
     await updateDoc(transactionRef, transaction)
     return {success: true, amountUpdate: amountUpdated}
   }
 
   async deleteTransaction(transactionId: string, amount: number, account: string, category: string, date: Date, frequency : string) {
-    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
-    const itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
+    const transCol = collection(this.fs, this.transactionsPath);
+    const itemsCol = collection(this.fs, this.itemsPath);
     const items = this.getItems(transactionId);
 
     items.forEach((data) => {
@@ -216,7 +221,7 @@ export class TransactionsService {
   }
 
   getItems(transactionId: string) {
-    const itemsCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/items');
+    const itemsCol = collection(this.fs, this.itemsPath);
 
     const q = query(itemsCol, where('transactionId', '==', transactionId))
     return collectionData(q, {idField: 'id'})
@@ -289,7 +294,7 @@ export class TransactionsService {
     if(category != '') whereArr.push(where('category', '==', category));
     if(location != '') whereArr.push(where('location', '==', location));
 
-    const transCol = collection(this.fs, 'users/'+this.auth.getUserId()+'/transactions');
+    const transCol = collection(this.fs, this.transactionsPath);
     const q = query(transCol, ...whereArr, orderBy('transactionDate', 'desc'), limit(numberToLimit));
     return collectionData(q, {idField: 'id'}) as Observable<TransactionInterface[]>;
   }
