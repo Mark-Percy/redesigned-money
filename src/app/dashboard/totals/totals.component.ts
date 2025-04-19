@@ -26,7 +26,7 @@ export class TotalsComponent {
   @Input() panelWidth = '45vw';
 
   public YearsData: Map<number, TransactionMonthInterface>;
-  public yearnum: number = new Date().getFullYear();
+  public yearNum: number = new Date().getFullYear();
   public isLoading: boolean = true;
 
   constructor(private transactionService: TransactionsService) {
@@ -39,9 +39,9 @@ export class TotalsComponent {
   }
   async setYear(num: number) {
     this.isLoading = true;
-    this.yearnum += num;
+    this.yearNum += num;
     const date = new Date();
-    date.setFullYear(this.yearnum);
+    date.setFullYear(this.yearNum);
     this.transactionService
       .setTransactionsForYear(date)
       .then((transactionsForYear) => {
