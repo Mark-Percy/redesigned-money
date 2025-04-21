@@ -76,7 +76,7 @@ export class AccountsService {
   /* -------------------------------------------------------------------------- */
   public getAccount(accountId: string): Account {
     const account: Account | undefined = this._accounts.find((account: Account) => account.id === accountId);
-    if(account) return account
+    if(account) return account;
     throw 'Invalid account Id';
   }
 
