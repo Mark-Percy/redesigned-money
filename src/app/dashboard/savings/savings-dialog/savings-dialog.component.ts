@@ -16,7 +16,7 @@ import { MatFormField } from '@angular/material/form-field';
 import { CurrencyPipe } from '@angular/common';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { MatButton, MatMiniFabButton } from '@angular/material/button';
-import { AccountsServiceV2 } from 'src/app/shared/services/accounts.service';
+import { AccountsService } from 'src/app/shared/services/accounts.service';
 
 @Component({
 	selector: 'app-savings-dialog',
@@ -63,7 +63,7 @@ export class SavingsDialogComponent {
 
 	constructor(
 		@Inject(MAT_DIALOG_DATA) public id: string,
-		private accountsService: AccountsServiceV2,
+		private accountsService: AccountsService,
 		private savingsService: SavingsService,
 		public fb: FormBuilder,
 		private _snackBar: MatSnackBar,

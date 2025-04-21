@@ -1,4 +1,4 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { collection,Firestore,collectionData,DocumentData,addDoc,deleteDoc,doc } from '@angular/fire/firestore';
 import { BehaviorSubject, map, take } from 'rxjs';
 import { AuthorisationService } from 'src/app/authorisation.service';
@@ -7,7 +7,7 @@ import { Account, DraftAccount } from 'src/app/user/account/account.interface';
 @Injectable({
   providedIn: 'root',
 })
-export class AccountsServiceV2 {
+export class AccountsService {
   private _accounts: Account[] = [];
   public accounts$: BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
 

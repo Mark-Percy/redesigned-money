@@ -18,7 +18,7 @@ import { MatFormField, MatLabel, MatHint, MatSuffix, MatPrefix } from '@angular/
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { CdkScrollable } from '@angular/cdk/scrolling';
 import { TransactionsTableComponent } from '../transactions-table/transactions-table.component';
-import { AccountsServiceV2 } from '../shared/services/accounts.service';
+import { AccountsService } from '../shared/services/accounts.service';
 import { TransactionInterface } from '../shared/interfaces/transaction.interface';
 
 export class Savings {
@@ -112,7 +112,7 @@ export class AddTransactionComponent implements OnInit, OnDestroy {
 	private transactionDialog: MatDialogRef<AddTransactionComponent>,
 	private _adapter: DateAdapter<any>,
 	private transactionsService: TransactionsService,
-	private accountsService: AccountsServiceV2,
+	private accountsService: AccountsService,
 	private savingsService: SavingsService,
 	private router: Router,
 	@Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:TransactionInterface | null
@@ -224,7 +224,8 @@ export class AddTransactionComponent implements OnInit, OnDestroy {
    if(!(this.transactionForm.value == this.oldTransaction)) {
 	  this.transactionsService.updateTransaction(id, this.transactionForm.value, this.oldTransaction);
 	  if(!dontClose) this.transactionDialog.close();
-	} else console.log('Nothing Changed bozo');
+	}
+	throw 'Nothing changed in Transaction'
   }
 
   addItem(item: string, amount: number | null) {

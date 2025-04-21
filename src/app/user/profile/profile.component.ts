@@ -14,7 +14,7 @@ import { AsyncPipe } from '@angular/common';
 import { MatInput } from '@angular/material/input';
 import { MatFormField,MatLabel,MatSuffix } from '@angular/material/form-field';
 import { MatGridList, MatGridTile } from '@angular/material/grid-list';
-import { AccountsServiceV2 } from 'src/app/shared/services/accounts.service';
+import { AccountsService } from 'src/app/shared/services/accounts.service';
 
 @Component({
   selector: 'app-profile',
@@ -57,7 +57,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
     private authService: AuthorisationService,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private accountsService: AccountsServiceV2,
+    private accountsService: AccountsService,
   ) {
     this.authService.getDetails().subscribe((data) => {
       if (data) {
@@ -156,7 +156,7 @@ export class AddAccountDialog {
   constructor(
     public dialogRef: MatDialogRef<AddAccountDialog>,
     private fb: FormBuilder,
-    private accountsService: AccountsServiceV2,
+    private accountsService: AccountsService,
     @Inject(MAT_DIALOG_DATA) public id: string,
   ) {
     this.accountForm = this.fb.group({

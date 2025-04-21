@@ -6,7 +6,7 @@ import { SavingsService } from './savings.service';
 import { Account } from '../user/account/account.interface';
 import { Observable, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AccountsServiceV2 } from './services/accounts.service';
+import { AccountsService } from './services/accounts.service';
 import { TransactionMonthInterface } from './interfaces/transactionMonth.interface';
 import { TransactionInterface } from './interfaces/transaction.interface';
 
@@ -24,7 +24,7 @@ export class TransactionsService implements OnDestroy{
   transactionsPath: string;
   itemsPath: string;
 
-  constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService, private accountsServiceV2: AccountsServiceV2) {
+  constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService, private accountsServiceV2: AccountsService) {
     this.accountsServiceV2.accounts$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
       this.accounts = data;
     })
@@ -234,7 +234,6 @@ export class TransactionsService implements OnDestroy{
     amount: number,
     remove?: boolean
   ):Promise<{code: number, message:string}> {
-    console.log(this.accounts)
     const accountName = this.accounts.find(accountFind => accountFind.id == account)?.name
     if(!accountName) throw new Error(`Account Not Id: ${account}; doesn't exist`)
 

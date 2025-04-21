@@ -4,8 +4,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 import { TitleCasePipe, CurrencyPipe, DatePipe } from '@angular/common';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
 import { TransactionInterface } from '../shared/interfaces/transaction.interface';
-import { Account } from '../user/account/account.interface';
-import { AccountsServiceV2 } from '../shared/services/accounts.service';
+import { AccountsService } from '../shared/services/accounts.service';
 
 @Component({
     selector: 'app-transactions-table',
@@ -37,7 +36,7 @@ export class TransactionsTableComponent implements OnChanges {
   private accounts: Map<string, string> = new Map();
   private destroy$: Subject<void> = new Subject<void>;
 
-  constructor(public transactionService: TransactionsService, public accountService: AccountsServiceV2) {
+  constructor(public transactionService: TransactionsService, public accountService: AccountsService) {
     this.accountService.accounts$.pipe(takeUntil(this.destroy$)).subscribe((accounts) => {
       accounts.forEach((account) => {
         this.accounts.set(account.id, account.name);
