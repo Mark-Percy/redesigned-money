@@ -4,7 +4,7 @@ import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet } from '@angular/material/bottom-
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subscription } from 'rxjs';
-import { AddTransactionComponent, TransactionInterface } from '../add-transaction/add-transaction.component';
+import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
 import { TransactionsService } from '../shared/transactions.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { MatTabGroup, MatTab } from '@angular/material/tabs';
@@ -15,6 +15,7 @@ import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatDatepickerInput, MatDatepicker } from '@angular/material/datepicker';
 import { MatInput } from '@angular/material/input';
 import { MatFormField } from '@angular/material/form-field';
+import { TransactionInterface } from '../shared/interfaces/transaction.interface';
 
 @Component({
     selector: 'app-transactions-view',

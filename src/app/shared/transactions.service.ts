@@ -1,33 +1,39 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, where, updateDoc, DocumentData, getAggregateFromServer, count, sum, Query } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
-import { TransactionInterface } from '../add-transaction/add-transaction.component';
 import { AuthorisationService } from './../authorisation.service';
 import { SavingsService } from './savings.service';
 import { Account } from '../user/account/account.interface';
-import { AccountsService } from './accounts.service';
-import { Observable } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { AccountsService } from './services/accounts.service';
+import { TransactionMonthInterface } from './interfaces/transactionMonth.interface';
+import { TransactionInterface } from './interfaces/transaction.interface';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TransactionsService {
+export class TransactionsService implements OnDestroy{
   accounts: Account[];
   years: Map<number, Map<number, TransactionMonthInterface>> = new Map();
   currDate = new Date();
-  currYearInd: number = 0
-  currMonthInd: number = 0
+  currYearInd: number = 0;
+  currMonthInd: number = 0;
+  private destroy$: Subject<void> = new Subject<void>();
 
   transactionsPath: string;
   itemsPath: string;
 
-  constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService, private accountsService: AccountsService) {
-    this.accountsService.getAccounts().pipe(take(1)).subscribe(data => {
-      this.accounts = data
+  constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService, private accountsServiceV2: AccountsService) {
+    this.accountsServiceV2.accounts$.pipe(takeUntil(this.destroy$)).subscribe((data) => {
+      this.accounts = data;
     })
     this.transactionsPath = `users/${this.auth.getUserId()}/transactions`;
     this.itemsPath = `users/${this.auth.getUserId()}/items`;
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   async addTransaction(transactionForm: TransactionInterface, items:any, accountName: string): Promise<any> {
@@ -123,8 +129,7 @@ export class TransactionsService {
       })
       categoryAmountsMap.set(category, snap.data().amount)
     }
-    const accounts = (await this.accountsService.getAccountsStatic('Savings', true)).docs;
-    for(let account of accounts) {
+    for(let account of this.accounts) {
         const groupedTrans = query(transCol,
         where('transactionDate', '>=', start),
         where('transactionDate', '<=', end),
@@ -133,7 +138,7 @@ export class TransactionsService {
       const snap = await getAggregateFromServer(groupedTrans, {
         amount: sum('amount')
       })
-      accountAmountsMap.set(account.data().name, snap.data().amount)
+      accountAmountsMap.set(account.name, snap.data().amount)
     }
 
     // Totals inclusive of all
@@ -195,7 +200,7 @@ export class TransactionsService {
     return {success: true, amountUpdate: amountUpdated}
   }
 
-  async deleteTransaction(transactionId: string, amount: number, account: string, category: string, date: Date, frequency : string) {
+  async deleteTransaction(transactionId: string, amount: number, accountId: string, category: string, date: Date, frequency : string) {
     const transCol = collection(this.fs, this.transactionsPath);
     const itemsCol = collection(this.fs, this.itemsPath);
     const items = this.getItems(transactionId);
@@ -205,18 +210,12 @@ export class TransactionsService {
         deleteDoc(doc(itemsCol,data[0].id))
       }
     });
-    if(!(category == 'savings')) {
-      const accounts = this.accountsService.getAccounts()
-      const accountsMap = new Map()
-      accounts.pipe(take(1)).subscribe(docs => {
-        docs.forEach(doc => {
-          accountsMap.set(doc.id, doc.name)
-        })
-      })
-      const accountToUse = accountsMap.get(account)
-      if(accountToUse) this.updateMonth(date, category, frequency, accountToUse, 0 - amount)
+    // If the category is savings then the transaction doesn't have any impact on our totals since we still have the money.
+    if(category == 'savings') {
+      amount = 0;
     }
-    await this.updateMonth(date, category, frequency, account, 0 - amount, true)
+    // Update the local data for the month we have just removed a transaction from.
+    await this.updateMonth(date, category, frequency, accountId, 0 - amount, true)
     await deleteDoc(doc(transCol, transactionId))
   }
 
@@ -298,14 +297,4 @@ export class TransactionsService {
     const q = query(transCol, ...whereArr, orderBy('transactionDate', 'desc'), limit(numberToLimit));
     return collectionData(q, {idField: 'id'}) as Observable<TransactionInterface[]>;
   }
-}
-
-export interface TransactionMonthInterface {
-  transactions?: Observable<TransactionInterface[]>;
-  totalAmount: number;
-  totalTransactions: number;
-  totalsExcl: number;
-  categoryAmounts: Map<string, number>;
-  accountAmounts: Map<string, number>;
-  monthName: string;
 }

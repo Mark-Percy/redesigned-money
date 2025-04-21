@@ -1,126 +1,114 @@
 <h4 mat-dialog-title>Add Transaction</h4>
 <div mat-dialog-content>
-  <mat-slide-toggle [formControl]="addingMultiple">Add Multiple</mat-slide-toggle>
-  <mat-slide-toggle [formControl]="keepAccount">Keep Account</mat-slide-toggle>
-  <form [formGroup]="transactionForm">
-    <mat-form-field>
-      <mat-label>Date</mat-label>
-      <input matInput [matDatepicker]="picker" formControlName="transactionDate">
-      <mat-hint>DD/MM/YYYY</mat-hint>
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>Category</mat-label>
-      <mat-select formControlName="category">
-        <mat-option value="bills">Bills</mat-option>
-        <mat-option value="spending">Spending</mat-option>
-        <mat-option value="useless">Useless</mat-option>
-        <mat-option value="savings">Savings</mat-option>
-        <mat-option value="repayment">Repayment</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field>
-      <mat-label>{{savings ? 'From ' : '' }}Account</mat-label>
-      <mat-select formControlName="account">
+	<mat-slide-toggle [formControl]="addingMultiple">Add Multiple</mat-slide-toggle>
+	<mat-slide-toggle [formControl]="keepAccount">Keep Account</mat-slide-toggle>
+	<form [formGroup]="transactionForm">
+		<mat-form-field>
+			<mat-label>Date</mat-label>
+			<input matInput [matDatepicker]="picker" formControlName="transactionDate">
+			<mat-hint>DD/MM/YYYY</mat-hint>
+			<mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+			<mat-datepicker #picker></mat-datepicker>
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>Category</mat-label>
+			<mat-select formControlName="category">
+				<mat-option value="bills">Bills</mat-option>
+				<mat-option value="spending">Spending</mat-option>
+				<mat-option value="useless">Useless</mat-option>
+				<mat-option value="savings">Savings</mat-option>
+				<mat-option value="repayment">Repayment</mat-option>
+			</mat-select>
+		</mat-form-field>
+		<mat-form-field>
+			<mat-label>{{savings ? 'From ' : '' }}Account</mat-label>
+			<mat-select formControlName="account">
+				@for(account of accounts; track account.id){
+					<mat-option value="{{ account.id }}">{{ account.name }}</mat-option>
+				}
 
-        @for(account of accounts | async; track account.id){
-          <mat-option value="{{ account.id }}">{{ account.name }}</mat-option>
-        }
+	  		</mat-select>
+		</mat-form-field>
 
-      </mat-select>
-    </mat-form-field>
+		@if(savings) {
+			<mat-form-field>
+				<mat-label>To Account</mat-label>
+				<mat-select formControlName="toAccount">
+					@for(account of accounts; track $index){
+						<mat-option value="{{ account.id }}">{{ account.name }}</mat-option>
+					}
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field>
+				<mat-label>Pot</mat-label>
+				<mat-select formControlName="pot">
+					@for(pot of pots | async; track $index) {
+						<mat-option value="{{ pot.id }}">{{ pot.name }}</mat-option>
+					}
+				</mat-select>
+			</mat-form-field>
+			<mat-form-field>
+				<mat-label>Amount</mat-label>
+				<input type="number" formControlName="amount" matInput name="amount">
+				<span matPrefix>&#163;</span>
+			</mat-form-field>
+		}
 
-    @if(savings) {
-      <mat-form-field>
-        <mat-label>To Account</mat-label>
-        <mat-select formControlName="toAccount">
+		@if(showFreq){
+			<mat-form-field>
+				<mat-label>Frequency</mat-label>
+				<mat-select formControlName="frequency">
+					<mat-option value="Annually">Annually</mat-option>
+					<mat-option value="Monthly">Monthly</mat-option>
+					<mat-option value="One off">One Off</mat-option>
+				</mat-select>
+			</mat-form-field>
+		}
 
-          @for(account of accounts | async; track $index){
-            <mat-option value="{{ account.id }}">{{ account.name }}</mat-option>
-          }
+		@if(!savings) {
+			<mat-form-field>
+				<mat-label>Location</mat-label>
+				<input type="text" matInput formControlName="location" name="location">
+			</mat-form-field>
+			<section formArrayName="items">
+				@for(item of items.controls; track $index) {
+				<div>
+					<div [formGroupName]="$index">
+					<mat-form-field>
+						<mat-label>item</mat-label>
+						<input type="text" formControlName="item" matInput name="item">
+					</mat-form-field>
+					<mat-form-field>
+						<mat-label>Amount</mat-label>
+						<input type="number" formControlName="amount" matInput name="amount">
+						<span matPrefix>&#163;</span>
+					</mat-form-field>
+					</div>
+				</div>
+				}
+			</section>
+		}
 
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Pot</mat-label>
-        <mat-select formControlName="pot">
-          
-          @for(pot of pots | async; track $index) {
-            <mat-option value="{{ pot.id }}">{{ pot.name }}</mat-option>
-          }
+		<section class="buttons">
+			@if(!update) {
+				<div>
+				<button mat-flat-button color="primary" (click)="getSimilarTransactions()" [disabled]="submitting">Find Similar</button>
+				<button mat-flat-button color="accent" (click)="addTransaction()" [disabled]="submitting">Submit</button>
+				</div>
+			} @else {
+				<button mat-flat-button color="primary" (click)="updateTransaction(formPrefill.id)">Update</button>
+				<button mat-flat-button color="warn" (click)="deleteTransaction()"><mat-icon>delete</mat-icon></button>
+			}
 
-        </mat-select>
-      </mat-form-field>
-    }
-
-    @if (savings) {
-      <mat-form-field>
-        <mat-label>Amount</mat-label>
-        <input type="number" formControlName="amount" matInput name="amount">
-        <span matPrefix>&#163;</span>
-      </mat-form-field>
-    }
-
-    @if(showFreq){
-      <mat-form-field>
-        <mat-label>Frequency</mat-label>
-        <mat-select formControlName="frequency">
-          <mat-option value="Annually">Annually</mat-option>
-          <mat-option value="Monthly">Monthly</mat-option>
-          <mat-option value="One off">One Off</mat-option>
-        </mat-select>
-      </mat-form-field>
-    }
-
-    @if(!savings) {
-      <mat-form-field>
-        <mat-label>Location</mat-label>
-        <input type="text" matInput formControlName="location" name="location">
-      </mat-form-field>
-    }
-
-    @if(!savings) {
-      <section formArrayName="items">
-        @for(item of items.controls; track $index) {
-          <div>
-            <div [formGroupName]="$index">
-              <mat-form-field>
-                <mat-label>item</mat-label>
-                <input type="text" formControlName="item" matInput name="item">
-              </mat-form-field>
-              <mat-form-field>
-                <mat-label>Amount</mat-label>
-                <input type="number" formControlName="amount" matInput name="amount">
-                <span matPrefix>&#163;</span>
-              </mat-form-field>
-            </div>
-          </div>
-        }
-      </section>
-    }
-
-    <section class="buttons">
-      @if(!update) {
-        <div>
-          <button mat-flat-button color="primary" (click)="getSimilarTransactions()" [disabled]="submitting">Find Similar</button>
-          <button mat-flat-button color="accent" (click)="addTransaction()" [disabled]="submitting">Submit</button>
-        </div>
-      } @else {
-        <button mat-flat-button color="primary" (click)="updateTransaction(formPrefill.id)">Update</button>
-        <button mat-flat-button color="warn" (click)="deleteTransaction()"><mat-icon>delete</mat-icon></button>
-      }
-
-      @if(!update && !savings) {
-        <div>
-          <button mat-flat-button (click)="addItem('', null)">Add Field</button>
-          <button mat-flat-button color="warn" (click)="removeItem()">Remove Field</button>
-        </div>
-      }
-
-    </section>
-    <section>
-      <app-transactions-table [transactions]="similarTransactions" (getRow)="fillForm($event)"></app-transactions-table>
-    </section>
-  </form>
+			@if(!update && !savings) {
+				<div>
+				<button mat-flat-button (click)="addItem('', null)">Add Field</button>
+				<button mat-flat-button color="warn" (click)="removeItem()">Remove Field</button>
+				</div>
+			}
+		</section>
+		<section>
+			<app-transactions-table [transactions]="similarTransactions" (getRow)="fillForm($event)"></app-transactions-table>
+		</section>
+	</form>
 </div>

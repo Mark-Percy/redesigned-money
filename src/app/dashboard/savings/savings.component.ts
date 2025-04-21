@@ -2,20 +2,9 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { SavingsDialogComponent } from 'src/app/dashboard/savings/savings-dialog/savings-dialog.component';
 import { Account } from 'src/app/user/account/account.interface';
-import {
-  MatTable,
-  MatColumnDef,
-  MatHeaderCellDef,
-  MatHeaderCell,
-  MatCellDef,
-  MatCell,
-  MatHeaderRowDef,
-  MatHeaderRow,
-  MatRowDef,
-  MatRow,
-} from '@angular/material/table';
+import { MatTable,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatCellDef,MatCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow } from '@angular/material/table';
 import { NgStyle } from '@angular/common';
-import { AccountsServiceV2 } from 'src/app/shared/services/accounts.service';
+import { AccountsService } from 'src/app/shared/services/accounts.service';
 
 @Component({
   selector: 'app-savings',
@@ -44,12 +33,12 @@ export class SavingsComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private accountService: AccountsServiceV2,
+    private accountService: AccountsService,
   ) {}
 
   public ngOnInit(): void {
     this.accountService.accounts$.subscribe((accounts: Account[]) => {
-      this.accounts = accounts;
+      this.accounts = accounts.filter(account => account.type == 'Savings');
     });
   }
 
