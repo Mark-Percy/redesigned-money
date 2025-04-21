@@ -8,13 +8,12 @@ import { Account, DraftAccount } from 'src/app/user/account/account.interface';
   providedIn: 'root',
 })
 export class AccountsService {
-  private _accounts: Account[] = [];
+  public _accounts: Account[] = [];
   public accounts$: BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
 
 
 
-  constructor(private fireStore: Firestore, private auth: AuthorisationService) {
-  }
+  constructor(private fireStore: Firestore, private auth: AuthorisationService) {}
 
   /* -------------------------------------------------------------------------- */
   /*                              Firebase Fetching                             */

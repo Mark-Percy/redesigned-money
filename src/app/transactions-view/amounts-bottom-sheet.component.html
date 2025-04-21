@@ -3,7 +3,7 @@
     <ul>
       @for(account of accountAmounts | keyvalue; track $index) {
         <li>
-          <span>{{account.key | titlecase}}</span><span>{{account.value | currency}}</span>
+          <span>{{ getAccountName(account.key) | titlecase }}</span><span>{{ account.value | currency }}</span>
         </li>
       }
     </ul>
@@ -12,8 +12,8 @@
     <ul>
       @for(category of categoryAmounts | keyvalue; track $index) {
         <li>
-          <span>{{category.key | titlecase}}</span>
-          <span>{{category.value | currency}}</span>
+          <span>{{ category.key | titlecase }}</span>
+          <span>{{ category.value | currency }}</span>
         </li>
       }
     </ul>
