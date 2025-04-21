@@ -1,13 +1,5 @@
-import { Injectable } from '@angular/core';
-import {
-  collection,
-  Firestore,
-  collectionData,
-  DocumentData,
-  addDoc,
-  deleteDoc,
-  doc,
-} from '@angular/fire/firestore';
+import { Injectable, OnInit } from '@angular/core';
+import { collection,Firestore,collectionData,DocumentData,addDoc,deleteDoc,doc } from '@angular/fire/firestore';
 import { BehaviorSubject, map, take } from 'rxjs';
 import { AuthorisationService } from 'src/app/authorisation.service';
 import { Account, DraftAccount } from 'src/app/user/account/account.interface';
@@ -17,15 +9,11 @@ import { Account, DraftAccount } from 'src/app/user/account/account.interface';
 })
 export class AccountsServiceV2 {
   private _accounts: Account[] = [];
-  public accounts$: BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>(
-    [],
-  );
+  public accounts$: BehaviorSubject<Account[]> = new BehaviorSubject<Account[]>([]);
 
-  constructor(
-    private fireStore: Firestore,
-    private auth: AuthorisationService,
-  ) {
-    //
+
+
+  constructor(private fireStore: Firestore, private auth: AuthorisationService) {
   }
 
   /* -------------------------------------------------------------------------- */
@@ -68,7 +56,7 @@ export class AccountsServiceV2 {
       let updatedAccountList: Account[] = [...this._accounts, createdAccount];
       this.setAccountsSubject(updatedAccountList);
 
-      if (createdAccount.type === 'Savings') {
+      if(createdAccount.type === 'Savings') {
         this.addSavingsPot(createdAccount, 'Main', createdAccount.amount);
       }
     });
@@ -86,8 +74,10 @@ export class AccountsServiceV2 {
   /* -------------------------------------------------------------------------- */
   /*                                    Read                                    */
   /* -------------------------------------------------------------------------- */
-  public getAccount(accountId: string): Account | undefined {
-    return this._accounts.find((account: Account) => account.id === accountId);
+  public getAccount(accountId: string): Account {
+    const account: Account | undefined = this._accounts.find((account: Account) => account.id === accountId);
+    if(account) return account
+    throw 'Invalid account Id';
   }
 
   /* -------------------------------------------------------------------------- */
