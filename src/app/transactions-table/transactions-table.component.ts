@@ -1,5 +1,5 @@
 import { Component, Output, EventEmitter, Input, OnChanges, SimpleChanges } from '@angular/core';
-import { TransactionsService } from '../shared/transactions.service';
+import { TransactionsService } from '../shared/services/transactions.service';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { TitleCasePipe, CurrencyPipe, DatePipe } from '@angular/common';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';

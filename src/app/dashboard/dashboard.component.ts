@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { Component } from '@angular/core';
-import { TransactionsService } from '../shared/transactions.service';
+import { TransactionsService } from '../shared/services/transactions.service';
 import { TotalsComponent } from './totals/totals.component';
 import { SavingsComponent } from './savings/savings.component';
 import { TransactionComponent } from './transaction/transaction.component';

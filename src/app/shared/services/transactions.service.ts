@@ -1,14 +1,14 @@
 import { Injectable, OnDestroy } from '@angular/core';
 import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, where, updateDoc, DocumentData, getAggregateFromServer, count, sum, Query, CollectionReference, AggregateField } from '@angular/fire/firestore';
 import { FormArray } from '@angular/forms';
-import { AuthorisationService } from './../authorisation.service';
-import { SavingsService } from './savings.service';
-import { Account } from '../user/account/account.interface';
+import { AuthorisationService } from '../../authorisation.service';
+import { SavingsService } from '../savings.service';
+import { Account } from '../../user/account/account.interface';
 import { Observable, Subject } from 'rxjs';
 import { first, takeUntil, tap } from 'rxjs/operators';
-import { AccountsService } from './services/accounts.service';
-import { TransactionMonthInterface } from './interfaces/transactionMonth.interface';
-import { TransactionInterface } from './interfaces/transaction.interface';
+import { AccountsService } from './accounts.service';
+import { TransactionMonthInterface } from '../interfaces/transactionMonth.interface';
+import { TransactionInterface } from '../interfaces/transaction.interface';
 
 @Injectable({
 	providedIn: 'root'

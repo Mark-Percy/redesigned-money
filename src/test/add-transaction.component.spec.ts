@@ -5,7 +5,7 @@ import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 
 
 import { AddTransactionComponent } from '../app/add-transaction/add-transaction.component';
-import { TransactionsService } from 'src/app/shared/transactions.service';
+import { TransactionsService } from 'src/app/shared/services/transactions.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { AccountsService } from 'src/app/shared/accounts.service';

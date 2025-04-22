@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthorisationService } from '../authorisation.service';
-import { TransactionsService } from '../shared/transactions.service';
+import { TransactionsService } from '../shared/services/transactions.service';
 import { RouterLinkActive, RouterLink, RouterOutlet } from '@angular/router';
 import { MatTabNav, MatTabLink, MatTabNavPanel } from '@angular/material/tabs';
 

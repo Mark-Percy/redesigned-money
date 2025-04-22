@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { Pot } from '../dashboard/savings/pots.interface';
 import { SavingsService } from '../shared/savings.service';
-import { TransactionsService } from '../shared/transactions.service';
+import { TransactionsService } from '../shared/services/transactions.service';
 import { Account } from '../user/account/account.interface';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';

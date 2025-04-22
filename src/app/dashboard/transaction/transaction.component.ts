@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AddTransactionComponent } from 'src/app/add-transaction/add-transaction.component';
-import { TransactionsService } from 'src/app/shared/transactions.service';
+import { TransactionsService } from 'src/app/shared/services/transactions.service';
 import { TransactionsTableComponent } from '../../transactions-table/transactions-table.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatAnchor, MatIconButton } from '@angular/material/button';

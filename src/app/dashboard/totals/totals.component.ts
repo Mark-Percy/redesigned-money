@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { TransactionsService } from 'src/app/shared/transactions.service';
+import { TransactionsService } from 'src/app/shared/services/transactions.service';
 import { CurrencyPipe, KeyValuePipe, NgStyle } from '@angular/common';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';

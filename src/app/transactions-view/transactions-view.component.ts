@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
 import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
-import { TransactionsService } from '../shared/transactions.service';
+import { TransactionsService } from '../shared/services/transactions.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
 import { MatTabGroup, MatTab } from '@angular/material/tabs';
 import { AsyncPipe, CurrencyPipe, TitleCasePipe, KeyValuePipe } from '@angular/common';
