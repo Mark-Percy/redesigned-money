@@ -1,15 +1,15 @@
-import { ApplicationConfig, DEFAULT_CURRENCY_CODE } from "@angular/core";
-import { provideRouter } from "@angular/router";
-import { routes } from "./app.routes";
-import { initializeApp, provideFirebaseApp } from "@angular/fire/app";
-import { environment } from "src/environments/environment";
-import { getAuth, provideAuth } from "@angular/fire/auth";
-import { getFirestore, provideFirestore } from "@angular/fire/firestore";
-import { provideAnimations } from "@angular/platform-browser/animations";
-import { FIREBASE_OPTIONS } from "@angular/fire/compat";
-import { accountCreationGuard } from "./authorisation.service";
-import { provideNativeDateAdapter } from "@angular/material/core";
+import { ApplicationConfig, DEFAULT_CURRENCY_CODE }	from "@angular/core";
+import { initializeApp, provideFirebaseApp }		from "@angular/fire/app";
+import { getAuth, provideAuth }						from "@angular/fire/auth";
+import { FIREBASE_OPTIONS }							from "@angular/fire/compat";
+import { getFirestore, provideFirestore }			from "@angular/fire/firestore";
+import { provideNativeDateAdapter }					from "@angular/material/core";
+import { provideAnimations }						from "@angular/platform-browser/animations";
+import { provideRouter }							from "@angular/router";
 
+import { accountCreationGuard }	from "./shared/guards/create-account.guard";
+import { routes }				from "./app.routes";
+import { environment }			from "src/environments/environment";
 
 export const appConfig: ApplicationConfig = {
     providers: [

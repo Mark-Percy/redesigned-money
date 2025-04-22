@@ -4,14 +4,14 @@ import {TestbedHarnessEnvironment} from '@angular/cdk/testing/testbed';
 
 
 
-import { AddTransactionComponent } from '../app/add-transaction/add-transaction.component';
+import { AddTransactionComponent } from '../app/shared/components/add-transaction/add-transaction.component';
 import { TransactionsService } from 'src/app/shared/services/transactions.service';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { DateAdapter, MAT_DATE_LOCALE, MatNativeDateModule } from '@angular/material/core';
 import { AccountsService } from 'src/app/shared/accounts.service';
 import { SavingsService } from 'src/app/shared/savings.service';
 import { Observable } from 'rxjs';
-import { Account } from 'src/app/user/account/account.interface';
+import { Account } from 'src/app/shared/interfaces/account.interface';
 
 import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
 import { MatFormFieldHarness } from '@angular/material/form-field/testing';

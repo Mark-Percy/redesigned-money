@@ -1,22 +1,22 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet } from '@angular/material/bottom-sheet';
-import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
-import { filter, Observable, Subject, Subscription, switchMap, take, takeUntil, tap } from 'rxjs';
-import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
-import { TransactionsService } from '../shared/services/transactions.service';
-import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
-import { AsyncPipe, CurrencyPipe, TitleCasePipe, KeyValuePipe } from '@angular/common';
-import { TransactionsTableComponent } from '../transactions-table/transactions-table.component';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton, MatButton } from '@angular/material/button';
-import { MatDatepickerInput, MatDatepicker } from '@angular/material/datepicker';
-import { MatInput } from '@angular/material/input';
-import { MatFormField } from '@angular/material/form-field';
-import { TransactionInterface } from '../shared/interfaces/transaction.interface';
-import { AccountsService } from '../shared/services/accounts.service';
+import { BreakpointObserver, Breakpoints, BreakpointState }	from '@angular/cdk/layout';
+import { AsyncPipe, CurrencyPipe }							from '@angular/common';
+import { Component, OnDestroy, OnInit }						from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule }	from '@angular/forms';
+import { MatBottomSheet }									from '@angular/material/bottom-sheet';
+import { MatIconButton, MatButton }							from '@angular/material/button';
+import { MatDatepickerInput, MatDatepicker }				from '@angular/material/datepicker';
+import { MatDialog }										from '@angular/material/dialog';
+import { MatFormField } 									from '@angular/material/form-field';
+import { MatIcon }											from '@angular/material/icon';
+import { MatInput }											from '@angular/material/input';
+import { ActivatedRoute, Router }							from '@angular/router';
+import { Observable, Subject, Subscription, takeUntil } 	from 'rxjs';
+
+import { AddTransactionComponent }		from '../shared/components/add-transaction/add-transaction.component';
+import { TransactionsService }			from '../shared/services/transactions.service';
+import { TransactionInterface }			from '../shared/interfaces/transaction.interface';
+import { TransactionsTableComponent }	from '../shared/components/transactions-table/transactions-table.component';
+import { AmountsBottomSheet } 			from './components/amounts-bottom-sheet.component';
 
 @Component({
 	selector: 'app-transactions-view',
@@ -24,22 +24,21 @@ import { AccountsService } from '../shared/services/accounts.service';
 	styleUrls: ['./transactions-view.component.css'],
 	standalone: true,
 	imports: [
-		MatFormField,
-		MatInput,
-		FormsModule,
-		MatDatepickerInput,
-		ReactiveFormsModule,
-		MatDatepicker,
-		MatIconButton,
-		MatIcon,
-		MatButton,
-		TransactionsTableComponent,
 		AsyncPipe,
 		CurrencyPipe,
+		FormsModule,
+		MatButton,
+		MatDatepicker,
+		MatDatepickerInput,
+		MatFormField,
+		MatIcon,
+		MatIconButton,
+		MatInput,
+		ReactiveFormsModule,
+		TransactionsTableComponent,
 	]
 })
 export class TransactionsViewComponent implements OnInit, OnDestroy {
-
 	today: Date = new Date();
 	transactions: Observable<TransactionInterface[]>;
 	$transactions:Subscription;
@@ -55,8 +54,8 @@ export class TransactionsViewComponent implements OnInit, OnDestroy {
 		private dialog: MatDialog, 
 		private route: ActivatedRoute,
 		private router: Router,
-		private _bottomSheet: MatBottomSheet,
 		private responsive: BreakpointObserver,
+		private _bottomSheet: MatBottomSheet,
 	) {
 		// When the date in the page changes - refresh the data for the new date
 		this.date.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value =>{
@@ -116,32 +115,5 @@ export class TransactionsViewComponent implements OnInit, OnDestroy {
 			return new Date(this.date.value.getFullYear(), this.date.value.getMonth() + 1, 0).getDate();
 		}
 		return this.today.getDate();
-	}
-}
-
-@Component({
-	selector: 'bottom-sheet-overview-example-sheet',
-	templateUrl: './amounts-bottom-sheet.component.html',
-	styles: ['li {display:grid; grid-template-columns: 50% 35%}', '.bills {display:flex;justify-content:space-between}'],
-	standalone: true,
-	imports: [MatTabGroup, MatTab, TitleCasePipe, CurrencyPipe, KeyValuePipe]
-})
-export class AmountsBottomSheet {
-	monthTransactions = this.transactionService.setMonth(this.passed, false);
-	categoryAmounts: Map<string, number> = new Map();
-	accountAmounts: Map<string, number> = new Map();
-	constructor( 
-		private transactionService: TransactionsService,
-		private accountsService: AccountsService,
-		@Inject(MAT_BOTTOM_SHEET_DATA) public passed: any,
-	) {
-		this.monthTransactions.then(data => {
-			this.categoryAmounts = data.categoryAmounts;
-			this.accountAmounts = data.accountAmounts;
-		})
-	}
-
-	getAccountName(accountId: string):string {
-		return this.accountsService.getAccount(accountId).name;
 	}
 }

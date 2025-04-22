@@ -1,14 +1,35 @@
-import { Injectable, OnDestroy } from '@angular/core';
-import { Firestore, collection, addDoc, collectionData, deleteDoc, doc, query, orderBy, limit, writeBatch, where, updateDoc, DocumentData, getAggregateFromServer, count, sum, Query, CollectionReference, AggregateField } from '@angular/fire/firestore';
-import { FormArray } from '@angular/forms';
-import { AuthorisationService } from '../../authorisation.service';
-import { SavingsService } from '../savings.service';
-import { Account } from '../../user/account/account.interface';
-import { Observable, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
-import { AccountsService } from './accounts.service';
-import { TransactionMonthInterface } from '../interfaces/transactionMonth.interface';
-import { TransactionInterface } from '../interfaces/transaction.interface';
+import { Injectable, OnDestroy }	from '@angular/core';
+import {
+	addDoc,
+	AggregateField,
+	collection,
+	collectionData,
+	CollectionReference,
+	count,
+	deleteDoc,
+	doc,
+	DocumentData,
+	Firestore,
+	getAggregateFromServer,
+	limit,
+	query,
+	Query,
+	orderBy,
+	sum,
+	updateDoc,
+	where,
+	writeBatch,
+} 									from '@angular/fire/firestore';
+import { FormArray }				from '@angular/forms';
+import { Observable, Subject }		from 'rxjs';
+import { takeUntil }				from 'rxjs/operators';
+
+import { Account }						from '../interfaces/account.interface';
+import { AccountsService }				from './accounts.service';
+import { AuthorisationService }			from './authorisation.service';
+import { TransactionInterface } 		from '../interfaces/transaction.interface';
+import { TransactionMonthInterface }	from '../interfaces/transactionMonth.interface';
+import { SavingsService } 				from './savings.service';
 
 @Injectable({
 	providedIn: 'root'
@@ -32,7 +53,6 @@ export class TransactionsService implements OnDestroy{
 		this.accountsService.accounts$.pipe(takeUntil(this.destroy$)).subscribe((accounts) => {
 			this.accounts = accounts
 		})
-
 	}
 
 	ngOnDestroy(): void {
@@ -86,11 +106,11 @@ export class TransactionsService implements OnDestroy{
 		return collectionData(q, {idField: 'id'}) as Observable<TransactionInterface[]>;
 	}
 
-	///////////////////////////////////////////////////////////////////////
-	// 			        Set month ready for caching data                 //
-	// 			 # Will return Month transaction data from cache	     //
-	// 			    		or from firestore if not set in cache        //
-	///////////////////////////////////////////////////////////////////////
+	/*----------------------------------------------------------------------*/
+	/* 			        Set month ready for caching data                    */
+	/* 			 # Will return Month transaction data from cache	        */
+	/* 			    		or from firestore if not set in cache           */
+	/*----------------------------------------------------------------------*/
 
 	public async setMonth(date: Date, includeTransactions: boolean): Promise<TransactionMonthInterface> {
 		// Setup Date
@@ -159,11 +179,11 @@ export class TransactionsService implements OnDestroy{
 		return monthData;
 	}
 
-	//////////////////////////////////////////////////////////////////////////	
-	//				Set month helper proc									//
-	//				Gets the year from cache							 	//
-	//					If it doesn't exist sets it and returns the year 	//
-	//////////////////////////////////////////////////////////////////////////
+	/*----------------------------------------------------------------------*/	
+	/*				Set month helper proc									*/
+	/*				Gets the year from cache							 	*/
+	/*					If it doesn't exist sets it and returns the year 	*/
+	/*----------------------------------------------------------------------*/
 	private getHeldYear(year: number): Map<number, TransactionMonthInterface> {
 		if(!this.years.has(year)) this.years.set(year, new Map());
 		let heldYear = this.years.get(year);
@@ -171,11 +191,11 @@ export class TransactionsService implements OnDestroy{
 		throw new Error('Error Setting the year map');
 	}
 
-	//////////////////////////////////////////////////////////////////////////	
-	//				Set month helper proc									//
-	//				Gets the Month data from cache							//
-	//					If it doesn't exist returns falsey data			 	//
-	//////////////////////////////////////////////////////////////////////////
+	/*----------------------------------------------------------------------*/	
+	/*				Set month helper proc									*/
+	/*				Gets the Month data from cache							*/
+	/*					If it doesn't exist returns falsey data			 	*/
+	/*----------------------------------------------------------------------*/
 	private getHeldMonth(heldYear: Map<number, TransactionMonthInterface>, month: number): {month: TransactionMonthInterface | null, hasTransactions: boolean} {
 		let heldMonth;
 		if(!heldYear.has(month)) return {month: null, hasTransactions: false};
@@ -185,11 +205,11 @@ export class TransactionsService implements OnDestroy{
 		throw new Error('Error getting held month data');
 	}
 
-	//////////////////////////////////////////////////////////////////////////	
-	//				Set month helper proc									//
-	//				gets Aggregate vals from firestore						//
-	//						With Exclusion of certain categories		 	//
-	//////////////////////////////////////////////////////////////////////////
+	/*----------------------------------------------------------------------*/	
+	/*				Set month helper proc									*/
+	/*				gets Aggregate vals from firestore						*/
+	/*						With Exclusion of certain categories		 	*/
+	/*----------------------------------------------------------------------*/
 	private async getAggregateVals(aggOb: {sumOfAmounts: AggregateField<number>, countOfTransactions?: AggregateField<number>}, typesToRemove: string[],start:Date,end:Date) {
 		const totalsExcludeSavings = query(this.transactionCollection,
 			where('transactionDate', '>=', start),
@@ -200,11 +220,11 @@ export class TransactionsService implements OnDestroy{
 		return totals;
 	}
 
-	//////////////////////////////////////////////////////////////////////////	
-	//				Set month helper proc									//
-	//				gets Aggregate vals from firestore						//
-	//						for each whereIterator passet				 	//
-	//////////////////////////////////////////////////////////////////////////
+	/*----------------------------------------------------------------------*/	
+	/*				Set month helper proc									*/
+	/*				gets Aggregate vals from firestore						*/
+	/*						for each whereIterator passet				 	*/
+	/*----------------------------------------------------------------------*/
 	private async getFilteredTotals(start: Date, end: Date, type: string, whereIterartor: string[]): Promise<Map<string, number>> {
 		let filteredAmountsMap: Map<string, number> = new Map();
 		for(let item of whereIterartor) {
@@ -222,9 +242,9 @@ export class TransactionsService implements OnDestroy{
 		return filteredAmountsMap;
 	}
 
-	//////////////////////////////////////////////////////////////////////////	
-	//				Gets the latest transactions limited by number		 	//
-	//////////////////////////////////////////////////////////////////////////
+	/*----------------------------------------------------------------------*/	
+	/*				Gets the latest transactions limited by number		 	*/
+	/*----------------------------------------------------------------------*/
 	getTransactionsDataForMonth(allTrans: Query<DocumentData, DocumentData>) {
 		return collectionData(allTrans, {idField: 'id'}) as Observable<TransactionInterface[]>;
 	}
@@ -273,14 +293,14 @@ export class TransactionsService implements OnDestroy{
 		await deleteDoc(doc(transCol, transactionId));
 	}
 
-	getItems(transactionId: string) {
+	private getItems(transactionId: string) {
 		const itemsCol = collection(this.fs, this.itemsPath);
 
 		const q = query(itemsCol, where('transactionId', '==', transactionId));
 		return collectionData(q, {idField: 'id'});
 	}
 
-	async updateMonth(
+	public async updateMonth(
 		date:Date,
 		category:string,
 		frequency: string,
@@ -307,7 +327,7 @@ export class TransactionsService implements OnDestroy{
 		return {code: 1, message: `Successful Month Amount: ${message}`};
 	}
 
-	setSubAmounts(category: string, account:string, amount: number, frequency: string, transactionMonth: TransactionMonthInterface) {
+	private setSubAmounts(category: string, account:string, amount: number, frequency: string, transactionMonth: TransactionMonthInterface) {
 		//Categories
 		const accountAmounts = transactionMonth.accountAmounts;
 		const categoryAmounts = transactionMonth.categoryAmounts;
@@ -322,7 +342,7 @@ export class TransactionsService implements OnDestroy{
 	
 	}
 
-	async setTransactionsForYear(date: Date): Promise<Map<number, TransactionMonthInterface>> {
+	public async setTransactionsForYear(date: Date): Promise<Map<number, TransactionMonthInterface>> {
 		for (let i = 0; i < 12; i++) {
 			date.setMonth(i);
 			this.setMonth(date, false);
@@ -332,11 +352,11 @@ export class TransactionsService implements OnDestroy{
 		throw new Error(`There was an error Adding the selected year to the year data: ${date.getFullYear()}`);
 	}
 
-	clearMonths() {
+	public clearMonths() {
 		this.years.clear();
 	}
 
-	getSimilarTransactions(transactionForm: TransactionInterface) {
+	public getSimilarTransactions(transactionForm: TransactionInterface) {
 		const numberToLimit = 10;
 		const account = transactionForm.account;
 		const category = transactionForm.category;

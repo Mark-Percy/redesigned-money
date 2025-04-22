@@ -1,13 +1,14 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatTabGroup, MatTab } from '@angular/material/tabs';
-import { Router } from '@angular/router';
-import { AuthorisationService } from 'src/app/authorisation.service';
-import { passwordMatch } from 'src/app/form-validation.dirtective';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton, MatButton } from '@angular/material/button';
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { Component, OnInit, ViewChild } 																	from '@angular/core';
+import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule }	from '@angular/forms';
+import { MatIconButton, MatButton } 																		from '@angular/material/button';
+import { MatFormField, MatLabel, MatSuffix } 																from '@angular/material/form-field';
+import { MatIcon } 																							from '@angular/material/icon';
+import { MatInput }																							from '@angular/material/input';
+import { MatTabGroup, MatTab }																				from '@angular/material/tabs';
+import { Router }																							from '@angular/router';
+
+import { AuthorisationService }	from 'src/app/shared/services/authorisation.service';
+import { passwordMatch } from '../directives/form-validation.dirtective';
 
 
 @Component({
@@ -17,16 +18,16 @@ import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field'
     standalone: true,
     imports: [
 		FormsModule,
-		ReactiveFormsModule,
-		MatTabGroup,
-		MatTab,
+		MatButton,
 		MatFormField,
 		MatLabel,
-		MatInput,
-		MatIconButton,
-		MatSuffix,
 		MatIcon,
-		MatButton,
+		MatIconButton,
+		MatInput,
+		MatSuffix,
+		MatTabGroup,
+		MatTab,
+		ReactiveFormsModule,
 	]
 })
 

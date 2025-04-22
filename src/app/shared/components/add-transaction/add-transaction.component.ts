@@ -1,58 +1,60 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DateAdapter, MatOption } from '@angular/material/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { Observable, Subject, takeUntil } from 'rxjs';
-import { Pot } from '../dashboard/savings/pots.interface';
-import { SavingsService } from '../shared/savings.service';
-import { TransactionsService } from '../shared/services/transactions.service';
-import { Account } from '../user/account/account.interface';
-import { MatIcon } from '@angular/material/icon';
-import { MatButton } from '@angular/material/button';
-import { AsyncPipe } from '@angular/common';
-import { MatSelect } from '@angular/material/select';
-import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
-import { MatInput } from '@angular/material/input';
-import { MatFormField, MatLabel, MatHint, MatSuffix, MatPrefix } from '@angular/material/form-field';
-import { MatSlideToggle } from '@angular/material/slide-toggle';
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { TransactionsTableComponent } from '../transactions-table/transactions-table.component';
-import { AccountsService } from '../shared/services/accounts.service';
-import { TransactionInterface } from '../shared/interfaces/transaction.interface';
+import { CdkScrollable }																	from '@angular/cdk/scrolling';
+import { Component, Inject, OnDestroy }														from '@angular/core';
+import { AsyncPipe }																		from '@angular/common';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule }	from '@angular/forms';
+import { MatButton }																		from '@angular/material/button';
+import { DateAdapter, MatOption }															from '@angular/material/core';
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker }							from '@angular/material/datepicker';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent }					from '@angular/material/dialog';
+import { MatFormField, MatLabel, MatHint, MatSuffix, MatPrefix }							from '@angular/material/form-field';
+import { MatIcon }																			from '@angular/material/icon';
+import { MatInput }																			from '@angular/material/input';
+import { MatSelect }																		from '@angular/material/select';
+import { MatSlideToggle }																	from '@angular/material/slide-toggle';
+import { Router }																			from '@angular/router';
+import { Observable, Subject, takeUntil }													from 'rxjs';
+
+import { Account }						from '../../interfaces/account.interface';
+import { AccountsService }				from '../../services/accounts.service';
+import { Pot }							from '../../interfaces/pots.interface';
+import { SavingsService }				from '../../services/savings.service';
+import { TransactionInterface }			from '../../interfaces/transaction.interface';
+import { TransactionsService }			from '../../services/transactions.service';
+import { TransactionsTableComponent }	from '../transactions-table/transactions-table.component';
+
 
 
 @Component({
-  selector: 'app-add-transaction',
-  templateUrl: './add-transaction.component.html',
-  styleUrls: ['./add-transaction.component.css'],
-  standalone: true,
-  imports: [
-	MatDialogTitle,
-	CdkScrollable,
-	MatDialogContent,
-	MatSlideToggle,
-	FormsModule,
-	ReactiveFormsModule,
-	MatFormField,
-	MatLabel,
-	MatInput,
-	MatDatepickerInput,
-	MatHint,
-	MatDatepickerToggle,
-	MatSuffix,
-	MatDatepicker,
-	MatSelect,
-	MatOption,
-	MatPrefix,
-	MatButton,
-	MatIcon,
-	AsyncPipe,
-	TransactionsTableComponent
-  ]
+	selector: 'app-add-transaction',
+  	templateUrl: './add-transaction.component.html',
+	styleUrls: ['./add-transaction.component.css'],
+	standalone: true,
+	imports: [
+		AsyncPipe,
+		CdkScrollable,
+		FormsModule,
+		MatButton,
+		MatDatepicker,
+		MatDatepickerInput,
+		MatDatepickerToggle,
+		MatDialogContent,
+		MatDialogTitle,
+		MatFormField,
+		MatHint,
+		MatIcon,
+		MatInput,
+		MatLabel,
+		MatOption,
+		MatPrefix,
+		MatSelect,
+		MatSlideToggle,
+		MatSuffix,
+		ReactiveFormsModule,
+		TransactionsTableComponent,
+	]
 })
-export class AddTransactionComponent implements OnDestroy {
 
+export class AddTransactionComponent implements OnDestroy {
 	similarTransactions: Observable<TransactionInterface[]>;
 	addingMultiple: FormControl = new FormControl(false);
 	keepAccount: FormControl = new FormControl({value: false, disabled: true});

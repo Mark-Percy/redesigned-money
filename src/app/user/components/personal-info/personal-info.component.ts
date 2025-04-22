@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
-import { AuthorisationService } from 'src/app/authorisation.service';
+import { Component }  from '@angular/core';
+import { MatButton }  from '@angular/material/button';
 import { RouterLink } from '@angular/router';
-import { MatButton } from '@angular/material/button';
+
+import { AuthorisationService } from 'src/app/shared/services/authorisation.service';
 
 @Component({
     selector: 'app-personal-info',

@@ -2,7 +2,7 @@ import { HeaderComponent } from './header.component';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
-import { AuthorisationService } from '../authorisation.service';
+import { AuthorisationService } from '../shared/services/authorisation.service';
 
 class MockUnAuthService {
   user = null;

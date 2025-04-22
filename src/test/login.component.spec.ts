@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LoginComponent } from '../app/authorisation/login/login.component';
-import { AuthorisationService } from 'src/app/authorisation.service';
+import { AuthorisationService } from 'src/app/shared/services/authorisation.service';
 import { Observable } from 'rxjs';
 import { IdTokenResult, User, UserCredential } from '@angular/fire/auth';
 import { Router } from '@angular/router';

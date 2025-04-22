@@ -1,11 +1,12 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { TransactionsService } from 'src/app/shared/services/transactions.service';
-import { CurrencyPipe, KeyValuePipe, NgStyle } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
-import { TransactionMonthInterface } from 'src/app/shared/interfaces/transactionMonth.interface';
-import { Subject } from 'rxjs';
+import { CurrencyPipe, KeyValuePipe, NgStyle }	from '@angular/common';
+import { Component, Input, OnDestroy, OnInit }	from '@angular/core';
+import { MatIconButton }						from '@angular/material/button';
+import { MatIcon }								from '@angular/material/icon';
+import { Subject }								from 'rxjs';
+
+import { LoadingSpinnerComponent }		from 'src/app/shared/components/loading-spinner/loading-spinner.component';
+import { TransactionMonthInterface }	from 'src/app/shared/interfaces/transactionMonth.interface';
+import { TransactionsService }			from 'src/app/shared/services/transactions.service';
 
 @Component({
 	selector: 'app-totals',
@@ -29,7 +30,6 @@ export class TotalsComponent implements OnInit, OnDestroy {
 	public isLoading: boolean = true;
 
 	private destroy$ = new Subject<void>();
-
 
 	constructor(private transactionService: TransactionsService) {}
 
