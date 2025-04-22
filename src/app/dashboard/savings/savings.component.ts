@@ -33,11 +33,11 @@ export class SavingsComponent implements OnInit {
 
   constructor(
     public dialog: MatDialog,
-    private accountService: AccountsService,
+    private accountsService: AccountsService,
   ) {}
 
   public ngOnInit(): void {
-    this.accountService.accounts$.subscribe((accounts: Account[]) => {
+    this.accountsService.accounts$.subscribe((accounts: Account[]) => {
       this.accounts = accounts.filter(account => account.type == 'Savings');
     });
   }

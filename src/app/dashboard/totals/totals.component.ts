@@ -5,7 +5,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
 import { TransactionMonthInterface } from 'src/app/shared/interfaces/transactionMonth.interface';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject } from 'rxjs';
 
 @Component({
 	selector: 'app-totals',
@@ -39,11 +39,9 @@ export class TotalsComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit(): void {
-		this.transactionService.loadYearDataAction$.pipe(takeUntil(this.destroy$)).subscribe((date) => {
-			this.transactionService.setTransactionsForYear(date).then((transactionsForYear) => {
-				this.isLoading = false;
-				if (transactionsForYear) this.YearsData = transactionsForYear;
-		  	});
+		this.transactionService.setTransactionsForYear(new Date()).then((transactionsForYear) => {
+			this.isLoading = false;
+			if (transactionsForYear) this.YearsData = transactionsForYear;
 		});
 	}
 	

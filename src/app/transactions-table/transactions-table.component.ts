@@ -36,8 +36,8 @@ export class TransactionsTableComponent implements OnChanges {
   private accounts: Map<string, string> = new Map();
   private destroy$: Subject<void> = new Subject<void>;
 
-  constructor(public transactionService: TransactionsService, public accountService: AccountsService) {
-    this.accountService.accounts$.pipe(takeUntil(this.destroy$)).subscribe((accounts) => {
+  constructor(public transactionService: TransactionsService, public accountsService: AccountsService) {
+    this.accountsService.accounts$.pipe(takeUntil(this.destroy$)).subscribe((accounts) => {
       accounts.forEach((account) => {
         this.accounts.set(account.id, account.name);
       } )

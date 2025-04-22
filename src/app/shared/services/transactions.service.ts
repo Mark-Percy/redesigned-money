@@ -5,7 +5,7 @@ import { AuthorisationService } from '../../authorisation.service';
 import { SavingsService } from '../savings.service';
 import { Account } from '../../user/account/account.interface';
 import { Observable, Subject } from 'rxjs';
-import { first, takeUntil, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { AccountsService } from './accounts.service';
 import { TransactionMonthInterface } from '../interfaces/transactionMonth.interface';
 import { TransactionInterface } from '../interfaces/transaction.interface';
@@ -21,25 +21,17 @@ export class TransactionsService implements OnDestroy{
 	currMonthInd: number = 0;
 	private destroy$: Subject<void> = new Subject<void>();
 
-	transactionsPath: string;
-	itemsPath: string;
-	transactionCollection: CollectionReference;
-
-	// Subject to trigger year data loading
-	private loadYearData$ = new Subject<Date>();
-	loadYearDataAction$ = this.loadYearData$.asObservable();
+	private transactionsPath: string;
+	private itemsPath: string;
+	private transactionCollection: CollectionReference;
 
 	constructor(private fs: Firestore, private auth: AuthorisationService, private savingsService: SavingsService, private accountsService: AccountsService) {
-		this.accountsService.accounts$.pipe(
-			takeUntil(this.destroy$),
-			tap((accounts) => this.accounts = accounts), // Update local accounts
-		  ).subscribe(() => {
-			// After the initial accounts are loaded, trigger the year data loading
-			this.loadYearData$.next(new Date());
-		  });
 		this.transactionsPath = `users/${this.auth.getUserId()}/transactions`;
 		this.itemsPath = `users/${this.auth.getUserId()}/items`;
 		this.transactionCollection = collection(this.fs, this.transactionsPath);
+		this.accountsService.accounts$.pipe(takeUntil(this.destroy$)).subscribe((accounts) => {
+			this.accounts = accounts
+		})
 
 	}
 
@@ -124,11 +116,19 @@ export class TransactionsService implements OnDestroy{
 			heldMonthCheck.month.transactions = includeTransactions && !heldMonthCheck.hasTransactions ? this.getTransactionsDataForMonth(allTrans) : undefined;
 			return heldMonthCheck.month;
 		}
-		// Get amounts for the cactegories and the accounts.
+		
+
+		// Might be ported so that users can create their own categories
+		// set up category amounts
 		const categories = ['bills', 'spending', 'useless'];
-		const accountIds = this.accounts.map(account => account.id);
+		
+
 		let categoryAmountsMap: Map<string, number> = await this.getFilteredTotals(start, end, 'category', categories);
-		let accountAmountsMap: Map<string, number> = await this.getFilteredTotals(start, end, 'account', accountIds);
+
+		// Problem here is the accountIds array needs to be set after category amounts to allow time for accounts to be populated
+		// Really we shouldn't be able to run setMonth until the accounts array is set
+		let accountsId = this.accounts.map(account => account.id);
+		let accountAmountsMap: Map<string, number> = await this.getFilteredTotals(start, end, 'account', accountsId);
 
 		const aggOb1 = {
 			sumOfAmounts: sum('amount'),
@@ -136,7 +136,7 @@ export class TransactionsService implements OnDestroy{
 		}
 		const typesToRemove1 = ['savings']; 
 		const typesToRemove2 = ['savings', 'bills', 'repayments']; 
-		
+
 		const aggOb2 = {
 			sumOfAmounts: sum('amount'),
 		}
@@ -144,8 +144,8 @@ export class TransactionsService implements OnDestroy{
 		const totals = await this.getAggregateVals(aggOb1,typesToRemove1, start, end);
 		const totalsExcBillsRepay = await this.getAggregateVals(aggOb2,typesToRemove2, start, end);
 		const totalsData = totals.data();
-		
-		// We're here since the month wasn't set in cache so we need to setup the month data to return 
+
+		// We're here since the month wasn't set in cache so we need to setup the month data to return
 		const monthData: TransactionMonthInterface = {
 			totalAmount: totalsData.sumOfAmounts,
 			totalTransactions: totalsData.countOfTransactions ? totalsData.countOfTransactions : 0,
@@ -207,18 +207,17 @@ export class TransactionsService implements OnDestroy{
 	//////////////////////////////////////////////////////////////////////////
 	private async getFilteredTotals(start: Date, end: Date, type: string, whereIterartor: string[]): Promise<Map<string, number>> {
 		let filteredAmountsMap: Map<string, number> = new Map();
-
-		for(let category of whereIterartor) {
+		for(let item of whereIterartor) {
 			const groupedTrans = query(this.transactionCollection,
 				where('transactionDate', '>=', start),
 				where('transactionDate', '<=', end),
-				where(type, '==', category),
+				where(type, '==', item),
 				where('category', 'not-in', ['savings']),
 			);
 			const snap = await getAggregateFromServer(groupedTrans, {
 				amount: sum('amount'),
 			})
-			filteredAmountsMap.set(category, snap.data().amount);
+			filteredAmountsMap.set(item, snap.data().amount);
 		}
 		return filteredAmountsMap;
 	}

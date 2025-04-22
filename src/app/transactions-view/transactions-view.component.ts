@@ -3,7 +3,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MAT_BOTTOM_SHEET_DATA, MatBottomSheet } from '@angular/material/bottom-sheet';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, Subscription, take, takeUntil } from 'rxjs';
+import { filter, Observable, Subject, Subscription, switchMap, take, takeUntil, tap } from 'rxjs';
 import { AddTransactionComponent } from '../add-transaction/add-transaction.component';
 import { TransactionsService } from '../shared/services/transactions.service';
 import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
@@ -72,21 +72,19 @@ export class TransactionsViewComponent implements OnInit, OnDestroy {
 	}
 
 	ngOnInit(): void {
-			this.transactionService.loadYearDataAction$.pipe(takeUntil(this.destroy$)).subscribe((date) => {
-				this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
-					this.date.value.setMonth(params['month']);
-					this.date.value.setYear(params['year']);
-					this.transactionService.setMonth(this.date.value, true).then(month => {
-						if(month.transactions) this.transactions = month.transactions;
-						this.transactions.pipe(takeUntil(this.destroy$)).subscribe(() => {
-							this.transactionService.setMonth(this.date.value, false).then(month => {
-								this.totalAmount = month.totalsExcl;
-								this.numberOfTransactions = month.totalTransactions;
-							});
-						})
-					})
-				});
+		this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe(params => {
+			this.date.value.setMonth(params['month']);
+			this.date.value.setYear(params['year']);
+			this.transactionService.setMonth(this.date.value, true).then(month => {
+				if(month.transactions) this.transactions = month.transactions;
+				this.transactions.pipe(takeUntil(this.destroy$)).subscribe(() => {
+					this.transactionService.setMonth(this.date.value, false).then(month => {
+						this.totalAmount = month.totalsExcl;
+						this.numberOfTransactions = month.totalTransactions;
+					});
+				})
 			})
+		});
 	}
 
 	changeDate(numOfMonths: number) {
@@ -134,7 +132,7 @@ export class AmountsBottomSheet {
 	accountAmounts: Map<string, number> = new Map();
 	constructor( 
 		private transactionService: TransactionsService,
-		private accountService: AccountsService,
+		private accountsService: AccountsService,
 		@Inject(MAT_BOTTOM_SHEET_DATA) public passed: any,
 	) {
 		this.monthTransactions.then(data => {
@@ -144,6 +142,6 @@ export class AmountsBottomSheet {
 	}
 
 	getAccountName(accountId: string):string {
-		return this.accountService.getAccount(accountId).name;
+		return this.accountsService.getAccount(accountId).name;
 	}
 }
