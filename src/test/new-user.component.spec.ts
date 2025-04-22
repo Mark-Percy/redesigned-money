@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NewUserComponent } from '../app/authorisation/new-user/new-user.component';
-import { AuthorisationService } from 'src/app/authorisation.service';
+import { AuthorisationService } from 'src/app/shared/services/authorisation.service';
 import { MatTabsModule } from '@angular/material/tabs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';

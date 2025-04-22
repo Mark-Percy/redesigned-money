@@ -1,22 +1,20 @@
-import { Component, Inject } from '@angular/core';
-import { DocumentSnapshot } from '@angular/fire/firestore';
-import { FormBuilder,FormControl,FormsModule,ReactiveFormsModule} from '@angular/forms';
-import { MAT_DIALOG_DATA,MatDialogTitle,MatDialogContent } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
-import { Pot } from '../pots.interface';
-import { Account, DraftAccount } from '../../../user/account/account.interface';
-import { SavingsService } from 'src/app/shared/savings.service';
-import { Status } from 'src/app/shared/Status.interface';
-
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTable,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatCellDef,MatCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow } from '@angular/material/table';
-import { MatIcon } from '@angular/material/icon';
-import { MatInput } from '@angular/material/input';
-import { MatFormField } from '@angular/material/form-field';
-import { CurrencyPipe } from '@angular/common';
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { MatButton, MatMiniFabButton } from '@angular/material/button';
+import { CdkScrollable }																											from '@angular/cdk/scrolling';
+import { Component, Inject }																										from '@angular/core';
+import { CurrencyPipe }																												from '@angular/common';
+import { FormBuilder,FormControl,FormsModule,ReactiveFormsModule}																	from '@angular/forms';
+import { MatButton, MatMiniFabButton }																								from '@angular/material/button';
+import { MAT_DIALOG_DATA,MatDialogTitle,MatDialogContent }																			from '@angular/material/dialog';
+import { MatFormField }																												from '@angular/material/form-field';
+import { MatIcon }																													from '@angular/material/icon';
+import { MatInput }																													from '@angular/material/input';
+import { MatTable,MatColumnDef,MatHeaderCellDef,MatHeaderCell,MatCellDef,MatCell,MatHeaderRowDef,MatHeaderRow,MatRowDef,MatRow }	from '@angular/material/table';
+import { MatSnackBar }																												from '@angular/material/snack-bar';
+import { Observable }																												from 'rxjs';
 import { AccountsService } from 'src/app/shared/services/accounts.service';
+import { SavingsService } from 'src/app/shared/services/savings.service';
+import { Status } from 'src/app/shared/interfaces/status.interface';
+import { Account } from 'src/app/shared/interfaces/account.interface';
+import { Pot } from 'src/app/shared/interfaces/pots.interface';
 
 @Component({
 	selector: 'app-savings-dialog',
@@ -24,27 +22,27 @@ import { AccountsService } from 'src/app/shared/services/accounts.service';
 	styleUrls: ['./savings-dialog.component.css'],
 	standalone: true,
 	imports: [
-		MatDialogTitle,
-		MatButton,
 		CdkScrollable,
-		MatDialogContent,
-		FormsModule,
-		MatFormField,
-		MatInput,
-		ReactiveFormsModule,
-		MatMiniFabButton,
-		MatIcon,
-		MatTable,
-		MatColumnDef,
-		MatHeaderCellDef,
-		MatHeaderCell,
-		MatCellDef,
-		MatCell,
-		MatHeaderRowDef,
-		MatHeaderRow,
-		MatRowDef,
-		MatRow,
 		CurrencyPipe,
+		FormsModule,
+		MatButton,
+		MatCell,
+		MatCellDef,
+		MatColumnDef,
+		MatDialogContent,
+		MatDialogTitle,
+		MatFormField,
+		MatHeaderCell,
+		MatHeaderCellDef,
+		MatHeaderRow,
+		MatHeaderRowDef,
+		MatInput,
+		MatIcon,
+		MatMiniFabButton,
+		MatRow,
+		MatRowDef,
+		MatTable,
+		ReactiveFormsModule,
 	],
 })
 export class SavingsDialogComponent {

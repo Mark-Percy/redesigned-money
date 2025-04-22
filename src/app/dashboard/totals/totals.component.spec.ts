@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TotalsComponent } from './totals.component';
-import { TransactionsService } from 'src/app/shared/transactions.service';
+import { TransactionsService } from 'src/app/shared/services/transactions.service';
 
 describe('TotalsComponent', () => {
   let component: TotalsComponent;

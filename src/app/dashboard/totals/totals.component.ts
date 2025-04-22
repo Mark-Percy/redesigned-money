@@ -1,10 +1,12 @@
-import { Component, Input } from '@angular/core';
-import { TransactionsService } from 'src/app/shared/transactions.service';
-import { CurrencyPipe, KeyValuePipe, NgStyle } from '@angular/common';
-import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
-import { LoadingSpinnerComponent } from '../../shared/components/loading-spinner/loading-spinner.component';
-import { TransactionMonthInterface } from 'src/app/shared/interfaces/transactionMonth.interface';
+import { CurrencyPipe, KeyValuePipe, NgStyle }	from '@angular/common';
+import { Component, Input, OnDestroy, OnInit }	from '@angular/core';
+import { MatIconButton }						from '@angular/material/button';
+import { MatIcon }								from '@angular/material/icon';
+import { Subject }								from 'rxjs';
+
+import { LoadingSpinnerComponent }		from 'src/app/shared/components/loading-spinner/loading-spinner.component';
+import { TransactionMonthInterface }	from 'src/app/shared/interfaces/transactionMonth.interface';
+import { TransactionsService }			from 'src/app/shared/services/transactions.service';
 
 @Component({
 	selector: 'app-totals',
@@ -20,20 +22,29 @@ import { TransactionMonthInterface } from 'src/app/shared/interfaces/transaction
 		LoadingSpinnerComponent,
 	],
 })
-export class TotalsComponent {
+export class TotalsComponent implements OnInit, OnDestroy {
 	@Input() panelWidth = '45vw';
 
 	public YearsData: Map<number, TransactionMonthInterface>;
 	public yearNum: number = new Date().getFullYear();
 	public isLoading: boolean = true;
 
-	constructor(private transactionService: TransactionsService) {
-		this.transactionService.setTransactionsForYear(new Date())
-			.then((transactionsForYear) => {
-				this.isLoading = false;
-				if (transactionsForYear) this.YearsData = transactionsForYear;
-			});
+	private destroy$ = new Subject<void>();
+
+	constructor(private transactionService: TransactionsService) {}
+
+	ngOnDestroy(): void {
+		this.destroy$.next();
+		this.destroy$.complete();
 	}
+
+	ngOnInit(): void {
+		this.transactionService.setTransactionsForYear(new Date()).then((transactionsForYear) => {
+			this.isLoading = false;
+			if (transactionsForYear) this.YearsData = transactionsForYear;
+		});
+	}
+	
 	async setYear(num: number) {
 		this.isLoading = true;
 		this.yearNum += num;

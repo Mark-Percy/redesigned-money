@@ -1,8 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, User, signInWithEmailAndPassword, sendEmailVerification, updateProfile, UserCredential } from "@angular/fire/auth"
-import { from, Observable } from 'rxjs';
-import { Firestore, collection, docData, setDoc, doc, getDoc } from '@angular/fire/firestore';
-import { ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Injectable }																													from '@angular/core';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, updateProfile, User, UserCredential }	from "@angular/fire/auth"
+import { collection, doc, docData, Firestore, getDoc, setDoc }																			from '@angular/fire/firestore';
+import { from, Observable }																												from 'rxjs';
 
 @Injectable({
 	providedIn: 'root'
@@ -59,16 +58,5 @@ export class AuthorisationService {
 		return appSettings.then((docSnap) => {
 			return docSnap.get('accountCreationEnabled')
 		})
-	}
-}
-
-@Injectable({
-  providedIn: 'root'
-})
-export class accountCreationGuard  {
-	constructor(private authService: AuthorisationService) {}
-	canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Promise<boolean> {
-		return this.authService.getAccountCreationEnabled()
-		
 	}
 }
