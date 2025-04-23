@@ -1,14 +1,14 @@
-import { Component, OnInit, ViewChild } 																	from '@angular/core';
-import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule }	from '@angular/forms';
-import { MatIconButton, MatButton } 																		from '@angular/material/button';
-import { MatFormField, MatLabel, MatSuffix } 																from '@angular/material/form-field';
-import { MatIcon } 																							from '@angular/material/icon';
-import { MatInput }																							from '@angular/material/input';
-import { MatTabGroup, MatTab }																				from '@angular/material/tabs';
-import { Router }																							from '@angular/router';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatTabGroup, MatTab } from '@angular/material/tabs';
+import { Router } from '@angular/router';
 
-import { AuthorisationService }	from 'src/app/shared/services/authorisation.service';
-import { passwordMatch } from '../directives/form-validation.dirtective';
+import { AuthorisationService } from 'src/app/shared/services/authorisation.service';
+import { passwordMatch } from '../validators/password-match.validator';
 
 
 @Component({
@@ -70,8 +70,8 @@ export class NewUserComponent implements OnInit {
 
 		} else {
 			this.authService.addUser(this.newAccountForm.get('userDetails')?.value,
-									this.newAccountForm.get('accountDetails')?.get('email')?.value,
-									this.newAccountForm.get('accountDetails')?.get('password')?.value)
+				this.newAccountForm.get('accountDetails')?.get('email')?.value,
+				this.newAccountForm.get('accountDetails')?.get('password')?.value)
 			.then(()  => {
 				this.router.navigate(['dashboard'])
 			})
