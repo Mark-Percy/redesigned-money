@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, UntypedFormControl, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators, FormsModule, ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 import { MatIconButton, MatButton } from '@angular/material/button';
 import { MatFormField, MatLabel, MatSuffix } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -36,23 +36,21 @@ export class NewUserComponent implements OnInit {
 
 	@ViewChild('accountTabs') accountTabs!: MatTabGroup;
 
-	selectedTab = new UntypedFormControl();
+	selectedTab: number = 0;
 
 	hide: boolean = true;
 	hideConfirm: boolean = true;
 
-	newAccountForm!: UntypedFormGroup;
+	newAccountForm: FormGroup;
 	errorMessage: string = '';
 
-  	constructor(private authService: AuthorisationService, private fb: FormBuilder, private router:Router) {
-
-	}
+  	constructor(private authService: AuthorisationService, private fb: FormBuilder, private router:Router) {}
 
   	ngOnInit(): void {
 		this.newAccountForm = this.fb.group({
 			userDetails: this.fb.group({
 				firstName: ['', Validators.required],
-				surname: ['', Validators.required]
+				surname: ['', Validators.required],
 			}),
 			accountDetails: this.fb.group({
 				email: ['', [Validators.required, Validators.email]],
@@ -60,28 +58,25 @@ export class NewUserComponent implements OnInit {
 				confirmPassword: ['', Validators.required],
 			},{
 				validators: [passwordMatch],
-				updateOn: 'submit'
-			})
+				updateOn: 'submit',
+			}),
 		});
 	}
-  	updateUser() {
-		if(!this.newAccountForm.valid) {
-			const accountSection = this.newAccountForm.get('accountDetails');
+	
+  	async updateUser(): Promise<void> {
+		if(this.newAccountForm.invalid) return
 
-		} else {
-			this.authService.addUser(this.newAccountForm.get('userDetails')?.value,
-				this.newAccountForm.get('accountDetails')?.get('email')?.value,
-				this.newAccountForm.get('accountDetails')?.get('password')?.value)
-			.then(()  => {
-				this.router.navigate(['dashboard'])
-			})
-		}
+		await this.authService.addUser(this.newAccountForm.get('userDetails')?.value,
+			this.newAccountForm.get('accountDetails')?.get('email')?.value,
+			this.newAccountForm.get('accountDetails')?.get('password')?.value);
+
+		this.router.navigate(['dashboard']);
 	}
 
   	moveTab(tabs: number): void {
 		this.newAccountForm.get('userDetails')?.markAllAsTouched()
 		if(this.newAccountForm.get('userDetails')?.valid) {
-			this.selectedTab.setValue(this.selectedTab.value + tabs);
+			this.selectedTab += tabs;
 		}
 	}
 }
