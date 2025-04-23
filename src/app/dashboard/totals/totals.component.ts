@@ -1,12 +1,12 @@
-import { CurrencyPipe, KeyValuePipe, NgStyle }	from '@angular/common';
-import { Component, Input, OnDestroy, OnInit }	from '@angular/core';
-import { MatIconButton }						from '@angular/material/button';
-import { MatIcon }								from '@angular/material/icon';
-import { Subject }								from 'rxjs';
+import { CurrencyPipe, KeyValuePipe, NgStyle } from '@angular/common';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { Subject } from 'rxjs';
 
-import { LoadingSpinnerComponent }		from 'src/app/shared/components/loading-spinner/loading-spinner.component';
-import { TransactionMonthInterface }	from 'src/app/shared/interfaces/transactionMonth.interface';
-import { TransactionsService }			from 'src/app/shared/services/transactions.service';
+import { LoadingSpinnerComponent } from 'src/app/shared/components/loading-spinner/loading-spinner.component';
+import { TransactionMonth }	from 'src/app/shared/interfaces/transactionMonth.interface';
+import { TransactionsService } from 'src/app/shared/services/transactions.service';
 
 @Component({
 	selector: 'app-totals',
@@ -25,7 +25,7 @@ import { TransactionsService }			from 'src/app/shared/services/transactions.serv
 export class TotalsComponent implements OnInit, OnDestroy {
 	@Input() panelWidth = '45vw';
 
-	public YearsData: Map<number, TransactionMonthInterface>;
+	public YearsData: Map<number, TransactionMonth>;
 	public yearNum: number = new Date().getFullYear();
 	public isLoading: boolean = true;
 

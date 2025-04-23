@@ -1,8 +1,8 @@
 import { Observable } from "rxjs";
-import { TransactionInterface } from "./transaction.interface";
+import { Transaction } from "./transaction.interface";
 
-export interface TransactionMonthInterface {
-  transactions?: Observable<TransactionInterface[]>;
+export interface TransactionMonth {
+  transactions?: Observable<Transaction[]>;
   totalAmount: number;
   totalTransactions: number;
   totalsExcl: number;

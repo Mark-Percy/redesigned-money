@@ -3,8 +3,8 @@
 </div>
 @if(dashboardCols == 1){
     <div>
-        <button mat-icon-button (click)="switchCol(0)" [disabled]="currCol == 0"><mat-icon>remove</mat-icon></button>
-        <button mat-icon-button (click)="switchCol(1)" [disabled]="currCol == 1"><mat-icon>add</mat-icon></button>
+        <button mat-icon-button (click)="switchCol(0)" [disabled]="currCol == 0"><mat-icon>chevron_left</mat-icon></button>
+        <button mat-icon-button (click)="switchCol(1)" [disabled]="currCol == 1"><mat-icon>chevron_right</mat-icon></button>
     </div>
 }
 <mat-grid-list [cols]="dashboardCols" rowHeight="45vh">

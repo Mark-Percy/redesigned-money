@@ -1,11 +1,11 @@
-import { CurrencyPipe, DatePipe, TitleCasePipe }																							from '@angular/common';
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges }																	from '@angular/core';
-import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow }	from '@angular/material/table';
-import { Observable, Subject, takeUntil }																									from 'rxjs';
+import { CurrencyPipe, DatePipe, TitleCasePipe } from '@angular/common';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow } from '@angular/material/table';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
-import { AccountsService }		from '../../services/accounts.service';
-import { TransactionInterface }	from '../../interfaces/transaction.interface';
-import { TransactionsService }	from '../../services/transactions.service';
+import { AccountsService } from '../../services/accounts.service';
+import { Transaction } from '../../interfaces/transaction.interface';
+import { TransactionsService } from '../../services/transactions.service';
 
 
 @Component({
@@ -32,7 +32,7 @@ import { TransactionsService }	from '../../services/transactions.service';
 export class TransactionsTableComponent implements OnChanges {
 
 	@Output('getRow') getRow: EventEmitter<any> = new EventEmitter<any>();
-	@Input('transactions') transactions: Observable<TransactionInterface[]> = this.transactionService.getTransactions(5);
+	@Input('transactions') transactions: Observable<Transaction[]> = this.transactionService.getTransactions(5);
 	numOfTransactions: number = 1;
 	displayedColumns: string[] = ['transactionDate','amount', 'category', 'location','account'];
 	private accounts: Map<string, string> = new Map();
@@ -56,8 +56,7 @@ export class TransactionsTableComponent implements OnChanges {
 		})
 	}
 
-
-	sendRow(row: any) {
+	sendRow(row: any): void {
 		row.date = row.transactionDate.toDate();
 		this.getRow.emit({row:row});
 	}
@@ -67,5 +66,4 @@ export class TransactionsTableComponent implements OnChanges {
 		if(accountName) return accountName;
 		throw new Error('AccountId Invalid');
 	}
-
 }

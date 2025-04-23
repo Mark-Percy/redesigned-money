@@ -1,4 +1,4 @@
-export interface TransactionInterface {
+export interface Transaction {
   id: string;
   transactionDate: Date;
   date: Date;

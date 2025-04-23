@@ -1,28 +1,26 @@
-import { CdkScrollable }																	from '@angular/cdk/scrolling';
-import { Component, Inject, OnDestroy }														from '@angular/core';
-import { AsyncPipe }																		from '@angular/common';
-import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule }	from '@angular/forms';
-import { MatButton }																		from '@angular/material/button';
-import { DateAdapter, MatOption }															from '@angular/material/core';
-import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker }							from '@angular/material/datepicker';
-import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent }					from '@angular/material/dialog';
-import { MatFormField, MatLabel, MatHint, MatSuffix, MatPrefix }							from '@angular/material/form-field';
-import { MatIcon }																			from '@angular/material/icon';
-import { MatInput }																			from '@angular/material/input';
-import { MatSelect }																		from '@angular/material/select';
-import { MatSlideToggle }																	from '@angular/material/slide-toggle';
-import { Router }																			from '@angular/router';
-import { Observable, Subject, takeUntil }													from 'rxjs';
+import { CdkScrollable } from '@angular/cdk/scrolling';
+import { Component, Inject, OnDestroy } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { FormArray, FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatButton } from '@angular/material/button';
+import { DateAdapter, MatOption } from '@angular/material/core';
+import { MatDatepickerInput, MatDatepickerToggle, MatDatepicker } from '@angular/material/datepicker';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogTitle, MatDialogContent } from '@angular/material/dialog';
+import { MatFormField, MatLabel, MatHint, MatSuffix, MatPrefix } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { MatSelect } from '@angular/material/select';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
+import { Router } from '@angular/router';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
-import { Account }						from '../../interfaces/account.interface';
-import { AccountsService }				from '../../services/accounts.service';
-import { Pot }							from '../../interfaces/pots.interface';
-import { SavingsService }				from '../../services/savings.service';
-import { TransactionInterface }			from '../../interfaces/transaction.interface';
-import { TransactionsService }			from '../../services/transactions.service';
-import { TransactionsTableComponent }	from '../transactions-table/transactions-table.component';
-
-
+import { Account } from '../../interfaces/account.interface';
+import { AccountsService } from '../../services/accounts.service';
+import { Pot } from '../../interfaces/pots.interface';
+import { SavingsService } from '../../services/savings.service';
+import { Transaction } from '../../interfaces/transaction.interface';
+import { TransactionsService } from '../../services/transactions.service';
+import { TransactionsTableComponent } from '../transactions-table/transactions-table.component';
 
 @Component({
 	selector: 'app-add-transaction',
@@ -55,7 +53,7 @@ import { TransactionsTableComponent }	from '../transactions-table/transactions-t
 })
 
 export class AddTransactionComponent implements OnDestroy {
-	similarTransactions: Observable<TransactionInterface[]>;
+	similarTransactions: Observable<Transaction[]>;
 	addingMultiple: FormControl = new FormControl(false);
 	keepAccount: FormControl = new FormControl({value: false, disabled: true});
 	submitting: boolean = false;
@@ -65,7 +63,7 @@ export class AddTransactionComponent implements OnDestroy {
 	pots: Observable<Pot[]>;
 	numberOfItems: number = 1;
 	items: FormArray;
-	formPrefill: TransactionInterface = {
+	formPrefill: Transaction = {
 		transactionDate: new Date(),
 		id: '',
 		date: new Date(),
@@ -78,7 +76,7 @@ export class AddTransactionComponent implements OnDestroy {
 		frequency: '',
 		items: []
   	};
-  	oldTransaction: TransactionInterface = {
+  	oldTransaction: Transaction = {
 		transactionDate: new Date(),
 		id: '',
 		date: new Date(),
@@ -105,7 +103,7 @@ export class AddTransactionComponent implements OnDestroy {
 		private accountsService: AccountsService,
 		private savingsService: SavingsService,
 		private router: Router,
-		@Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:TransactionInterface | null}
+		@Inject(MAT_DIALOG_DATA) public data: {date?: Date, row:Transaction | null}
 	){
 		if(this.data && this.data.row) {
 		this.formPrefill = this.data.row;
@@ -178,7 +176,7 @@ export class AddTransactionComponent implements OnDestroy {
 
 	// function called to check the value of the accounts select is correct
 	// If old saved pre March 2023, will automatically update account value to 
-	updateTheAccount(accounts: any[]) {
+	updateTheAccount(accounts: Account[]): void {
 		const currentAccount = accounts.find(item => item.name == this.transactionForm.value.account);
 		if(currentAccount) {
 			this.transactionForm.get('account')?.patchValue(currentAccount.id);
@@ -186,7 +184,7 @@ export class AddTransactionComponent implements OnDestroy {
 		}
 	}
 
-	addTransaction() {
+	addTransaction(): void {
 		this.submitting = true;
 		const name = this.accounts.find(item => item.id == this.transactionForm.value.account)?.name;
 		//if an account is selected
@@ -239,7 +237,7 @@ export class AddTransactionComponent implements OnDestroy {
 		this.similarTransactions = this.transactionsService.getSimilarTransactions(this.transactionForm.value);
 	}
 
-	fillForm(data: {row: TransactionInterface}) {
+	fillForm(data: {row: Transaction}) {
 		this.items.clear();
 		const row = data.row;
 		this.transactionForm.get('account')?.setValue(row.account);

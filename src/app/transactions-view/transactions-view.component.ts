@@ -1,22 +1,23 @@
-import { BreakpointObserver, Breakpoints, BreakpointState }	from '@angular/cdk/layout';
-import { AsyncPipe, CurrencyPipe }							from '@angular/common';
-import { Component, OnDestroy, OnInit }						from '@angular/core';
-import { FormControl, FormsModule, ReactiveFormsModule }	from '@angular/forms';
-import { MatBottomSheet }									from '@angular/material/bottom-sheet';
-import { MatIconButton, MatButton }							from '@angular/material/button';
-import { MatDatepickerInput, MatDatepicker }				from '@angular/material/datepicker';
-import { MatDialog }										from '@angular/material/dialog';
-import { MatFormField } 									from '@angular/material/form-field';
-import { MatIcon }											from '@angular/material/icon';
-import { MatInput }											from '@angular/material/input';
-import { ActivatedRoute, Router }							from '@angular/router';
-import { Observable, Subject, Subscription, takeUntil } 	from 'rxjs';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { AsyncPipe, CurrencyPipe } from '@angular/common';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatBottomSheet } from '@angular/material/bottom-sheet';
+import { MatIconButton, MatButton } from '@angular/material/button';
+import { MatDatepickerInput, MatDatepicker } from '@angular/material/datepicker';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormField } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { MatInput } from '@angular/material/input';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Observable, Subject, takeUntil } from 'rxjs';
 
-import { AddTransactionComponent }		from '../shared/components/add-transaction/add-transaction.component';
-import { TransactionsService }			from '../shared/services/transactions.service';
-import { TransactionInterface }			from '../shared/interfaces/transaction.interface';
-import { TransactionsTableComponent }	from '../shared/components/transactions-table/transactions-table.component';
-import { AmountsBottomSheet } 			from './components/amounts-bottom-sheet.component';
+import { AddTransactionComponent } from '../shared/components/add-transaction/add-transaction.component';
+import { TransactionsService } from '../shared/services/transactions.service';
+import { Transaction } from '../shared/interfaces/transaction.interface';
+import { TransactionsTableComponent } from '../shared/components/transactions-table/transactions-table.component';
+import { AmountsBottomSheet } from './components/amounts-bottom-sheet.component';
+import { TransactionMonth } from '../shared/interfaces/transactionMonth.interface';
 
 @Component({
 	selector: 'app-transactions-view',
@@ -40,10 +41,7 @@ import { AmountsBottomSheet } 			from './components/amounts-bottom-sheet.compone
 })
 export class TransactionsViewComponent implements OnInit, OnDestroy {
 	today: Date = new Date();
-	transactions: Observable<TransactionInterface[]>;
-	$transactions:Subscription;
-	numberOfTransactions: number = 0;
-	totalAmount: number = 0;
+	month: TransactionMonth;
 	date: FormControl = new FormControl(new Date())
 	isHandset: Observable<BreakpointState> = this.responsive.observe(Breakpoints.HandsetPortrait);
 	isLoading = true;
@@ -57,6 +55,7 @@ export class TransactionsViewComponent implements OnInit, OnDestroy {
 		private responsive: BreakpointObserver,
 		private _bottomSheet: MatBottomSheet,
 	) {
+		this.month = {totalAmount: 0, totalTransactions:0, totalsExcl: 0, categoryAmounts: new Map(), accountAmounts:new Map() ,transactions: undefined, monthName: ''}
 		// When the date in the page changes - refresh the data for the new date
 		this.date.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(value =>{
 			this.router.navigate([], {
@@ -75,13 +74,7 @@ export class TransactionsViewComponent implements OnInit, OnDestroy {
 			this.date.value.setMonth(params['month']);
 			this.date.value.setYear(params['year']);
 			this.transactionService.setMonth(this.date.value, true).then(month => {
-				if(month.transactions) this.transactions = month.transactions;
-				this.transactions.pipe(takeUntil(this.destroy$)).subscribe(() => {
-					this.transactionService.setMonth(this.date.value, false).then(month => {
-						this.totalAmount = month.totalsExcl;
-						this.numberOfTransactions = month.totalTransactions;
-					});
-				})
+				this.month = month
 			})
 		});
 	}
