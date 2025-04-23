@@ -49,6 +49,8 @@ export class LoginComponent implements OnInit {
 			this.signInForm.get('password')?.value,
 		).then((user: UserCredential) => {
 				if(user.user.uid) this.router.navigate(['dashboard']);
-		}).catch((error: AuthError) => this.errorMessage = 'Unable to login, please check credentials and try again!');
+		}).catch((error: AuthError) => {
+			this.errorMessage = 'Unable to login, please check credentials and try again!'
+		});
 	}
 }
