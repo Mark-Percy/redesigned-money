@@ -62,18 +62,18 @@ describe('LoginComponent', () => {
 	beforeEach(async () => {	
 		const authServiceSpy = jasmine.createSpyObj('AuthorisationService', ['signIn']);
 		await TestBed.configureTestingModule({
-		imports: [
-			NoopAnimationsModule,
-			ReactiveFormsModule,
-			MatFormFieldModule,
-			MatInputModule,
-			MatButtonModule,
-		],
-		providers: [
-			{ provide: AuthorisationService, useValue: AuthServiceStub },
-			{ provide: Router, useValue: routerStub },
-		]
-	}).compileComponents();
+			imports: [
+				NoopAnimationsModule,
+				ReactiveFormsModule,
+				MatFormFieldModule,
+				MatInputModule,
+				MatButtonModule,
+			],
+			providers: [
+				{ provide: AuthorisationService, useValue: AuthServiceStub },
+				{ provide: Router, useValue: routerStub },
+			]
+		}).compileComponents();
 
 		fixture = TestBed.createComponent(LoginComponent);
 		component = fixture.componentInstance;
@@ -85,11 +85,6 @@ describe('LoginComponent', () => {
 		spyOn(authService, 'signIn').and.returnValue(Promise.resolve(mockUserCredential))
 
 		fixture.detectChanges();
-	});
-
-	// General creation
-	it('should create', () => {
-		expect(component).toBeTruthy();
 	});
 	
 	it('should create with empty form', () => {

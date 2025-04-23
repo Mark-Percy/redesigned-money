@@ -1,6 +1,6 @@
 <form (ngSubmit)="updateUser()" [formGroup]="newAccountForm">
-    <mat-tab-group #accountTabs [selectedIndex]="selectedTab.value"
-        (selectedIndexChange)="selectedTab.setValue($event)"
+    <mat-tab-group #accountTabs [selectedIndex]="selectedTab"
+        (selectedIndexChange)="selectedTab = ($event)"
         mat-align-tabs="center"
         mat-stretch-tabs>
         <mat-tab label="User Details" formGroupName="userDetails" disabled>
@@ -15,7 +15,7 @@
         </mat-tab>
         <mat-tab label="Account Details" formGroupName="accountDetails" disabled>
 
-            @if((newAccountForm.get('accountDetails')?.errors?.['passwordMatch'] || newAccountForm.get('accountDetails')?.get('email')?.errors?.['email']) && newAccountForm.touched) {
+            @if(errorMessage != '') {
                 <div>
                     Error: {{ errorMessage }}
                 </div>
@@ -42,16 +42,16 @@
         </mat-tab>
     </mat-tab-group>
 
-    @if(this.selectedTab.value == 1) {
+    @if(selectedTab == 1) {
         <button mat-raised-button color="accent" type="submit" class="right">Submit</button>
     }
 
-    @if(this.selectedTab.value < 1) {
+    @if(selectedTab < 1) {
         <button mat-raised-button color="grey" type="button" class="right" (click)="moveTab(1)">Next</button>
     }
 
-    @if(this.selectedTab.value > 0){
-        <button mat-raised-button color="grey" type="button" class="left" (click)="moveTab(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
+    @if(selectedTab > 0){
+        <button id="back-button" mat-raised-button color="grey" type="button" class="left" (click)="moveTab(-1)"><mat-icon>arrow_back_ios</mat-icon></button>
     }
 
 </form>
